@@ -30,11 +30,25 @@ const styles = theme => ({
 function AppDrawer(props) {
   const { classes } = props;
   const menuList = [{
-    text: "应用",
-    link: "/jobs"
-  },{
     text: "纵览",
-    link: "/dashboard"
+    link: "/dashboard",
+    type: "link"
+  },{
+    type: "divider"
+  },{
+    text: "应用",
+    link: "/jobs",
+    type: "link"
+  },{
+    type: "divider"
+  },{
+    type: "link",
+    text: "server节点",
+    link: "/node/server",
+  },{
+    type: "link",
+    text: "工作节点",
+    link: "/node/worker",
   }];
   // const origin = ['集群', '应用', '服务', '节点'];
   return (
@@ -48,16 +62,30 @@ function AppDrawer(props) {
       >
         <div className={classes.toolbar} />
         <List>
-          {menuList.map((item, index) => (
-            <NavLink to={item.link}>
-              <ListItem button key={item.text}>
+          {menuList.map((item, index) => {
+            if(item.type === "link"){
+              return  <NavLink to={item.link} key={item.text}>
+              <ListItem button>
               
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItem>
             </NavLink>
-
-          ))}
+            }
+            if(item.type === "divider"){
+              return <Divider />;
+            }
+            else{
+              return <NavLink to={item.link} key={item.text}>
+              <ListItem button>
+              
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            </NavLink>
+            }
+           
+          })}
         </List>
 
         {/* <Divider />

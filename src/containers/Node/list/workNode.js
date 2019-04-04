@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Loading from '../../../components/Loading';
-import { getJobList} from '../../../actions/Job';
+import { getWorkerList} from '../../../actions/Node';
 import Tooltip from '@material-ui/core/Tooltip';
 import { NavLink } from 'react-router-dom'
 
@@ -34,8 +34,7 @@ const styles = theme => ({
 
   },
 });
-const header = [{name: "名称",key: "Name"},{name: "类型", key: "Type"},{name: "状态",key: "Status"}, {name: "创建时间", key: "SubmitTime",type: "time"}];
-const list = [{name: "hello",test: "没过",id: 1}];
+const header = [{name: "名称",key: "Name"},{name: "地址", key: "Address"},{name: "DC", key: "Datacenter"},{name: "状态",key: "Status"}];
 class SimpleTable extends Component {
   constructor(props) {
       super(props);
@@ -46,15 +45,13 @@ class SimpleTable extends Component {
   itemClick = data => {
     // console.log(this);
     if(data.key === 'Name'){
-      this.props.history.push(`/jobs/detail/${data.item.Name}`);
+      this.props.history.push(`/node/worker/${data.item.ID}`);
     }
   }
   componentDidMount() {
     const { dispatch } = this.props;
-    getJobList(dispatch);
-    // this.state.list = list;
-    // console.log("test1");
-      //  react setState 测试用例
+    getWorkerList(dispatch);
+
       
   }
   render() {
@@ -66,13 +63,13 @@ class SimpleTable extends Component {
               <Table header={header} list={list} onItemClick={this.itemClick}   />
             </Loading>
           </Paper>
-          <NavLink to="/jobs/create">
+          {/* <NavLink to="/jobs/create">
             <Tooltip title="新增" placement="top-start"  aria-label="Add">
               <Fab color="primary" size="medium" className={classes.fab}>
                 <AddIcon />
               </Fab>
             </Tooltip>
-          </NavLink>
+          </NavLink> */}
 
         </div>
       );
@@ -85,7 +82,7 @@ function mapStateToProps(state, ownProps) {
   console.log(state);
   console.log(ownProps);
 
-  return state.joblist;
+  return state.nodeWorkerList;
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(SimpleTable));
