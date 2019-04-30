@@ -63,14 +63,6 @@ class SimpleTable extends Component {
               <Table header={header} list={list} onItemClick={this.itemClick}   />
             </Loading>
           </Paper>
-          {/* <NavLink to="/jobs/create">
-            <Tooltip title="新增" placement="top-start"  aria-label="Add">
-              <Fab color="primary" size="medium" className={classes.fab}>
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-          </NavLink> */}
-
         </div>
       );
   }

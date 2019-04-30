@@ -5,6 +5,7 @@ import jobdetail from './Job/detail'
 import nodeServerList from './Node/serverList'
 import nodeWorkerList from './Node/workerList'
 import nodeWorkerDetail from './Node/workerDetail'
+import region from './Region'
 
 // import visibilityFilter from './visibilityFilter'
 
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   jobdetail,
   nodeServerList,
   nodeWorkerList,
-  nodeWorkerDetail
+  nodeWorkerDetail,
+  region
 //   visibilityFilter
 })
 

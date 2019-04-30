@@ -29,11 +29,13 @@ const styles = theme => ({
 
 function AppDrawer(props) {
   const { classes } = props;
-  const menuList = [{
+  const menuList = [
+    {
     text: "纵览",
     link: "/dashboard",
     type: "link"
-  },{
+  },
+  {
     type: "divider"
   },{
     text: "应用",
@@ -43,7 +45,7 @@ function AppDrawer(props) {
     type: "divider"
   },{
     type: "link",
-    text: "server节点",
+    text: "管理节点",
     link: "/node/server",
   },{
     type: "link",

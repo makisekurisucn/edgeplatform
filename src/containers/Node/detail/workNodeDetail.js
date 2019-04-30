@@ -33,7 +33,7 @@ TabContainer.propTypes = {
 
 
 // import { isAbsolute } from 'path';
-
+const runtimeList = ["docker","exec","java","qemu","raw_exec","rkt"];
 const styles = theme => ({
   root: {
     width: '100%',
@@ -148,6 +148,10 @@ const styles = theme => ({
   },
   taskGroupWrap: {
     backgroundColor: blueGrey[50]
+  },
+  driverStatus: {
+    fontSize: 12,
+    fontWeight: 'normal'
   }
 });
 class JobDetail extends Component {
@@ -183,27 +187,25 @@ class JobDetail extends Component {
   }
   render() {
     const { classes, detail, history, status} = this.props;
-    console.log(this.props);
-    const { index, statusIndex } = this.state;
     console.log(detail);
+    const { index, statusIndex } = this.state;
     return (
       <Paper className={classes.root}>
         <Typography component="div">
         <Grid container className={classes.headerContainer} alignItems="center">
           <Grid className={classes.headerTtile}>{detail.Name}</Grid>  
-          <Grid className={`${classes.headerStatus} ${detail.Status =="running" ? classes.statusGreen: null} ${detail.Status =="pending" ? classes.statusYellow: null}`}>{detail.Status}</Grid>  
-
+          <Grid className={`${classes.headerStatus} ${detail.Status === "ready" ? classes.statusGreen: null} ${detail.Status === "pending" ? classes.statusYellow: null}`}>{detail.Status}</Grid>  
         </Grid>
         </Typography>
         <AppBar position="static">
           <Tabs value={index} onChange={this.handleChange}>
-            <Tab label="配置" />
-            <Tab label="状态" />
-            <Tab label="版本历史" />
+            <Tab label="基本信息" />
+            <Tab label="事件信息" />
+            {/* <Tab label="版本历史" /> */}
           </Tabs>
         </AppBar>
         {/* 基本信息 */}
-        {index === 0 &&
+        {index === 0 && detail.Attributes &&
          <TabContainer>
           <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
             <Grid item  xs={1}>
@@ -213,479 +215,294 @@ class JobDetail extends Component {
             </Grid>
             <Grid item xs={11}>
               <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                {detail.Type}
+                工作节点
+              </Typography> 
+            </Grid>
+          </Grid> 
+
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item  xs={1}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                数据中心
+              </Typography> 
+            </Grid>
+            <Grid item xs={11}>
+              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                {detail.Datacenter}
+              </Typography> 
+            </Grid>
+          </Grid>
+
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item  xs={1}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                主机名
+              </Typography> 
+            </Grid>
+            <Grid item xs={11}>
+              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+              {detail.Attributes["unique.hostname"]}
+              </Typography> 
+            </Grid>
+          </Grid>
+
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item  xs={1}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                处理器架构
+              </Typography> 
+            </Grid>
+            <Grid item xs={11}>
+              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                {detail.Attributes["cpu.arch"]}
+              </Typography> 
+            </Grid>
+          </Grid>
+
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item  xs={1}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                处理器频率
+              </Typography> 
+            </Grid>
+            <Grid item xs={11}>
+              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                {detail.Attributes["cpu.frequency"]}
+              </Typography> 
+            </Grid>
+          </Grid>
+
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item  xs={1}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                处理器型号
+              </Typography> 
+            </Grid>
+            <Grid item xs={11}>
+              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                {detail.Attributes["cpu.modelname"]}
+              </Typography> 
+            </Grid>
+          </Grid>
+
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item  xs={1}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                处理器核数
+              </Typography> 
+            </Grid>
+            <Grid item xs={11}>
+              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                {detail.Attributes["cpu.numcores"]}
               </Typography> 
             </Grid>
           </Grid>
           
-
           <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-            <Grid item xs={1}>
+            <Grid item  xs={1}>
               <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-              更改时间
+                操作系统
               </Typography> 
             </Grid>
             <Grid item xs={11}>
               <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-              {detail.SubmitTime}
+                {detail.Attributes["os.name"]}
               </Typography> 
             </Grid>
-          </Grid>         
-
+          </Grid>
 
           <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-            <Grid item xs={1}>
+            <Grid item  xs={1}>
               <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-              Region
+                操作系统版本
               </Typography> 
             </Grid>
             <Grid item xs={11}>
               <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-              {detail.Region}
+                {detail.Attributes["os.version"]}
               </Typography> 
             </Grid>
-          </Grid> 
+          </Grid>
+
 
           <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-            <Grid item xs={1}>
+            <Grid item  xs={1}>
               <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-              数据中心
+                内核版本
               </Typography> 
             </Grid>
             <Grid item xs={11}>
               <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-              {detail.Datacenters}
+                {detail.Attributes["kernel.version"]}
               </Typography> 
             </Grid>
-          </Grid> 
-          
-          {/* <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-            <Grid item xs={3}>
-              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-              调度优先级
-              </Typography> 
-            </Grid>
-            <Grid item xs={9}>
-              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-              {detail.Priority}
-              </Typography> 
-            </Grid>
-          </Grid>  */}
-          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-            <Grid item xs={1}>
-              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-              当前版本
-              </Typography> 
-            </Grid>
-            <Grid item xs={11}>
-              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-              {detail.Version}
-              </Typography> 
-            </Grid>
-          </Grid> 
+          </Grid>
+
           <Divider className={classes.contentDivider} />
           <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
             <Grid item xs={3}>
               <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-              任务组
+              运行时
               </Typography> 
             </Grid>
           </Grid> 
           {
-           detail.TaskGroups && detail.TaskGroups.map((taskGroupItem) => (
-            <ExpansionPanel defaultExpanded className={classes.taskGroupWrap} key={taskGroupItem.Name}>
+           runtimeList.map((runtime) => (
+            <ExpansionPanel className={classes.taskGroupWrap} key={runtime}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.bold + ' '+ classes.large + ' '+ classes.groupName}>任务组
-
- --- {taskGroupItem.Name}</Typography>
+                <Typography className={classes.bold + ' '+ classes.large + ' '+ classes.groupName}>{runtime}
+                  <span className={classes.driverStatus}>({detail.Drivers[runtime]  && detail.Drivers[runtime].Detected? "可用":"不可用"})</span>
+                </Typography>
               </ExpansionPanelSummary>
               <Divider />
 
               <ExpansionPanelDetails>
+                {detail.Drivers[runtime] &&
 
-              <Grid container>
-                <Grid item xs={12}>
-                  <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                    <Grid item xs={2}>
-                      <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                      实例数
-                      </Typography> 
-                    </Grid>
-                    <Grid item xs={10}>
-                      <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                      {taskGroupItem.Count}
-                      </Typography> 
-                    </Grid>
+                  <Grid container>
+                    <Grid item xs={12}>
 
-                    {
-                      taskGroupItem.EphemeralDisk ? (
+                      <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
                         <Grid item xs={2}>
                           <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                          卷
+                            健康度
                           </Typography> 
                         </Grid>
-                      ) : null
-                    }
-                    {
-                      taskGroupItem.EphemeralDisk ? (
                         <Grid item xs={10}>
-                        <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                        {taskGroupItem.EphemeralDisk.SizeMB}MB (EphemeralDisk)
-                        </Typography> 
-                      </Grid>
-                      ) : null
-                    }
-                  </Grid>
-                  {
-                    taskGroupItem.Tasks.map((taskItem)=>(
-                      <Grid container className={classes.taskItem} key={taskItem.Name}  alignItems="center">
-                        <Grid item xs={2}>
-                          <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                            任务-{taskItem.Name} 
+                          <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                            {detail.Drivers[runtime] && detail.Drivers[runtime].Detected  && detail.Drivers[runtime].Healthy? "健康":"不健康/不可用"}
+                            {/* {detail.Drivers[runtime] && !detail.Drivers[runtime].Detected ? "不可用": ""} */}
                           </Typography> 
                         </Grid>
-                        <Grid item xs={10} >
-                          
-                        </Grid>
-                                                
-                        <Grid item xs={12}>
-                          <Divider className={classes.headerUnderline} />
-                        </Grid>
-                        <Grid container>
-                          <Grid item xs={4} container>
-                          
-                          
- 
-
-                            <Grid item xs={3}  className={classes.taskItemName}>
-                              <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                运行时驱动
-                              </Typography> 
-                            </Grid>
-                            <Grid item xs={9}>
-                              <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                              {taskItem.Driver}
-                              </Typography> 
-                            </Grid>
-                            {/* 镜像 */}
-                            {
-                              taskItem.Config && taskItem.Config.image && (
-                                <Grid item xs={3} className={classes.taskItemName}>
-                                  <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                    镜像
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {
-                              taskItem.Config && taskItem.Config.image && (
-                                <Grid item xs={9}>
-                                  <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {taskItem.Config.image}
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {/* CPU */}
-                            {
-                              taskItem.CPU && (
-                                <Grid item xs={3} className={classes.taskItemName}>
-                                  <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                    CPU
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {
-                              taskItem.CPU && (
-                                <Grid item xs={9}>
-                                  <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {taskItem.CPU} MHz
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {/* 内存 */}
-                            {
-                              taskItem.MemoryMB && (
-                                <Grid item xs={3} className={classes.taskItemName}>
-                                  <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                    内存
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {
-                              taskItem.MemoryMB && (
-                                <Grid item xs={9}>
-                                  <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {taskItem.MemoryMB} MB
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {/* 端口 */}
-                            {
-                              taskItem.ports.length && (
-                                <Grid item xs={3} className={classes.taskItemName}>
-                                  <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                    端口
-                                  </Typography> 
-                                </Grid>
-                              )
-                            }
-                            {
-                              taskItem.ports.length && (
-                                <Grid item xs={9}>
-                                  {
-                                    taskItem.ports.map(p =>(
-                                      <Typography color="textSecondary" key={p.name} variant="subtitle2" className={classes.contentBody}>
-                                        {p.name}:{p.originPort} ----> {p.DynamicPort? '动态宿主机映射': null}{p.ReservedPort}  {p.service? '---- 注册为'+p.service.Name : null}
-                                      </Typography> 
-                                    ))
-                                  }
-                                  
-                                </Grid>
-                              )
-                            }
-
-
-                            {/* 环境变量 */}
-                            {taskItem.Env && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  环境变量
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.Env && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                { 
-                                  Object.keys(taskItem.Env).map((key,index) => (
-                                    <span key={key}>
-                                      {key}={taskItem.Env[key]}{index < (Object.keys(taskItem.Env).length - 1)? ',': null}
-                                    </span>
-                                  ))
-                                  
-                                  }
-                                </Typography> 
-                              </Grid>
-                            )}
-
-
-
-                            {/* 启动命令 */}
-                            {taskItem.Config && taskItem.Config.command  && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  启动命令
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.Config && taskItem.Config.command  && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.Config.command}
-                                </Typography> 
-                              </Grid>
-                            )}
-
-                            {/* 启动参数 */}
-                            {taskItem.Config && taskItem.Config.args  && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                启动参数
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.Config && taskItem.Config.args  && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.Config.args.join(' ')}
-                                </Typography> 
-                              </Grid>
-                            )}
-
-                            {/* 网络模式 */}
-                            {taskItem.Config && taskItem.Config.network_mode  && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                网络模式
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.Config && taskItem.Config.network_mode  && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.Config.network_mode}
-                                </Typography> 
-                              </Grid>
-                            )}
-
-                            {/* 虚拟机镜像路径 */}
-                            {taskItem.Config && taskItem.Config.image_path  && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                虚拟机镜像路径
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.Config && taskItem.Config.image_path  && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.Config.image_path}
-                                </Typography> 
-                              </Grid>
-                            )}
-
-
-                            {/* 加速器 */}
-                            {taskItem.Config && taskItem.Config.accelerator  && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  加速器
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.Config && taskItem.Config.accelerator  && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.Config.accelerator}
-                                </Typography> 
-                              </Grid>
-                            )}
-
-                            {/* 日志文件 */}
-                            {taskItem.LogMaxFileSizeMB && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  日志文件分割大小
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.LogMaxFileSizeMB && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.LogMaxFileSizeMB}MB
-                                </Typography> 
-                              </Grid>
-                            )}
-                          {/* 日志文件数量 */}
-                            {taskItem.LogMaxFiles && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  日志文件最大数量
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {taskItem.LogMaxFiles && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {taskItem.LogMaxFiles}个
-                                </Typography> 
-                              </Grid>
-                            )}
-
-
-                            {statusIndex && status.taskGroup && statusIndex[taskGroupItem.Name] && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  实例状态
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {statusIndex && status.taskGroup && statusIndex[taskGroupItem.Name] && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {status.taskGroup[taskGroupItem.Name][taskItem.Name][statusIndex[taskGroupItem.Name][taskItem.Name]].State}
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {statusIndex && status.taskGroup && statusIndex[taskGroupItem.Name] && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  实例创建时间
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {statusIndex && status.taskGroup && statusIndex[taskGroupItem.Name] && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {status.taskGroup[taskGroupItem.Name][taskItem.Name][statusIndex[taskGroupItem.Name][taskItem.Name]].CreateTime}
-                                </Typography> 
-                              </Grid>
-                            )}
-
-                            {statusIndex && status.taskGroup && statusIndex[taskGroupItem.Name] && (
-                              <Grid item xs={3} className={classes.taskItemName}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle2" className={classes.contentHeader}>
-                                  实例重启次数
-                                </Typography> 
-                              </Grid>
-                            )}
-                            {statusIndex && status.taskGroup && statusIndex[taskGroupItem.Name] && (
-                              <Grid item xs={9}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                  {status.taskGroup[taskGroupItem.Name][taskItem.Name][statusIndex[taskGroupItem.Name][taskItem.Name]].Restarts}
-                                </Typography> 
-                              </Grid>
-                            )}
-                              
-                              
-                              
-                              
-                          
-                          
-                          </Grid>
-                          <Grid item xs={8}>
-                          {statusIndex && status.taskGroup && (
-                            <div className={classes.logWrap}>
-                                {status.taskGroup[taskGroupItem.Name][taskItem.Name][statusIndex[taskGroupItem.Name][taskItem.Name]].Events.map(e => (
-                                  <p key={e.time} className={classes.logContent}>{e.time}: {e.message}</p>
-                                ))
-
-                                }
-                            </div>
-                          )
-
-                          }
-                              
-                          </Grid>
-
-                        </Grid>
-
-
-
-
-
-
-
-
-
-
                       </Grid>
 
+                      {detail.Drivers[runtime] && detail.Drivers[runtime].Attributes && runtime ==="docker" &&
+
+                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+                          <Grid item xs={2}>
+                            <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                              docker版本
+                            </Typography> 
+                          </Grid>
+                          <Grid item xs={10}>
+                            <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                              {detail.Drivers[runtime].Attributes['driver.docker.version']}
+                            </Typography> 
+                          </Grid>
+                        </Grid>
 
 
+                      }
+                      
 
+                    </Grid>
+                  </Grid>
 
-                    ))
-                  }
-                  
+                }
 
-                  
-                </Grid>
-                {/* <Grid item xs={8}></Grid> */}
-
-              </Grid>
               
               </ExpansionPanelDetails>
             </ExpansionPanel>
           ))}  
+
+
+
+          <Divider className={classes.contentDivider} />
+          <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+            <Grid item xs={3}>
+              <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+              配置信息
+              </Typography> 
+            </Grid>
+          </Grid>
+          {detail && detail.Resources && detail.Reserved &&
+
+            <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
+              <Grid item  xs={1}>
+                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                  保留CPU
+                </Typography> 
+              </Grid>
+              <Grid item xs={11}>
+                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                  {detail.Reserved.CPU} MHz
+                </Typography> 
+              </Grid>
+
+
+              <Grid item  xs={1}>
+                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                  保留内存
+                </Typography> 
+              </Grid>
+              <Grid item xs={11}>
+                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                  {detail.Reserved.MemoryMB} MB
+                </Typography> 
+              </Grid>
+
+              <Grid item  xs={1}>
+                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                  保留磁盘
+                </Typography> 
+              </Grid>
+              <Grid item xs={11}>
+                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                  {detail.Reserved.DiskMB} MB
+                </Typography> 
+              </Grid>
+
+              <Grid item  xs={1}>
+                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                  可用CPU
+                </Typography> 
+              </Grid>
+              <Grid item xs={11}>
+                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                  {detail.Resources.CPU} MHz
+                </Typography> 
+              </Grid>
+
+
+              <Grid item  xs={1}>
+                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                  可用内存
+                </Typography> 
+              </Grid>
+              <Grid item xs={11}>
+                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                  {detail.Resources.MemoryMB} MB
+                </Typography> 
+              </Grid>
+
+              <Grid item  xs={1}>
+                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
+                  可用磁盘
+                </Typography> 
+              </Grid>
+              <Grid item xs={11}>
+                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                  {detail.Resources.DiskMB} MB
+                </Typography> 
+              </Grid>
+            </Grid>
+
+
+          }
+
         </TabContainer>}
         
-        {index === 1 && <TabContainer>Item Three</TabContainer>}
+        {index === 1 && <TabContainer>
+          
+
+          <div className={classes.logWrap}>
+            {detail.Events.map(e => (
+              <p className={classes.logContent}>{e.Timestamp}: {e.Message}</p>
+            ))
+
+            }
+          </div>
+        </TabContainer>}
         
         {index === 2 && <TabContainer>
 
@@ -713,8 +530,8 @@ class JobDetail extends Component {
               </ExpansionPanel>
             ))
           }
-          
         </TabContainer>}
+
       </Paper>
     );
   }
@@ -724,7 +541,7 @@ JobDetail.propTypes = {
 };
 function mapStateToProps(state, ownProps) {
     console.log(state)
-    return state.jobdetail;
+    return state.nodeWorkerDetail;
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(JobDetail));

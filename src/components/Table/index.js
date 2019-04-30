@@ -40,7 +40,7 @@ class SimpleTable extends Component {
   }
   processItem = (head, row) => {
     if(head.type === "time"){
-      return moment(row[head.key]).format('MMMM Do YYYY, h:mm:ss a');
+      return moment().format('MMMM Do YYYY, h:mm:ss a');
     }
     if(head.type === "bool"){
       return row[head.key] + ''

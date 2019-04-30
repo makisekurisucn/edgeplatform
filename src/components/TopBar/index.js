@@ -1,51 +1,120 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
-// import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { getRegionList } from '../../actions/Region'
+import TopButton from '../NavButton'
+import Select from '../Select'
 
 const styles = theme =>( {
   root: {
-    flexGrow: 1,
+    display: 'flex',
+    height: 60,
+    backgroundColor: "#213642d1",
+    lineHeight: "60px",
+    justifyContent: "space-between"
+  },
+  logoSide: {
+    display: 'flex',
+  },
+  menuList: {
+    height: 60,
+    padding: "0px 10px",
+    display: 'flex',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     position: "relative",
   },
-  grow: {
-    flexGrow: 1,
+  title: {
+    height: 60,
+    width: 260,
+    textAlign: 'center',
+    lineHeight: '60px',
+    color: '#EEF9FF',
+    backgroundColor: '#213642'
   },
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
   },
+  formControl: {
+    margin: theme.spacing.unit,
+    width: 240,
+    color: "#fff"
+  },
+  topSelect: {
+    color: "#fff"
+  },
+  actionArea: {
+    // padding: "0px 10px"
+  }
 });
+// let regionListDemo = [
+//   {regionName: "华东-杭州",regionId: 'ce-hangzhou'},
+//   {regionName: "华东-上海",regionId: 'ce-shanghai'}
+// ];
 
-function TopBar(props) {
-  const { classes, barName} = props;
-  return (
-    <div className={classes.appBar}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+class TopBar extends Component {
+  constructor(props) {
+      super(props);
+      this.state = {
+        currentRegion: null
+      };
+  }
+  componentWillMount() {
+    const { dispatch } = this.props;
+    getRegionList(dispatch);
+  }
+  componentWillReceiveProps(nextProp) {
+    if(nextProp.regionList.length && !this.state.currentRegion){
+      this.setState({
+        currentRegion: nextProp.regionList[0]
+      });
+    }
+  }
+  selectRegion = region => {
+    this.setState({
+      currentRegion: region
+    });
+  }
+  render() {
+    const { classes, barName, regionList, className} = this.props;
+    console.log(regionList)
+    return (
+      <div className={className + " " + classes.root }>
+          {/* <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            {barName}
-          </Typography>
-          {/* <Button color="inherit">Login</Button> */}
-        </Toolbar>
-      </AppBar>
+          </IconButton> */}
+          <div className={classes.logoSide}>
+            <Typography variant="h6" color="inherit" className={classes.title}>
+              {barName}
+            </Typography>
+
+            <div className={classes.menuList}>
+              <TopButton content="看板" link="/dashboard"></TopButton>
+              <TopButton content="控制台" link="/console"></TopButton>
+            </div>
+          </div>
+          <div className={classes.actionArea}>
+            <Select title="地域" 
+              list={regionList} 
+              // valueKey="regionId" 
+              // displayKey="regionName" 
+              value={this.state.currentRegion} 
+              onSelected={this.selectRegion} ></Select>
+          </div>
     </div>
-  );
+    );
+  }
 }
 
 TopBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(TopBar);
+function mapStateToProps(state, ownProps) {
+  return state.region;
+}
+export default connect(mapStateToProps)(withStyles(styles)(TopBar));
