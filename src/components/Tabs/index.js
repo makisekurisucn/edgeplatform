@@ -44,7 +44,8 @@ const styles = theme =>({
         }
     },
     tabContentWrap: {
-      position: 'relative'
+      position: 'relative',
+      height: 600
     },
     itemWrap: {
       // position: 'absolute',
@@ -83,7 +84,6 @@ class Tabs extends Component {
         prevIndex: this.state.index
       });
     }
-   
   }
   componentDidUpdate(){
     
@@ -113,7 +113,6 @@ class Tabs extends Component {
         </ul>
         <div className={classes.tabContentWrap}>
         { 
-         
           tabList.map((item, index) => {
             let hidden = true;
             let from = 'left';
@@ -132,7 +131,7 @@ class Tabs extends Component {
               from = 'left';
               to = 'left';
             }
-            return <div className={classes.itemWrap} key={item.name}><FadeWrap isHidden={hidden} from={from} to={to}><item.component data={viewProps} /> </FadeWrap></div>
+            return <div className={classes.itemWrap} key={item.name}><FadeWrap isHidden={hidden} from={from} to={to}><item.component data={viewProps} /></FadeWrap></div>
           })
         }
         </div>

@@ -34,7 +34,7 @@ const styles = theme =>( {
         display: 'none'
     }
 });
-class ListItem extends Component {
+class FadeWrap extends Component {
   constructor(props) {
     // stage: initialized, animationStarted, finished
       super(props);
@@ -157,11 +157,11 @@ class ListItem extends Component {
   }
 }
 
-ListItem.propTypes = {
+FadeWrap.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   return state.region;
 }
-export default connect(mapStateToProps)(withStyles(styles)(ListItem));
+export default connect(mapStateToProps)(withStyles(styles)(FadeWrap));

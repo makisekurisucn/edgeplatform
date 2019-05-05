@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import Tabs from '../../components/Tabs';
+import WrappedGraph from '../../components/WrappedGraph'
 const styles = theme =>( {
     root: {
-        position: 'relative',
-        top: 0,
-        left: 0,
-        opacity: 1
+      padding: 10
+    },
+    graph: {
+      marginBottom: 10
     }
 });
 class NodeMetric extends Component {
@@ -28,7 +28,8 @@ class NodeMetric extends Component {
 
     return (
       <div className={ classNameWrap }>
-        NodeMetric
+        <WrappedGraph className={classes.graph} />
+        <WrappedGraph className={classes.graph} />
       </div>
     );
   }
