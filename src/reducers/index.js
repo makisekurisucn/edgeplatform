@@ -10,14 +10,14 @@ import region from './Region'
 // import visibilityFilter from './visibilityFilter'
 
 const rootReducer = combineReducers({
-  joblist,
-  jobcreate,
-  jobdetail,
-  nodeServerList,
-  nodeWorkerList,
-  nodeWorkerDetail,
-  region
-//   visibilityFilter
+    joblist,
+    jobcreate,
+    jobdetail,
+    nodeServerList,
+    nodeWorkerList,
+    nodeWorkerDetail,
+    region
+    //   visibilityFilter
 })
 
 export default rootReducer

@@ -99,20 +99,20 @@ const initialState = {
     },
     loading: false,
     success: false
-    };
-    const JobRedu = (state = initialState, action) => {
-      // alert(action.type);
-      switch(action.type) {
+};
+const JobRedu = (state = initialState, action) => {
+    // alert(action.type);
+    switch (action.type) {
         case 'JOB_CREATE_START':
-          return Object.assign({}, state, {loading: true});
+            return Object.assign({}, state, { loading: true });
         case 'JOB_CREATE_INIT':
             return Object.assign({}, state, initialState);
         case 'JOB_CREATE_SUCCESS':
-            return Object.assign({}, state, {loading: false, success: true});
+            return Object.assign({}, state, { loading: false, success: true });
         case 'JOB_CREATE_FAIL':
-            return Object.assign({}, state, {loading: false, success: false, errMsg:action.error});
-        default: 
-          return state;
-      }
+            return Object.assign({}, state, { loading: false, success: false, errMsg: action.error });
+        default:
+            return state;
     }
-    export default JobRedu;
+}
+export default JobRedu;

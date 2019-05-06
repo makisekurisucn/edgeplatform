@@ -1,8 +1,8 @@
 const getRegionList = (dispatch) => {
     dispatch({
-      type:'REGION_GETLIST_SAGA'
+        type: 'REGION_GETLIST_SAGA'
     });
-  }
-  export {
+}
+export {
     getRegionList
-  };
+};
