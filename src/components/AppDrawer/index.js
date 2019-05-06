@@ -39,18 +39,18 @@ function AppDrawer(props) {
     type: "divider"
   },{
     text: "应用",
-    link: "/jobs",
+    link: "/console/jobs",
     type: "link"
   },{
     type: "divider"
   },{
     type: "link",
     text: "管理节点",
-    link: "/node/server",
+    link: "/console/node/server",
   },{
     type: "link",
     text: "工作节点",
-    link: "/node/worker",
+    link: "/console/node/worker",
   }];
   // const origin = ['集群', '应用', '服务', '节点'];
   return (
