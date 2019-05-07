@@ -14,15 +14,12 @@ const styles = theme => ({
 class NodeMetric extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+        };
     }
 
     render() {
-        const {
-            classes,
-            className,
-            children
-        } = this.props;
+        const { classes, className, children } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -30,7 +27,7 @@ class NodeMetric extends Component {
         }
 
         return (
-            <div className={classNameWrap} >
+            <div className={classNameWrap}>
                 <WrappedGraph className={classes.graph} />
                 <WrappedGraph className={classes.graph} />
             </div>
