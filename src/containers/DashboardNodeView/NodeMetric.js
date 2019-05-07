@@ -17,7 +17,7 @@ class NodeMetric extends Component {
       this.state = {
       };
   }
-
+  
   render() {
     const { classes, className, children} = this.props;
     // const { isHidden, stage} = this.state;
