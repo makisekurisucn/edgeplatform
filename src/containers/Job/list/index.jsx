@@ -46,7 +46,7 @@ class SimpleTable extends Component {
     itemClick = data => {
         // console.log(this);
         if (data.key === 'Name') {
-            this.props.history.push(`/jobs/detail/${data.item.Name}`);
+            this.props.history.push(`/console/jobs/detail/${data.item.Name}`);
         }
     }
     componentDidMount() {
@@ -66,7 +66,7 @@ class SimpleTable extends Component {
                         <Table header={header} list={list} onItemClick={this.itemClick} />
                     </Loading>
                 </Paper>
-                <NavLink to="/jobs/create">
+                <NavLink to="/console/jobs/create">
                     <Tooltip title="新增" placement="top-start" aria-label="Add">
                         <Fab color="primary" size="medium" className={classes.fab}>
                             <AddIcon />

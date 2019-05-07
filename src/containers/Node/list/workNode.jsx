@@ -45,7 +45,7 @@ class SimpleTable extends Component {
     itemClick = data => {
         // console.log(this);
         if (data.key === 'Name') {
-            this.props.history.push(`/node/worker/${data.item.ID}`);
+            this.props.history.push(`/console/node/worker/${data.item.ID}`);
         }
     }
     componentDidMount() {

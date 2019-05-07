@@ -113,7 +113,7 @@ class JobCreate extends Component {
 
                     </div>
                     <Button size="medium" color="primary">
-                        <NavLink to="/jobs">
+                        <NavLink to="/console/jobs">
                             取消
             </NavLink>
                     </Button>
