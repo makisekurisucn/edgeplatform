@@ -1,6 +1,3 @@
-
-
-
 const getServerList = (dispatch) => {
   dispatch({
     type:'NODE_GETSERVERLIST_SAGA'
