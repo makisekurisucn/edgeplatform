@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import moment from 'moment';
+import {formatTime} from '../../utils/formatTime';
 
 // import AddIcon from '@material-ui/icons/Add';
 
@@ -40,8 +41,7 @@ class SimpleTable extends Component {
     }
     processItem = (head, row) => {
         if (head.type === "time") {
-            let momentValue=parseInt(row[head.key].toString().substr(0,13));
-            return moment(momentValue).format('MMMM Do YYYY, h:mm:ss a');
+            return formatTime(row[head.key]);
         }
         if (head.type === "bool") {
             return row[head.key] + ''

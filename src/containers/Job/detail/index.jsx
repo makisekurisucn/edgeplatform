@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/zh-cn';
 import moment from 'moment';
+import {formatTime} from '../../../utils/formatTime';
 
 import Typography from '@material-ui/core/Typography';
 import { GridList } from '@material-ui/core';
@@ -152,13 +153,6 @@ const styles = theme => ({
         backgroundColor: blueGrey[50]
     }
 });
-function formatSubmitTime(submitTime){
-    if (typeof submitTime === "number") {
-        let momentValue = parseInt(submitTime.toString().substr(0, 13));
-        return moment(momentValue).format('MMMM Do YYYY, h:mm:ss a');
-    }
-    return submitTime;
-}
 class JobDetail extends Component {
     constructor(props) {
         super(props);
@@ -241,7 +235,7 @@ class JobDetail extends Component {
                             </Grid>
                             <Grid item xs={11}>
                                 <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {formatSubmitTime(detail.SubmitTime)}
+                                    {formatTime(detail.SubmitTime)}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -742,7 +736,7 @@ class JobDetail extends Component {
                             <ExpansionPanel className={classes.contentItem}>
                                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                     <Typography className={classes.heading + ' ' + classes.historyHeader}>版本-{version.Version}</Typography>
-                                    <Typography className={classes.heading + ' ' + classes.historyHeader}>修改时间-{formatSubmitTime(version.SubmitTime)}</Typography>
+                                    <Typography className={classes.heading + ' ' + classes.historyHeader}>修改时间-{formatTime(version.SubmitTime)}</Typography>
                                     {
                                         (version.Version === detail.Version) && <Typography className={classes.heading + ' ' + classes.historyHeader} color="textSecondary">当前版本</Typography>
                                     }
@@ -775,4 +769,3 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(JobDetail));
-export {formatSubmitTime};
