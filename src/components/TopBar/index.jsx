@@ -11,7 +11,7 @@ const styles = theme => ({
     root: {
         display: 'flex',
         height: 60,
-        backgroundColor: "#213642d1",
+        backgroundColor: "rgba(33,54,66,0.82)",
         lineHeight: "60px",
         justifyContent: "space-between"
     },

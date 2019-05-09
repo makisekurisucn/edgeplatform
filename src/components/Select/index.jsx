@@ -50,7 +50,7 @@ const styles = theme => ({
         transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     selectListWrap: {
-        backgroundColor: '#262E2Fd1',
+        backgroundColor: 'rgba(38,46,47,0.82)',
         position: "absolute",
         padding: 0,
         margin: 0,
@@ -62,11 +62,11 @@ const styles = theme => ({
         overflow: 'hidden',
         //   height: 100,
         '& li:hover': {
-            backgroundColor: '#262E2Fd1'
+            backgroundColor: 'rgba(38,46,47,0.82)'
         }
     },
     selected: {
-        backgroundColor: '#262E2Fd1',
+        backgroundColor: 'rgba(38,46,47,0.82)',
         position: 'relative',
         '&:before': {
             height: 52,

@@ -15,7 +15,7 @@ const styles = theme => ({
         width: "100%",
         position: 'absolute',
         zIndex: 100,
-        backgroundColor: '#161616cc',
+        backgroundColor: 'rgba(22,22,22,0.8)',
         boxShadow: '1px 1px 6px #ababab',
         boxSizing: 'border-box',
         // top: 24,

@@ -7,7 +7,7 @@ const styles = theme => ({
     root: {
         width: 384,
         height: 32,
-        backgroundColor: '#191919e6',
+        backgroundColor: 'rgba(25,25,25,0.9)',
         marginBottom: 4,
         color: '#EEF9FF',
         textAlign: 'center',

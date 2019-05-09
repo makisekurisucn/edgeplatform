@@ -13,7 +13,7 @@ const styles = theme => ({
         opacity: 1
     },
     tabWrap: {
-        backgroundColor: '#4b8bafb3',
+        backgroundColor: 'rgba(75,139,175,0.7)',
         color: '#EEF9FF',
         fontSize: '14px',
         height: 32,

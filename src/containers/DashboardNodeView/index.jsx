@@ -17,7 +17,7 @@ const styles = theme => ({
     appHeader: {
         width: '100%',
         height: 128,
-        backgroundColor: '#4b8bafb3',
+        backgroundColor: 'rgba(75,139,175,0.7)',
         padding: '0px 16px',
         boxSizing: 'border-box'
     },

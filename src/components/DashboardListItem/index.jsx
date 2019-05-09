@@ -13,12 +13,12 @@ const styles = theme => ({
         padding: '0px 9px',
         cursor: 'pointer',
         '&:hover': {
-            backgroundColor: '#1616168c'
+            backgroundColor: 'rgba(22,22,22,0.55)'
         }
     },
     innerWrap: {
         height: '100%',
-        borderBottom: '1px solid #ffffff75',
+        borderBottom: '1px solid rgba(255,255,255,0.46)',
         boxSizing: 'border-box',
         display: 'flex',
         justifyContent: 'space-between',

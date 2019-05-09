@@ -32,7 +32,7 @@ const styles = {
         zIndex: 100,
         top: 24,
         left: 24,
-        backgroundColor: '#161616cc',
+        backgroundColor: 'rgba(22,22,22,0.8)',
         boxShadow: '1px 1px 6px #ababab',
         lineHeight: "48px",
         textIndent: 30,
@@ -63,10 +63,10 @@ const styles = {
 
     },
     listBkg: {
-        backgroundColor: '#161616cc',
+        backgroundColor: 'rgba(22,22,22,0.8)',
     },
     darkBkg: {
-        backgroundColor: '#151515e6'
+        backgroundColor: 'rgba(21,21,21,0.9)'
     },
     detailWrap: {
         position: 'absolute',
