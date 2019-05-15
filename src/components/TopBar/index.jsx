@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { getRegionList } from '../../actions/Region'
 import TopButton from '../NavButton'
 import Select from '../Select'
+import { setRegion } from '../../utils/crossRegion'
 
 const styles = theme => ({
     root: {
@@ -73,11 +74,13 @@ class TopBar extends Component {
                 currentRegion: nextProp.regionList[0]
             });
         }
+        setRegion(this.state.currentRegion);
     }
     selectRegion = region => {
         this.setState({
             currentRegion: region
         });
+        setRegion(region);
     }
     render() {
         const { classes, barName, regionList, className } = this.props;
