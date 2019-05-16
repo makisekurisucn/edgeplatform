@@ -20,7 +20,7 @@ function request({ url, options, callback }) {
     options.mode = "cors";
     if (!options.sign) {
         let contentType = { 'Content-Type': 'application/json' };
-        options.headers = Object.assign({}, options.headers, contentType);
+        options.headers = Object.assign({}, contentType, options.headers);
         if (!(options.method === 'GET' || options.method === 'DELETE')) {
             options.body = JSON.stringify(options.body);
         };
