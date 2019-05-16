@@ -19,9 +19,8 @@ function parseJSON(response) {
 function request({ url, options, callback }) {
     options.mode = "cors";
     if (!options.sign) {
-        options.headers = {
-            'Content-Type': 'application/json'
-        };
+        let contentType = { 'Content-Type': 'application/json' };
+        options.headers = Object.assign({}, options.headers, contentType);
         if (!(options.method === 'GET' || options.method === 'DELETE')) {
             options.body = JSON.stringify(options.body);
         };

@@ -1,7 +1,8 @@
-import { request } from '../utils/request';
+// import { request } from '../utils/request';
+import {handleRequest} from '../utils/handleRequest'
 
 function getList() {
-    return request({
+    return handleRequest({
         url: `/v1/regions`,
         options: {
             method: 'GET'

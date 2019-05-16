@@ -83,7 +83,8 @@ module.exports = function(proxy, allowedHost) {
     public: allowedHost,
     proxy: {
       '/v1': {
-        target: 'http://10.10.101.130:4646'
+        // target: 'http://10.10.101.130:4646'
+        target: 'http://10.10.101.117:4646'
       }
     },
     before(app, server) {

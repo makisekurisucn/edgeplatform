@@ -1,10 +1,10 @@
-import { request } from '../utils/request';
-import { getRegion } from '../utils/crossRegion';
+// import { request } from '../utils/request';
+import { handleRequest } from '../utils/handleRequest'
 
 
 function list(postId) {
-    return request({
-        url: `/v1/jobs` + getRegion(),
+    return handleRequest({
+        url: `/v1/jobs`,
         options: {
             method: 'GET'
         }
@@ -12,8 +12,8 @@ function list(postId) {
 }
 
 function create(data) {
-    return request({
-        url: `/v1/jobs` + getRegion(),
+    return handleRequest({
+        url: `/v1/jobs`,
         options: {
             method: 'POST',
             body: data
@@ -22,8 +22,8 @@ function create(data) {
 }
 
 function detail(data) {
-    return request({
-        url: `/v1/job/${data}` + getRegion(),
+    return handleRequest({
+        url: `/v1/job/${data}`,
         options: {
             method: 'GET'
         }
@@ -31,8 +31,8 @@ function detail(data) {
 }
 
 function history(data) {
-    return request({
-        url: `/v1/job/${data}/versions` + getRegion(),
+    return handleRequest({
+        url: `/v1/job/${data}/versions`,
         options: {
             method: 'GET'
         }
@@ -40,8 +40,8 @@ function history(data) {
 }
 
 function status(data) {
-    return request({
-        url: `/v1/job/${data}/allocations` + getRegion(),
+    return handleRequest({
+        url: `/v1/job/${data}/allocations`,
         options: {
             method: 'GET'
         }

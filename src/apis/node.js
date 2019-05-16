@@ -1,9 +1,9 @@
-import { request } from '../utils/request';
-import { getRegion } from '../utils/crossRegion';
+// import { request } from '../utils/request';
+import {handleRequest} from '../utils/handleRequest'
 
 function list(postId) {
-    return request({
-        url: `/v1/nodes` + getRegion(),
+    return handleRequest({
+        url: `/v1/nodes`,
         options: {
             method: 'GET'
         }
@@ -11,7 +11,7 @@ function list(postId) {
 }
 
 function serverList(postId) {
-    return request({
+    return handleRequest({
         url: `/v1/agent/members`,
         options: {
             method: 'GET'
@@ -20,8 +20,8 @@ function serverList(postId) {
 }
 
 function getWorkerDetail(NodeID) {
-    return request({
-        url: `/v1/node/${NodeID}` + getRegion(),
+    return handleRequest({
+        url: `/v1/node/${NodeID}`,
         options: {
             method: 'GET'
         }

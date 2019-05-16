@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { getRegionList } from '../../actions/Region'
 import TopButton from '../NavButton'
 import Select from '../Select'
-import { setRegion } from '../../utils/crossRegion'
+import { setRegion } from '../../utils/handleRequest'
 
 const styles = theme => ({
     root: {
