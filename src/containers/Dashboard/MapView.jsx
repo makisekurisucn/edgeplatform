@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-
+import { connect } from 'react-redux';
 import ReactEcharts from 'echarts-for-react';
 import echarts from 'echarts';
 import { Map, Marker } from 'react-amap';
@@ -10,8 +10,11 @@ import ListItem from '../../components/DashboardListItem';
 import FadeWrap from '../../components/FadeWrap';
 import ListNav from '../../components/ListNav';
 import DashboardNodeView from '../../containers/DashboardNodeView';
-
+import NumberBoard from '../../components/NumberBoard'
 import Button from '@material-ui/core/Button';
+import { getDCList, getNodeList, getDCCount } from '../../actions/DC';
+import { getWorkerDetail } from '../../actions/Node';
+import { setRegion } from '../../utils/handleRequest';
 
 
 
@@ -73,6 +76,14 @@ const styles = {
         width: 512,
         top: 24,
         left: 420
+    },
+    numberBoard: {
+        position: 'absolute',
+        top: 24,
+        right: 24
+    },
+    marginBottom10: {
+        marginBottom: 10
     }
 
 };
@@ -81,7 +92,8 @@ class Dashboard extends Component {
         super();
         this.state = {
             isDCListHidden: false,
-            isNodeListHidden: true
+            isNodeListHidden: true,
+            isNodeDetailHidden: true,
         };
         this.mapEvents = {
             created: (map) => {
@@ -100,6 +112,10 @@ class Dashboard extends Component {
         }
     }
     componentDidMount() {
+        const { dispatch } = this.props;
+        getDCList(dispatch);
+        getDCCount(dispatch);
+
         // console.log(this.textInput);
         // const { dispatch } = this.props;
         // initCreateJob(dispatch);
@@ -114,50 +130,78 @@ class Dashboard extends Component {
     goBack = (title) => {
         this.setState({
             isDCListHidden: false,
-            isNodeListHidden: true
+            isNodeListHidden: true,
+            isNodeDetailHidden: true
         });
     }
-    showList = () => {
+    showList = (item, index) => {
+        const { dispatch } = this.props;
+        getNodeList(dispatch, item.region, item.Datacenter);
         console.log(this);
         this.setState({
             isDCListHidden: true,
             isNodeListHidden: false
         });
     }
+    showDetail = (item, index) => {
+        let isHidden = false;
+        setRegion(item.region);
+        const { dispatch } = this.props;
+        getWorkerDetail(dispatch, item.ID);
+        this.setState({
+            isNodeDetailHidden: isHidden,
+            currentRegionName: item.regionName
+        })
+    }
     render() {
-        const { classes } = this.props;
+        const { classes, DClist, nodeWorkerDetail, regionCount } = this.props;
+        const { list, nodelist, DCCount } = DClist;
+        const { detail } = nodeWorkerDetail;
         const plugins = ['Scale', 'ControlBar'];
         return (
 
             <div className={classes.dashboard}>
                 <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} >
-                    <Marker position={this.position} />
-                    <Marker position={this.position2} />
+                    {
+                        this.state.isNodeListHidden ? list.map((item, index) => {
+                            return <Marker position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
+                        }) : (nodelist.info.longitude?
+                        <Marker position={{ longitude: nodelist.info.longitude, latitude: nodelist.info.latitude }}/>:''
+                        )
+                    }
+                    {/* <Marker position={this.position} />
+                    <Marker position={this.position2} /> */}
                 </Map>
 
 
 
                 <div className={classes.dashboardInnerWrap}>
                     <SearchBox className={classes.searchWrap} />
-                    <div className={classes.listWrap} onClick={this.showList}>
+                    <div className={classes.listWrap}>
                         <FadeWrap className={classes.listBkg} isHidden={this.state.isDCListHidden} from="left" to="left">
-                            <ListItem />
-                            <ListItem />
+                            {list.map((item, index) => {
+                                return <ListItem type='dc' itemData={item.DCInfo} region={item.region} Datacenter={item.Datacenter} index={index} onClick={this.showList} key={item.Datacenter} />
+                            })}
                         </FadeWrap>
                     </div>
                     <div className={classes.listWrap}>
                         <FadeWrap isHidden={this.state.isNodeListHidden} from="right" to="right">
-                            <ListNav title="测试" onBack={this.goBack} />
+                            <ListNav title={nodelist.info.DC} onBack={this.goBack} />
                             <div className={classes.listBkg}>
-                                <ListItem />
-                                <ListItem />
+                                {nodelist.list.map((item, index) => {
+                                    return <ListItem type='node' itemData={{ ...nodelist.info, name: item.name, ID: item.ID }} region={nodelist.region} Datacenter={nodelist.Datacenter} index={index} onClick={this.showDetail} key={item.name} />
+                                })}
                             </div>
                         </FadeWrap>
                     </div>
                     <div className={classes.detailWrap}>
-                        <FadeWrap className={classes.darkBkg}>
-                            <DashboardNodeView />
+                        <FadeWrap className={classes.darkBkg} isHidden={this.state.isNodeDetailHidden} from='left' to='left'>
+                            <DashboardNodeView currentRegionName={this.state.currentRegionName} detail={detail} />
                         </FadeWrap>
+                    </div>
+                    <div className={classes.numberBoard}>
+                        <NumberBoard className={classes.marginBottom10} title='地域' number={regionCount} />
+                        <NumberBoard className={classes.marginBottom10} title='DC' number={DCCount} />
                     </div>
                 </div>
             </div>
@@ -165,5 +209,14 @@ class Dashboard extends Component {
         );
     }
 }
+function mapStateToProps(state, ownProps) {
+    console.log(state);
 
-export default withStyles(styles)(Dashboard);
+    return {
+        DClist: state.DClist,
+        nodeWorkerDetail: state.nodeWorkerDetail,
+        regionCount: state.region.regionList.length
+    };
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(Dashboard));

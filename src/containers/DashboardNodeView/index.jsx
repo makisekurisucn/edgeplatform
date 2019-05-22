@@ -102,28 +102,31 @@ class ListItem extends Component {
 
     // }
     render() {
-        const { classes, className, children } = this.props;
+        const { classes, className, children ,detail,currentRegionName} = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
         }
+        const statusMap=new Map();
+        statusMap.set('ready','就绪');
+        statusMap.set('running','运行中');
 
         return (
             <div className={classNameWrap}>
                 <div className={classes.appHeader}>
                     <div className={classes.headerTop}>
                         <div className={classes.headerName}>
-                            <p className={classes.mainTitle}>节点名称</p>
-                            <span className={classes.status}>运行中</span>
+                            <p className={classes.mainTitle}>{detail.Name}</p>
+                            <span className={classes.status}>{statusMap.get(detail.Status)}</span>
                         </div>
-                        <p className={classes.subTitle}>华东 - 杭州西斗门</p>
+                        <p className={classes.subTitle}>{currentRegionName} - {detail.Meta?detail.Meta.DC:''}</p>
                     </div>
                     <p className={classes.headerContent}>
-                        浙江省杭州市西湖区西斗门路3号天堂软件园11层
+                        {detail.Meta?detail.Meta.address:''}
             </p>
                 </div>
-                <Tabs contentList={tabList} viewProps={'test'} />
+                <Tabs contentList={tabList} viewProps={detail} />
             </div>
         );
     }

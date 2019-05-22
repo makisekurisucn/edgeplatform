@@ -6,7 +6,8 @@ import nodeServerList from './Node/serverList'
 import nodeWorkerList from './Node/workerList'
 import nodeWorkerDetail from './Node/workerDetail'
 import region from './Region'
-
+import DClist from './DC/list'
+ 
 // import visibilityFilter from './visibilityFilter'
 
 const rootReducer = combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
     nodeServerList,
     nodeWorkerList,
     nodeWorkerDetail,
-    region
+    region,
+    DClist
     //   visibilityFilter
 })
 

@@ -19,7 +19,7 @@ class NodeMetric extends Component {
     }
 
     render() {
-        const { classes, className, children } = this.props;
+        const { classes, className, children ,data} = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {

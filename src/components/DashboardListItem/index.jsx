@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
+import DesktopMac from '@material-ui/icons/DesktopMac';
+
 
 const styles = theme => ({
     root: {
@@ -106,30 +108,62 @@ class ListItem extends Component {
             });
         }
     }
+    clickHandler = (itemData, index) => (event) => {
+        if(this.props.onClick){
+            this.props.onClick(itemData, index)
+        }
+    }
     selectRegion = region => {
         this.setState({
             currentRegion: region
         });
     }
     render() {
-        const { classes, barName, regionList, className } = this.props;
+        const { classes, barName, regionList, className,itemData={},index,selected,type,region,Datacenter } = this.props;
         let classNameWrap;
+        let item={};
+        if(type==='dc'){
+            item={region,Datacenter};
+        }
+        else{
+            item={region,ID:itemData.ID,regionName:itemData.region};
+        }
         if (className) {
             classNameWrap = className + " " + classes.root;
         }
         else {
             classNameWrap = classes.root;
         }
+        if(selected){
+            classNameWrap += ' ' + classes.selected;
+        }
         return (
-            <div className={classNameWrap}>
-                <div className={classes.innerWrap + ' ' + classes.selected}>
-                    <p className={classes.index}>2</p>
+            <div className={classNameWrap} onClick={this.clickHandler(item,index)}> 
+                <div className={classes.innerWrap}>
+                {
+                    type === 'dc' &&(<DesktopMac className={classes.index} />)
+                }
+                {
+                    type === 'node' &&(<p className={classes.index}>{index + 1}</p>)
+                }
                     <div className={classes.main}>
-                        <div className={classes.mainUpper}>
-                            <p className={classes.mainTitle}>节点1</p>
-                            <p className={classes.subTitle}>华东-杭州</p>
-                        </div>
-                        <div className={classes.mainLower} title="浙江省杭州市西湖区西斗门路3号天堂">浙江省杭州市西湖区西斗门路3号天堂</div>
+                        {
+                            type === 'dc' &&(
+                                <div className={classes.mainUpper}>
+                                    <p className={classes.mainTitle}>{itemData.DC}</p>
+                                    <p className={classes.subTitle}>{itemData.region}</p>
+                                </div>
+                            )
+                        }
+                        {
+                            type === 'node' &&(
+                                <div className={classes.mainUpper}>
+                                    <p className={classes.mainTitle}>{itemData.name}</p>
+                                    <p className={classes.subTitle}>{itemData.region} - {itemData.DC}</p>
+                                </div>
+                            )
+                        }
+                        <div className={classes.mainLower} title={itemData.address}>{itemData.address}</div>
                     </div>
                     <ArrowForwardIos className={classes.arrow} />
                 </div>
