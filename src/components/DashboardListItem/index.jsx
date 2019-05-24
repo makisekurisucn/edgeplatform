@@ -109,7 +109,7 @@ class ListItem extends Component {
         }
     }
     clickHandler = (itemData, index) => (event) => {
-        if(this.props.onClick){
+        if (this.props.onClick) {
             this.props.onClick(itemData, index)
         }
     }
@@ -119,14 +119,14 @@ class ListItem extends Component {
         });
     }
     render() {
-        const { classes, barName, regionList, className,itemData={},index,selected,type,region,Datacenter } = this.props;
+        const { classes, barName, regionList, className, itemData = {}, index, selected, type, region, Datacenter } = this.props;
         let classNameWrap;
-        let item={};
-        if(type==='dc'){
-            item={region,Datacenter};
+        let item = {};
+        if (type === 'dc') {
+            item = { region, Datacenter };
         }
-        else{
-            item={region,ID:itemData.ID,regionName:itemData.region};
+        else {
+            item = { region, ID: itemData.ID };
         }
         if (className) {
             classNameWrap = className + " " + classes.root;
@@ -134,21 +134,21 @@ class ListItem extends Component {
         else {
             classNameWrap = classes.root;
         }
-        if(selected){
+        if (selected) {
             classNameWrap += ' ' + classes.selected;
         }
         return (
-            <div className={classNameWrap} onClick={this.clickHandler(item,index)}> 
+            <div className={classNameWrap} onClick={this.clickHandler(item, index)}>
                 <div className={classes.innerWrap}>
-                {
-                    type === 'dc' &&(<DesktopMac className={classes.index} />)
-                }
-                {
-                    type === 'node' &&(<p className={classes.index}>{index + 1}</p>)
-                }
+                    {
+                        type === 'dc' && (<DesktopMac className={classes.index} />)
+                    }
+                    {
+                        type === 'node' && (<p className={classes.index}>{index + 1}</p>)
+                    }
                     <div className={classes.main}>
                         {
-                            type === 'dc' &&(
+                            type === 'dc' && (
                                 <div className={classes.mainUpper}>
                                     <p className={classes.mainTitle}>{itemData.DC}</p>
                                     <p className={classes.subTitle}>{itemData.region}</p>
@@ -156,7 +156,7 @@ class ListItem extends Component {
                             )
                         }
                         {
-                            type === 'node' &&(
+                            type === 'node' && (
                                 <div className={classes.mainUpper}>
                                     <p className={classes.mainTitle}>{itemData.name}</p>
                                     <p className={classes.subTitle}>{itemData.region} - {itemData.DC}</p>

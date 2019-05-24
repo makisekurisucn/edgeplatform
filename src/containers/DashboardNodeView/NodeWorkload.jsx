@@ -20,7 +20,7 @@ class NodeWorkload extends Component {
     }
 
     render() {
-        const { classes, className, children } = this.props;
+        const { classes, className, children, data, list } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -29,10 +29,13 @@ class NodeWorkload extends Component {
 
         return (
             <div className={classNameWrap}>
-                <AppCard className={classes.marginBottom10} />
-                <AppCard className={classes.marginBottom10} />
-                <AppCard className={classes.marginBottom10} />
-                <AppCard className={classes.marginBottom10} />
+                {
+                    list.map((item) => {
+                        if (item.NodeID === data.ID) {
+                            return <AppCard className={classes.marginBottom10} data={{...item,currentRegion:data.currentRegion}} />
+                        }
+                    })
+                }
             </div>
         );
     }
@@ -42,6 +45,6 @@ NodeWorkload.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    return state.region;
+    return state.Allocationlist;
 }
 export default connect(mapStateToProps)(withStyles(styles)(NodeWorkload));

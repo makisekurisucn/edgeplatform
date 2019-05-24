@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button';
 import { getDCList, getNodeList, getDCCount } from '../../actions/DC';
 import { getWorkerDetail } from '../../actions/Node';
 import { setRegion } from '../../utils/handleRequest';
+import { getAllocationList } from '../../actions/Allocation';
 
 
 
@@ -140,7 +141,8 @@ class Dashboard extends Component {
         console.log(this);
         this.setState({
             isDCListHidden: true,
-            isNodeListHidden: false
+            isNodeListHidden: false,
+            currentRegion: item.region
         });
     }
     showDetail = (item, index) => {
@@ -148,9 +150,9 @@ class Dashboard extends Component {
         setRegion(item.region);
         const { dispatch } = this.props;
         getWorkerDetail(dispatch, item.ID);
+        getAllocationList(dispatch);
         this.setState({
-            isNodeDetailHidden: isHidden,
-            currentRegionName: item.regionName
+            isNodeDetailHidden: isHidden
         })
     }
     render() {
@@ -158,6 +160,7 @@ class Dashboard extends Component {
         const { list, nodelist, DCCount } = DClist;
         const { detail } = nodeWorkerDetail;
         const plugins = ['Scale', 'ControlBar'];
+        console.log(this.props)
         return (
 
             <div className={classes.dashboard}>
@@ -165,9 +168,9 @@ class Dashboard extends Component {
                     {
                         this.state.isNodeListHidden ? list.map((item, index) => {
                             return <Marker position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
-                        }) : (nodelist.info.longitude?
-                        <Marker position={{ longitude: nodelist.info.longitude, latitude: nodelist.info.latitude }}/>:''
-                        )
+                        }) : (nodelist.info.longitude ?
+                            <Marker position={{ longitude: nodelist.info.longitude, latitude: nodelist.info.latitude }} /> : ''
+                            )
                     }
                     {/* <Marker position={this.position} />
                     <Marker position={this.position2} /> */}
@@ -196,7 +199,7 @@ class Dashboard extends Component {
                     </div>
                     <div className={classes.detailWrap}>
                         <FadeWrap className={classes.darkBkg} isHidden={this.state.isNodeDetailHidden} from='left' to='left'>
-                            <DashboardNodeView currentRegionName={this.state.currentRegionName} detail={detail} />
+                            <DashboardNodeView currentRegion={this.state.currentRegion} detail={detail} />
                         </FadeWrap>
                     </div>
                     <div className={classes.numberBoard}>

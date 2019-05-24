@@ -102,15 +102,15 @@ class ListItem extends Component {
 
     // }
     render() {
-        const { classes, className, children ,detail,currentRegionName} = this.props;
+        const { classes, className, children, detail, currentRegion } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
         }
-        const statusMap=new Map();
-        statusMap.set('ready','就绪');
-        statusMap.set('running','运行中');
+        const statusMap = new Map();
+        statusMap.set('ready', '就绪');
+        statusMap.set('running', '运行中');
 
         return (
             <div className={classNameWrap}>
@@ -120,13 +120,13 @@ class ListItem extends Component {
                             <p className={classes.mainTitle}>{detail.Name}</p>
                             <span className={classes.status}>{statusMap.get(detail.Status)}</span>
                         </div>
-                        <p className={classes.subTitle}>{currentRegionName} - {detail.Meta?detail.Meta.DC:''}</p>
+                        <p className={classes.subTitle}>{detail.Meta ? detail.Meta.region : ''} - {detail.Meta ? detail.Meta.DC : ''}</p>
                     </div>
                     <p className={classes.headerContent}>
-                        {detail.Meta?detail.Meta.address:''}
-            </p>
+                        {detail.Meta ? detail.Meta.address : ''}
+                    </p>
                 </div>
-                <Tabs contentList={tabList} viewProps={detail} />
+                <Tabs contentList={tabList} viewProps={{ ...detail, currentRegion }} />
             </div>
         );
     }

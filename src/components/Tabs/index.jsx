@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import FadeWrap from '../../components/FadeWrap'
+import FadeWrap from '../../components/FadeWrap';
+import FixedHeight from '../../components/FixedHeight';
 // import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 
 const styles = theme => ({
@@ -111,30 +112,33 @@ class Tabs extends Component {
                         })
                     }
                 </ul>
-                <div className={classes.tabContentWrap}>
-                    {
-                        tabList.map((item, index) => {
-                            let hidden = true;
-                            let from = 'left';
-                            let to = 'right';
-                            if (index === currentIndex) {
-                                if (index > prevIndex) {
-                                    from = 'right'
+                <FixedHeight reducedHeight={268}>
+                    <div className={classes.tabContentWrap}>
+                        {
+                            tabList.map((item, index) => {
+                                let hidden = true;
+                                let from = 'left';
+                                let to = 'right';
+                                if (index === currentIndex) {
+                                    if (index > prevIndex) {
+                                        from = 'right'
+                                    } else {
+                                        from = 'left'
+                                    }
+                                    hidden = false;
+                                } else if (index > currentIndex) {
+                                    from = 'right';
+                                    to = 'right';
                                 } else {
-                                    from = 'left'
+                                    from = 'left';
+                                    to = 'left';
                                 }
-                                hidden = false;
-                            } else if (index > currentIndex) {
-                                from = 'right';
-                                to = 'right';
-                            } else {
-                                from = 'left';
-                                to = 'left';
-                            }
-                            return <div className={classes.itemWrap} key={item.name}><FadeWrap isHidden={hidden} from={from} to={to}><item.component data={viewProps} /></FadeWrap></div>
-                        })
-                    }
-                </div>
+                                return <div className={classes.itemWrap} key={item.name}><FadeWrap isHidden={hidden} from={from} to={to}><item.component data={viewProps} /></FadeWrap></div>
+                            })
+                        }
+                    </div>
+                </FixedHeight>
+                
             </div>
         );
     }

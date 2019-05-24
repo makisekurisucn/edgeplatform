@@ -75,7 +75,7 @@ function getOption() {
 }
 const styles = theme => ({
     root: {
-        width: 500,
+        width: "485px",
         height: 200
     }
 });

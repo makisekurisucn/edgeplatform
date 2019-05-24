@@ -9,12 +9,12 @@ const styles = theme => ({
         left: 0,
         opacity: 1,
         height: 172,
-        width: 490,
+        width: '100%',
         border: '1px solid rgba(136, 136, 136, 0.44)',
         backgroundColor: 'rgba(238, 249, 255, 0.05)'
     },
     graph: {
-        width: 490,
+        // width: '100%', 设成100%后canvas宽度有问题
         height: 140
     },
     textWrap: {
