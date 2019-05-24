@@ -133,7 +133,7 @@ class Tabs extends Component {
                                     from = 'left';
                                     to = 'left';
                                 }
-                                return <div className={classes.itemWrap} key={item.name}><FadeWrap isHidden={hidden} from={from} to={to}><item.component data={viewProps} /></FadeWrap></div>
+                                return <div className={classes.itemWrap} key={item.name}><FadeWrap isHidden={hidden} from={from} to={to}><item.component isHidden={hidden} data={viewProps} /></FadeWrap></div>
                             })
                         }
                     </div>

@@ -14,7 +14,7 @@ const styles = theme => ({
         backgroundColor: 'rgba(238, 249, 255, 0.05)'
     },
     graph: {
-        // width: '100%', 设成100%后canvas宽度有问题
+        width: '100%',
         height: 140
     },
     textWrap: {

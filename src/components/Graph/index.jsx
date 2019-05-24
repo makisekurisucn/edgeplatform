@@ -75,7 +75,7 @@ function getOption() {
 }
 const styles = theme => ({
     root: {
-        width: "485px",
+        width: "100%",
         height: 200
     }
 });
@@ -90,6 +90,7 @@ class Graph extends Component {
         let myChart = echarts.init(this.ID);
         let options = getOption();
         myChart.setOption(options);
+        myChart.resize({width:this.ID.clientWidth});
 
     }
 
