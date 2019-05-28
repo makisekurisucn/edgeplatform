@@ -52,7 +52,7 @@ class SimpleTable extends Component {
     }
     render() {
         const { classes, header, list } = this.props;
-
+        console.log(header)
         return (
             <Table className={classes.table}>
                 <TableHead>
@@ -64,7 +64,7 @@ class SimpleTable extends Component {
                 </TableHead>
                 <TableBody>
                     {list.map((row) => (
-                        <TableRow key={row.id}>
+                        <TableRow key={row.ID?row.ID:row.Name}>
                             {header.map((head) => (
                                 <TableCell align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {this.processItem(head, row)}</TableCell>
                             ))}

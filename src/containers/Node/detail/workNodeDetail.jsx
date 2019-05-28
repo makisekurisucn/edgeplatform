@@ -496,8 +496,8 @@ class JobDetail extends Component {
 
 
                     <div className={classes.logWrap}>
-                        {detail.Events.map(e => (
-                            <p className={classes.logContent}>{e.Timestamp}: {e.Message}</p>
+                        {detail.Events.map((e,eIndex) => (
+                            <p className={classes.logContent} key={eIndex} >{e.Timestamp}: {e.Message}</p>
                         ))
 
                         }

@@ -75,7 +75,7 @@ function AppDrawer(props) {
                         </NavLink>
                     }
                     if (item.type === "divider") {
-                        return <Divider />;
+                        return <Divider key={index}/>;
                     }
                     else {
                         return <NavLink to={item.link} key={item.text}>

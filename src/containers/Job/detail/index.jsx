@@ -300,8 +300,8 @@ class JobDetail extends Component {
                             </Grid>
                         </Grid>
                         {
-                            detail.TaskGroups && detail.TaskGroups.map((taskGroupItem) => (
-                                <ExpansionPanel defaultExpanded className={classes.taskGroupWrap}>
+                            detail.TaskGroups && detail.TaskGroups.map((taskGroupItem,taskGroupItemIndex) => (
+                                <ExpansionPanel defaultExpanded className={classes.taskGroupWrap} key={taskGroupItemIndex}>
                                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                         <Typography className={classes.bold + ' ' + classes.large + ' ' + classes.groupName}>任务组
 
@@ -345,8 +345,8 @@ class JobDetail extends Component {
                                                     }
                                                 </Grid>
                                                 {
-                                                    taskGroupItem.Tasks.map((taskItem) => (
-                                                        <Grid container className={classes.taskItem} alignItems="center">
+                                                    taskGroupItem.Tasks.map((taskItem,taskItemIndex) => (
+                                                        <Grid container className={classes.taskItem} alignItems="center" key={taskItemIndex} >
                                                             <Grid item xs={2}>
                                                                 <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
                                                                     任务-{taskItem.Name}
@@ -462,8 +462,8 @@ class JobDetail extends Component {
                                                                         taskItem.ports.length && (
                                                                             <Grid item xs={9}>
                                                                                 {
-                                                                                    taskItem.ports.map(p => (
-                                                                                        <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
+                                                                                    taskItem.ports.map((p,pIndex) => (
+                                                                                        <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody} key={pIndex} >
                                                                                             {p.name}:{p.originPort} ----> {p.DynamicPort ? '动态宿主机映射' : null}{p.ReservedPort}  {p.service ? '---- 注册为' + p.service.Name : null}
                                                                                         </Typography>
                                                                                     ))
@@ -682,8 +682,8 @@ class JobDetail extends Component {
                                                                 <Grid item xs={8}>
                                                                     {statusIndex && status.taskGroup && (
                                                                         <div className={classes.logWrap}>
-                                                                            {status.taskGroup[taskGroupItem.Name][taskItem.Name][statusIndex[taskGroupItem.Name][taskItem.Name]].Events.map(e => (
-                                                                                <p className={classes.logContent}>{e.time}: {e.message}</p>
+                                                                            {status.taskGroup[taskGroupItem.Name][taskItem.Name][statusIndex[taskGroupItem.Name][taskItem.Name]].Events.map((e,eIndex) => (
+                                                                                <p className={classes.logContent} key={eIndex} >{e.time}: {e.message}</p>
                                                                             ))
 
                                                                             }
@@ -732,8 +732,8 @@ class JobDetail extends Component {
 
 
                     {
-                        history.Versions.map(version => (
-                            <ExpansionPanel className={classes.contentItem}>
+                        history.Versions.map((version,versionIndex) => (
+                            <ExpansionPanel className={classes.contentItem} key={versionIndex}>
                                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                     <Typography className={classes.heading + ' ' + classes.historyHeader}>版本-{version.Version}</Typography>
                                     <Typography className={classes.heading + ' ' + classes.historyHeader}>修改时间-{formatTime(version.SubmitTime)}</Typography>

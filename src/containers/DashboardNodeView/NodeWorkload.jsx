@@ -32,7 +32,7 @@ class NodeWorkload extends Component {
                 {
                     list.map((item) => {
                         if (item.NodeID === data.ID) {
-                            return <AppCard className={classes.marginBottom10} data={{...item,currentRegion:data.currentRegion}} />
+                            return <AppCard className={classes.marginBottom10} data={{...item,currentRegion:data.currentRegion}} key={item.ID} />
                         }
                     })
                 }

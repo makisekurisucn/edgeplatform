@@ -201,7 +201,7 @@ class Dashboard extends Component {
                 <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} >
                     {
                         this.state.isNodeListHidden ? list.map((item, index) => {
-                            return <Marker position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
+                            return <Marker key={item.Datacenter} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
                         }) : (DCInfo.longitude ?
                             <Marker position={{ longitude: DCInfo.longitude, latitude: DCInfo.latitude }} /> : ''
                             )
