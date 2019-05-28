@@ -26,7 +26,6 @@ class FixedHeight extends Component{
     }
 
     changeHeight=()=>{
-        console.log(window.innerHeight);
         this.setState({
             expectedHeight:window.innerHeight-this.props.reducedHeight
         });

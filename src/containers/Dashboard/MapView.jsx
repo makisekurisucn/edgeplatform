@@ -16,6 +16,7 @@ import { getDCList, getNodeList, getDCCount } from '../../actions/DC';
 import { getWorkerDetail } from '../../actions/Node';
 import { setRegion } from '../../utils/handleRequest';
 import { getAllocationList } from '../../actions/Allocation';
+import { node } from 'prop-types';
 
 
 
@@ -95,6 +96,10 @@ class Dashboard extends Component {
             isDCListHidden: false,
             isNodeListHidden: true,
             isNodeDetailHidden: true,
+            DCInfo:{},
+            currentRegion:'',
+            currentDatacenter:'',
+            nodeIndex:-1
         };
         this.mapEvents = {
             created: (map) => {
@@ -138,11 +143,16 @@ class Dashboard extends Component {
     showList = (item, index) => {
         const { dispatch } = this.props;
         getNodeList(dispatch, item.region, item.Datacenter);
+        console.log(this.props)
         console.log(this);
+        // console.log(this.props)
         this.setState({
             isDCListHidden: true,
             isNodeListHidden: false,
-            currentRegion: item.region
+            currentRegion: item.region,
+            currentDatacenter:item.Datacenter,
+            DCInfo:item.DCInfo,
+            nodeIndex:-1
         });
     }
     showDetail = (item, index) => {
@@ -151,16 +161,40 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         getWorkerDetail(dispatch, item.ID);
         getAllocationList(dispatch);
-        this.setState({
-            isNodeDetailHidden: isHidden
-        })
+        if(this.state.nodeIndex!==index){
+            this.setState({
+                isNodeDetailHidden: isHidden,
+                nodeIndex:index
+            })
+        }
+        else{
+            this.setState({
+                isNodeDetailHidden: !isHidden,
+                nodeIndex:-1
+            })
+        }
     }
     render() {
         const { classes, DClist, nodeWorkerDetail, regionCount } = this.props;
         const { list, nodelist, DCCount } = DClist;
         const { detail } = nodeWorkerDetail;
         const plugins = ['Scale', 'ControlBar'];
-        console.log(this.props)
+        const currentRegion=this.state.currentRegion;
+        const currentDatacenter=this.state.currentDatacenter;
+        const DCInfo=this.state.DCInfo;
+        console.log(this.props);
+
+        let wrappedNodelist=[];
+        nodelist.forEach((item,index) => {
+            if(index===this.state.nodeIndex){
+                item.selected=true;
+            }
+            else{
+                item.selected=false;
+            }
+            wrappedNodelist.push(item);
+        });
+
         return (
 
             <div className={classes.dashboard}>
@@ -168,8 +202,8 @@ class Dashboard extends Component {
                     {
                         this.state.isNodeListHidden ? list.map((item, index) => {
                             return <Marker position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
-                        }) : (nodelist.info.longitude ?
-                            <Marker position={{ longitude: nodelist.info.longitude, latitude: nodelist.info.latitude }} /> : ''
+                        }) : (DCInfo.longitude ?
+                            <Marker position={{ longitude: DCInfo.longitude, latitude: DCInfo.latitude }} /> : ''
                             )
                     }
                     {/* <Marker position={this.position} />
@@ -189,10 +223,10 @@ class Dashboard extends Component {
                     </div>
                     <div className={classes.listWrap}>
                         <FadeWrap isHidden={this.state.isNodeListHidden} from="right" to="right">
-                            <ListNav title={nodelist.info.DC} onBack={this.goBack} />
+                            <ListNav title={this.state.DCInfo.DC} onBack={this.goBack} />
                             <div className={classes.listBkg}>
-                                {nodelist.list.map((item, index) => {
-                                    return <ListItem type='node' itemData={{ ...nodelist.info, name: item.name, ID: item.ID }} region={nodelist.region} Datacenter={nodelist.Datacenter} index={index} onClick={this.showDetail} key={item.name} />
+                                {wrappedNodelist.map((item, index) => {
+                                    return <ListItem type='node' itemData={{ ...this.state.DCInfo, name: item.name, ID: item.ID }} region={currentRegion} Datacenter={currentDatacenter} index={index} onClick={this.showDetail} key={item.name} selected={item.selected}/>
                                 })}
                             </div>
                         </FadeWrap>

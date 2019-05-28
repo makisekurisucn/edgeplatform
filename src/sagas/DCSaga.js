@@ -48,9 +48,7 @@ function* getNodelist(action){
     yield put({
         type: "DC_UPDATE_NODELIST",
         data: {
-            list: nodelist || [],
-            region:action.region,
-            Datacenter:action.Datacenter
+            list: nodelist || []
         }
     });
 }

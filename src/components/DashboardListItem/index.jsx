@@ -123,7 +123,7 @@ class ListItem extends Component {
         let classNameWrap;
         let item = {};
         if (type === 'dc') {
-            item = { region, Datacenter };
+            item = { region, Datacenter,DCInfo:itemData };
         }
         else {
             item = { region, ID: itemData.ID };
