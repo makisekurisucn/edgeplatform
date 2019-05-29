@@ -8,6 +8,7 @@ import nodeWorkerDetail from './Node/workerDetail'
 import region from './Region'
 import DClist from './DC/list'
 import Allocationlist from './Allocation/list'
+import Prometheus from './Prometheus/metricData'
  
 // import visibilityFilter from './visibilityFilter'
 
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
     nodeWorkerDetail,
     region,
     DClist,
-    Allocationlist
+    Allocationlist,
+    Prometheus
     //   visibilityFilter
 })
 

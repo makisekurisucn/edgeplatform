@@ -16,6 +16,7 @@ import { getDCList, getNodeList, getDCCount } from '../../actions/DC';
 import { getWorkerDetail } from '../../actions/Node';
 import { setRegion } from '../../utils/handleRequest';
 import { getAllocationList } from '../../actions/Allocation';
+import { getPrometheus } from '../../actions/Prometheus'
 import { node } from 'prop-types';
 
 
@@ -96,10 +97,10 @@ class Dashboard extends Component {
             isDCListHidden: false,
             isNodeListHidden: true,
             isNodeDetailHidden: true,
-            DCInfo:{},
-            currentRegion:'',
-            currentDatacenter:'',
-            nodeIndex:-1
+            DCInfo: {},
+            currentRegion: '',
+            currentDatacenter: '',
+            nodeIndex: -1
         };
         this.mapEvents = {
             created: (map) => {
@@ -145,14 +146,14 @@ class Dashboard extends Component {
         getNodeList(dispatch, item.region, item.Datacenter);
         console.log(this.props)
         console.log(this);
-        // console.log(this.props)
+
         this.setState({
             isDCListHidden: true,
             isNodeListHidden: false,
             currentRegion: item.region,
-            currentDatacenter:item.Datacenter,
-            DCInfo:item.DCInfo,
-            nodeIndex:-1
+            currentDatacenter: item.Datacenter,
+            DCInfo: item.DCInfo,
+            nodeIndex: -1
         });
     }
     showDetail = (item, index) => {
@@ -161,16 +162,17 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         getWorkerDetail(dispatch, item.ID);
         getAllocationList(dispatch);
-        if(this.state.nodeIndex!==index){
+        getPrometheus(dispatch, item.ID, item.Datacenter);
+        if (this.state.nodeIndex !== index) {
             this.setState({
                 isNodeDetailHidden: isHidden,
-                nodeIndex:index
+                nodeIndex: index
             })
         }
-        else{
+        else {
             this.setState({
                 isNodeDetailHidden: !isHidden,
-                nodeIndex:-1
+                nodeIndex: -1
             })
         }
     }
@@ -179,18 +181,18 @@ class Dashboard extends Component {
         const { list, nodelist, DCCount } = DClist;
         const { detail } = nodeWorkerDetail;
         const plugins = ['Scale', 'ControlBar'];
-        const currentRegion=this.state.currentRegion;
-        const currentDatacenter=this.state.currentDatacenter;
-        const DCInfo=this.state.DCInfo;
+        const currentRegion = this.state.currentRegion;
+        const currentDatacenter = this.state.currentDatacenter;
+        const DCInfo = this.state.DCInfo;
         console.log(this.props);
 
-        let wrappedNodelist=[];
-        nodelist.forEach((item,index) => {
-            if(index===this.state.nodeIndex){
-                item.selected=true;
+        let wrappedNodelist = [];
+        nodelist.forEach((item, index) => {
+            if (index === this.state.nodeIndex) {
+                item.selected = true;
             }
-            else{
-                item.selected=false;
+            else {
+                item.selected = false;
             }
             wrappedNodelist.push(item);
         });
@@ -199,13 +201,13 @@ class Dashboard extends Component {
 
             <div className={classes.dashboard}>
                 <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} >
-                    {
+                    {/* {
                         this.state.isNodeListHidden ? list.map((item, index) => {
                             return <Marker key={item.Datacenter} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
                         }) : (DCInfo.longitude ?
                             <Marker position={{ longitude: DCInfo.longitude, latitude: DCInfo.latitude }} /> : ''
                             )
-                    }
+                    } */}
                     {/* <Marker position={this.position} />
                     <Marker position={this.position2} /> */}
                 </Map>
@@ -223,17 +225,17 @@ class Dashboard extends Component {
                     </div>
                     <div className={classes.listWrap}>
                         <FadeWrap isHidden={this.state.isNodeListHidden} from="right" to="right">
-                            <ListNav title={this.state.DCInfo.DC} onBack={this.goBack} />
+                            <ListNav title={DCInfo.DC} onBack={this.goBack} />
                             <div className={classes.listBkg}>
                                 {wrappedNodelist.map((item, index) => {
-                                    return <ListItem type='node' itemData={{ ...this.state.DCInfo, name: item.name, ID: item.ID }} region={currentRegion} Datacenter={currentDatacenter} index={index} onClick={this.showDetail} key={item.name} selected={item.selected}/>
+                                    return <ListItem type='node' itemData={{ ...DCInfo, name: item.name, ID: item.ID }} region={currentRegion} Datacenter={currentDatacenter} index={index} onClick={this.showDetail} key={item.name} selected={item.selected} />
                                 })}
                             </div>
                         </FadeWrap>
                     </div>
                     <div className={classes.detailWrap}>
                         <FadeWrap className={classes.darkBkg} isHidden={this.state.isNodeDetailHidden} from='left' to='left'>
-                            <DashboardNodeView currentRegion={this.state.currentRegion} detail={detail} />
+                            <DashboardNodeView region={currentRegion} Datacenter={currentDatacenter} detail={detail} />
                         </FadeWrap>
                     </div>
                     <div className={classes.numberBoard}>

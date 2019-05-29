@@ -2,14 +2,14 @@
 import { request } from '../utils/request'
 
 
-function getCPUUtilization(nodeID,DC,cpu,step=10) {
-    const endTimestamp=new Date().valueOf();
-    const startTimestamp=new Date(endTimestamp-3600000).valueOf();
+function getCPUUtilization(nodeID, DC) {
+    const endTimestamp = new Date().valueOf();
+    const startTimestamp = new Date(endTimestamp - 3600000).valueOf();
 
-    let label=`{}`
+    // let label=`{}`
     return request({
         // url: `/api/v1/query_range?query=nomad_client_host_cpu_total{nodeID='${nodeID}',DC='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=10`,
-        url: `/api/v1/query_range?query=nomad_client_host_cpu_total&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=10`,
+        url: `/api/v1/query_range?query=nomad_client_host_cpu_total{node_id='${nodeID}',datacenter='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=2`,
         options: {
             method: 'GET'
         }
@@ -17,28 +17,32 @@ function getCPUUtilization(nodeID,DC,cpu,step=10) {
 }
 
 
-function getDiskUtilization(nodeID,DC,disk) {
-    let label=`{}`
+function getDiskUtilization(nodeID, DC) {
+    const endTimestamp = new Date().valueOf();
+    const startTimestamp = new Date(endTimestamp - 3600000).valueOf();
+    // let label=`{}`
     return request({
-        url: `/api/v1/query_range?query=nomad_client_host_disk_used`,
+        url: `/api/v1/query_range?query=nomad_client_host_disk_used{node_id='${nodeID}',datacenter='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=2`,
         options: {
             method: 'GET'
         }
     });
 }
 
-function getMemoryUtilization(nodeID,DC) {
-    let label=`{}`
+function getMemoryUtilization(nodeID, DC) {
+    const endTimestamp = new Date().valueOf();
+    const startTimestamp = new Date(endTimestamp - 3600000).valueOf();
+    // let label=`{}`
     return request({
-        url: `/api/v1/query_range?query=nomad_client_host_memory_used`,
+        url: `/api/v1/query_range?query=nomad_client_host_memory_used{node_id='${nodeID}',datacenter='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=2`,
         options: {
             method: 'GET'
         }
     });
 }
 
-function getNetworkUtilization(nodeID,DC) {
-    let label=`{}`
+function getNetworkUtilization(nodeID, DC) {
+    let label = `{}`
     return request({
         // url: `/api/v1/query_range?query=nomad_client_host_memory_used`,    待定，没有找到合适的字段
         options: {
@@ -51,5 +55,5 @@ export {
     getCPUUtilization,
     getDiskUtilization,
     getMemoryUtilization,
-    getNetworkUtilization
+    // getNetworkUtilization
 };

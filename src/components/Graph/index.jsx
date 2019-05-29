@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import echarts from 'echarts/lib/echarts'
+import echarts from 'echarts/lib/echarts';
+import {getPreciseTime} from '../../utils/formatTime'
 
 
 
 
 
-function getOption() {
+function getOption(values,config) {
     var base = +new Date(1968, 9, 3);
     var oneDay = 24 * 3600 * 1000;
     var date = [];
 
-    var data = [Math.random() * 300];
+    var data = [];
 
-    for (var i = 1; i < 20000; i++) {
-        var now = new Date(base += oneDay);
-        date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-        data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+    for (var i = 0; i < values.length; i++) {
+        let valueData=getPreciseTime(values[i][0]*1000);
+        date.push(valueData);
+        data.push(config.dataWrap(values[i][1]));
     }
 
     let option = {
@@ -25,7 +26,9 @@ function getOption() {
             trigger: 'axis',
             position: function (pt) {
                 return [pt[0], '10%'];
-            }
+            },
+            formatter:config.option.tooltip.formatter
+            // formatter:'时间 : {b0}<br/>{a0} : {c0}%'
         },
         xAxis: {
             type: 'category',
@@ -49,13 +52,16 @@ function getOption() {
         },
         series: [
             {
-                name: '模拟数据',
+                name: config.title,
                 type: 'line',
                 smooth: true,
                 symbol: 'none',
                 sampling: 'average',
                 itemStyle: {
                     color: 'rgb(99, 198, 253)'
+                },
+                lineStyle:{
+                    width:1
                 },
                 areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -87,11 +93,14 @@ class Graph extends Component {
     }
 
     initGraph = () => {
-        let myChart = echarts.init(this.ID);
-        let options = getOption();
-        myChart.setOption(options);
-        myChart.resize({width:this.ID.clientWidth});
-
+        if(this.props.data[0]){
+            let myChart = echarts.init(this.ID);
+            let config = this.props.config;
+            let values = this.props.data[0].values
+            let options = getOption(values,config);
+            myChart.setOption(options);
+            myChart.resize({width:this.ID.clientWidth});
+        }
     }
 
     //   componentDidMount() {

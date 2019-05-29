@@ -119,14 +119,15 @@ class ListItem extends Component {
         });
     }
     render() {
-        const { classes, barName, regionList, className, itemData = {}, index, selected, type, region, Datacenter } = this.props;
+        const { classes, barName, regionList, className, index, selected, type, region, Datacenter } = this.props;
         let classNameWrap;
         let item = {};
+        const itemData = this.props.itemData ? this.props.itemData : {};
         if (type === 'dc') {
-            item = { region, Datacenter,DCInfo:itemData };
+            item = { region, Datacenter, DCInfo: itemData };
         }
         else {
-            item = { region, ID: itemData.ID };
+            item = { region, ID: itemData.ID, Datacenter };
         }
         if (className) {
             classNameWrap = className + " " + classes.root;

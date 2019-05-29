@@ -8,4 +8,11 @@ function formatTime(time){
     return time;
 }
 
-export {formatTime};
+function getPreciseTime(time){
+    if (typeof time === "number") {
+        return moment(time).format('YYYY/M/D  HH:mm:ss');
+    }
+    return time;
+}
+
+export {formatTime,getPreciseTime};

@@ -43,7 +43,8 @@ class WrappedGraph extends Component {
         };
     }
     render() {
-        const { classes, className } = this.props;
+        const { classes, className, data, nodeInfo, config } = this.props;
+        const current = data[0] ? data[0].values[data[0].values.length - 1][1] : '';
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -52,11 +53,11 @@ class WrappedGraph extends Component {
         return (
             <div className={classNameWrap}>
                 <p className={classes.textWrap}>
-                    <span className={classes.title}>CPU</span>
-                    <span className={classes.current}>34%</span>
+                    <span className={classes.title}>{config.title}</span>
+                    <span className={classes.current}>{config.dataWrap(current) +' '+ config.unit}</span>
 
                 </p>
-                <Graph className={classes.graph} />
+                <Graph className={classes.graph} nodeInfo={nodeInfo} config={config} data={data} />
             </div>
         );
     }

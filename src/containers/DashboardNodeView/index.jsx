@@ -102,7 +102,7 @@ class ListItem extends Component {
 
     // }
     render() {
-        const { classes, className, children, detail, currentRegion } = this.props;
+        const { classes, className, children, detail, region, Datacenter } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -126,7 +126,7 @@ class ListItem extends Component {
                         {detail.Meta ? detail.Meta.address : ''}
                     </p>
                 </div>
-                <Tabs contentList={tabList} viewProps={{ ...detail, currentRegion }} />
+                <Tabs contentList={tabList} viewProps={{ ...detail, region, Datacenter }} />
             </div>
         );
     }
