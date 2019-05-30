@@ -365,7 +365,7 @@ class JobDetail extends Component {
                                                                                     className = classes.statusGreen;
                                                                                 }
 
-                                                                                return <span className={classes.statusItem + " " + classes.statusGrey + " " + className} onClick={this.handleSwitchInstance({ taskGroup: taskGroupItem.Name, task: taskItem.Name, index: index })}>{index + 1}</span>
+                                                                                return <span className={classes.statusItem + " " + classes.statusGrey + " " + className} onClick={this.handleSwitchInstance({ taskGroup: taskGroupItem.Name, task: taskItem.Name, index: index })} key={index+1}>{index + 1}</span>
                                                                             })}
                                                                     </div>
                                                                 )
@@ -487,7 +487,7 @@ class JobDetail extends Component {
                                                                             <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
                                                                                 {
                                                                                     Object.keys(taskItem.Env).map((key, index) => (
-                                                                                        <span>
+                                                                                        <span key={index}>
                                                                                             {key}={taskItem.Env[key]}{index < (Object.keys(taskItem.Env).length - 1) ? ',' : null}
                                                                                         </span>
                                                                                     ))

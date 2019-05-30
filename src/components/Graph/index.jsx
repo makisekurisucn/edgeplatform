@@ -2,24 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import echarts from 'echarts/lib/echarts';
-import {getPreciseTime} from '../../utils/formatTime'
 
 
 
 
 
-function getOption(values,config) {
-    var base = +new Date(1968, 9, 3);
-    var oneDay = 24 * 3600 * 1000;
-    var date = [];
 
-    var data = [];
-
-    for (var i = 0; i < values.length; i++) {
-        let valueData=getPreciseTime(values[i][0]*1000);
-        date.push(valueData);
-        data.push(config.dataWrap(values[i][1]));
-    }
+function getOption(values, config) {
+    let date = values.date;
+    let data = values.data;
 
     let option = {
         tooltip: {
@@ -27,8 +18,7 @@ function getOption(values,config) {
             position: function (pt) {
                 return [pt[0], '10%'];
             },
-            formatter:config.option.tooltip.formatter
-            // formatter:'时间 : {b0}<br/>{a0} : {c0}%'
+            formatter: config.option.tooltip.formatter
         },
         xAxis: {
             type: 'category',
@@ -36,19 +26,13 @@ function getOption(values,config) {
             data: date,
             show: false
         },
-        yAxis: {
-            type: 'value',
-            boundaryGap: [0, '100%'],
-            show: false
-        },
+        yAxis: config.option.yAxis,
         grid: {
             show: false,
             left: 0,
             top: 0,
             width: '100%',
             height: '100%'
-
-
         },
         series: [
             {
@@ -60,8 +44,8 @@ function getOption(values,config) {
                 itemStyle: {
                     color: 'rgb(99, 198, 253)'
                 },
-                lineStyle:{
-                    width:1
+                lineStyle: {
+                    width: 1
                 },
                 areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -93,13 +77,13 @@ class Graph extends Component {
     }
 
     initGraph = () => {
-        if(this.props.data[0]){
+        const values=this.props.values
+        const config = this.props.config;
+        if (values.data.length>0) {
             let myChart = echarts.init(this.ID);
-            let config = this.props.config;
-            let values = this.props.data[0].values
-            let options = getOption(values,config);
+            let options = getOption(values, config);
             myChart.setOption(options);
-            myChart.resize({width:this.ID.clientWidth});
+            myChart.resize({ width: this.ID.clientWidth });
         }
     }
 

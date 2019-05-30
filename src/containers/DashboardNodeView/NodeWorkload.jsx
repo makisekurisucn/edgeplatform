@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import AppCard from '../../components/AppCard';
+import {setRegion} from '../../utils/handleRequest';
 // import Tabs from '../../components/Tabs';
 const styles = theme => ({
     root: {
@@ -19,6 +20,14 @@ class NodeWorkload extends Component {
         };
     }
 
+    turnToJobDetail=(ID)=>{
+        const currentRegion=this.props.data.region;
+
+        setRegion(currentRegion);
+        window.location.href=`/#/console/jobs/detail/${ID}`;
+
+    }
+
     render() {
         const { classes, className, children, data, list } = this.props;
         // const { isHidden, stage} = this.state;
@@ -32,7 +41,27 @@ class NodeWorkload extends Component {
                 {
                     list.map((item) => {
                         if (item.NodeID === data.ID) {
-                            return <AppCard className={classes.marginBottom10} data={{...item,currentRegion:data.currentRegion}} key={item.ID} />
+                            let pendingTasksNumber=0,deadTasksNumber=0,runningTaskNumber=0;
+                            Object.keys(item.TaskStates).forEach(task=>{
+                                switch(item.TaskStates[task].State){
+                                    case 'dead':
+                                        deadTasksNumber++;break;
+                                    case 'pending':
+                                        pendingTasksNumber++;break;
+                                    case 'running':
+                                        runningTaskNumber++;break;
+                                    default:
+                                }
+                            })
+                            const wrappedData={
+                                ID:item.JobID,
+                                name:item.Name,
+                                time:item.CreateTime,
+                                deadTasksNumber,
+                                pendingTasksNumber,
+                                runningTaskNumber
+                            }
+                            return <AppCard className={classes.marginBottom10} data={wrappedData} onItemClick={this.turnToJobDetail} key={item.ID} />
                         }
                     })
                 }

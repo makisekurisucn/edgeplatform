@@ -43,8 +43,9 @@ class WrappedGraph extends Component {
         };
     }
     render() {
-        const { classes, className, data, nodeInfo, config } = this.props;
-        const current = data[0] ? data[0].values[data[0].values.length - 1][1] : '';
+        const { classes, className, values, config } = this.props;
+        const data = values.data;
+        const current = (data.length > 0) ? (data[data.length - 1]) + ' ' + config.unit : 'no data';
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -54,10 +55,10 @@ class WrappedGraph extends Component {
             <div className={classNameWrap}>
                 <p className={classes.textWrap}>
                     <span className={classes.title}>{config.title}</span>
-                    <span className={classes.current}>{config.dataWrap(current) +' '+ config.unit}</span>
+                    <span className={classes.current}>{current}</span>
 
                 </p>
-                <Graph className={classes.graph} nodeInfo={nodeInfo} config={config} data={data} />
+                <Graph className={classes.graph} config={config} values={values} />
             </div>
         );
     }

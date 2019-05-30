@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {formatTime} from '../../utils/formatTime';
-import {setRegion} from '../../utils/handleRequest';
+
 
 const styles = theme => ({
     root: {
@@ -92,30 +92,14 @@ class AppCard extends Component {
 
     }
 
-    turnToJobDetail=()=>{
-        const currentRegion=this.props.data.currentRegion;
-        const jobID=this.props.data.JobID;
-
-        setRegion(currentRegion);
-        window.location.href=`/#/console/jobs/detail/${jobID}`;
-
+    handleClick=()=>{
+        this.props.onItemClick(this.props.data.ID);
     }
 
     render() {
         const { classes, className,data } = this.props;
         let classNameWrap;
-        let pendingTasksNumber=0,deadTasksNumber=0,runningTaskNumber=0;
-        Object.keys(data.TaskStates).forEach(item=>{
-            switch(data.TaskStates[item].State){
-                case 'dead':
-                    deadTasksNumber++;break;
-                case 'pending':
-                    pendingTasksNumber++;break;
-                case 'running':
-                    runningTaskNumber++;break;
-                default:
-            }
-        })
+        
         if (className) {
             classNameWrap = className + " " + classes.root;
         }
@@ -125,34 +109,34 @@ class AppCard extends Component {
         return (
             <div className={classNameWrap}>
                 <p className={classes.appHeader}>
-                    <span className={classes.appName}>{data.Name}</span>
-                    <span className={classes.appDate}>{formatTime(data.CreateTime)}</span>
+                    <span className={classes.appName}>{data.name}</span>
+                    <span className={classes.appDate}>{formatTime(data.time)}</span>
                 </p>
                 <div className={classes.appBrief}>
                     <div className={classes.appStatus}>
                         <p className={classes.statusItem}>
                             <span className={classes.itemCount}>
-                                {runningTaskNumber}
+                                {data.runningTaskNumber}
                  </span>
                             <span className={classes.mr4}>个任务</span>
                             <span className={classes.colorGreen}>运行中</span>
                         </p>
                         <p className={classes.statusItem}>
                             <span className={classes.itemCount}>
-                                {pendingTasksNumber}
+                                {data.pendingTasksNumber}
                  </span>
                             <span className={classes.mr4}>个任务</span>
                             <span className={classes.colorYellow}>启动中</span>
                         </p>
                         <p className={classes.statusItem}>
                             <span className={classes.itemCount}>
-                                {deadTasksNumber}
+                                {data.deadTasksNumber}
                  </span>
                             <span className={classes.mr4}>个任务</span>
                             <span className={classes.colorGray}>已停止</span>
                         </p>
                     </div>
-                    <a className={classes.detailLink} onClick={this.turnToJobDetail} >详情</a>
+                    <a className={classes.detailLink} onClick={this.handleClick} >详情</a>
                 </div>
             </div>
         );

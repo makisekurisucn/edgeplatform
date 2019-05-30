@@ -201,13 +201,13 @@ class Dashboard extends Component {
 
             <div className={classes.dashboard}>
                 <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} >
-                    {/* {
+                    {
                         this.state.isNodeListHidden ? list.map((item, index) => {
                             return <Marker key={item.Datacenter} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
                         }) : (DCInfo.longitude ?
                             <Marker position={{ longitude: DCInfo.longitude, latitude: DCInfo.latitude }} /> : ''
                             )
-                    } */}
+                    }
                     {/* <Marker position={this.position} />
                     <Marker position={this.position2} /> */}
                 </Map>
