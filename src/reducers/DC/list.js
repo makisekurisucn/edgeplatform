@@ -1,7 +1,8 @@
 const initialState = {
-    DCCount:0,
+    DCCount: 0,
     list: [],
-    nodelist:[]
+    nodelist: [],
+    allRegionNodelist: []
 };
 
 const DCListProcess = (list) => {
@@ -24,7 +25,7 @@ const DCRedu = (state = initialState, action) => {
     // alert(action.type);
     switch (action.type) {
         case 'DC_UPDATE_DCLIST':
-            return Object.assign({}, state, { list: DCListProcess(action.data.list) });
+            return Object.assign({}, state, { list: DCListProcess(action.data.list), allRegionNodelist: action.data.allRegionNodelist });
         case 'DC_UPDATE_NODELIST':
             return Object.assign({}, state, { nodelist: action.data.list });
         case 'DC_UPDATE_DCCOUNT':

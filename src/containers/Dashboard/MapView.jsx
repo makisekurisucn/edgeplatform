@@ -7,6 +7,7 @@ import { Map, Marker } from 'react-amap';
 import Search from '@material-ui/icons/Search';
 import SearchBox from '../../components/SearchBox';
 import ListItem from '../../components/DashboardListItem';
+import EmptyListItem from '../../components/DashboardListItem/EmptyListItem';
 import FadeWrap from '../../components/FadeWrap';
 import ListNav from '../../components/ListNav';
 import DashboardNodeView from '../../containers/DashboardNodeView';
@@ -97,10 +98,14 @@ class Dashboard extends Component {
             isDCListHidden: false,
             isNodeListHidden: true,
             isNodeDetailHidden: true,
+            isSearchListHidden: true,
             DCInfo: {},
             currentRegion: '',
             currentDatacenter: '',
-            nodeIndex: -1
+            nodeIndex: -1,
+            mapCenter: {},
+            isSearched: false,
+            inputValue: ''
         };
         this.mapEvents = {
             created: (map) => {
@@ -135,11 +140,23 @@ class Dashboard extends Component {
 
     }
     goBack = (title) => {
-        this.setState({
-            isDCListHidden: false,
-            isNodeListHidden: true,
-            isNodeDetailHidden: true
-        });
+        if(this.state.isSearched){
+            this.setState({
+                isDCListHidden: true,
+                isNodeListHidden: true,
+                isNodeDetailHidden: true,
+                isSearchListHidden:false,
+                nodeIndex:-1
+            });
+        }else{
+            this.setState({
+                isDCListHidden: false,
+                isNodeListHidden: true,
+                isNodeDetailHidden: true,
+                isSearchListHidden:true,
+                nodeIndex:-1
+            });
+        }
     }
     showList = (item, index) => {
         const { dispatch } = this.props;
@@ -150,10 +167,16 @@ class Dashboard extends Component {
         this.setState({
             isDCListHidden: true,
             isNodeListHidden: false,
+            isSearchListHidden:true,
+            isNodeDetailHidden:true,
             currentRegion: item.region,
             currentDatacenter: item.Datacenter,
             DCInfo: item.DCInfo,
-            nodeIndex: -1
+            nodeIndex: -1,
+            mapCenter: {
+                longitude: item.DCInfo.longitude,
+                latitude: item.DCInfo.latitude
+            }
         });
     }
     showDetail = (item, index) => {
@@ -162,7 +185,7 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         getWorkerDetail(dispatch, item.ID);
         getAllocationList(dispatch);
-        getPrometheus(dispatch, item.ID, item.Datacenter);
+        // getPrometheus(dispatch, item.ID, item.Datacenter);        记得取消注释
         if (this.state.nodeIndex !== index) {
             this.setState({
                 isNodeDetailHidden: isHidden,
@@ -176,15 +199,38 @@ class Dashboard extends Component {
             })
         }
     }
+    handleSearch = (inputValue) => {
+        if (inputValue === '') {
+            this.setState({
+                isDCListHidden: false,
+                isNodeListHidden: true,
+                isNodeDetailHidden: true,
+                isSearchListHidden: true,
+                isSearched: false,
+                inputValue: inputValue
+            })
+        } else {
+            this.setState({
+                isDCListHidden: true,
+                isNodeListHidden: true,
+                isNodeDetailHidden: true,
+                isSearchListHidden: false,
+                isSearched: true,
+                inputValue: inputValue,
+                nodeIndex:-1
+            })
+        }
+    }
     render() {
         const { classes, DClist, nodeWorkerDetail, regionCount } = this.props;
-        const { list, nodelist, DCCount } = DClist;
+        const { list, nodelist, DCCount, allRegionNodelist } = DClist;
         const { detail } = nodeWorkerDetail;
         const plugins = ['Scale', 'ControlBar'];
         const currentRegion = this.state.currentRegion;
         const currentDatacenter = this.state.currentDatacenter;
         const DCInfo = this.state.DCInfo;
         console.log(this.props);
+
 
         let wrappedNodelist = [];
         nodelist.forEach((item, index) => {
@@ -197,10 +243,76 @@ class Dashboard extends Component {
             wrappedNodelist.push(item);
         });
 
+
+        let searchList = [];
+        let DCInfoForEveryDC = {};
+        list.forEach((DC) => {
+            let isMatched = false;
+            if (!DCInfoForEveryDC[DC.region]) {
+                DCInfoForEveryDC[DC.region] = {};
+            }
+            DCInfoForEveryDC[DC.region][DC.Datacenter] = DC.DCInfo;
+            const searchInfo = { DC: DC.DCInfo.DC, region: DC.DCInfo.region, address: DC.DCInfo.address };
+            for (let key in searchInfo) {
+                if (searchInfo[key].indexOf(this.state.inputValue) > -1) {
+                    isMatched = true;
+                }
+            }
+            if (isMatched === true) {
+                searchList.push({ DC: DC, type: 'dc' });
+            }
+        })
+        allRegionNodelist.forEach((node) => {
+            let isMatched = false;
+            const DCInfo = DCInfoForEveryDC[node.region][node.Datacenter];
+            const searchInfo = { name: node.name, DC: DCInfo.DC, region: DCInfo.region, address: DCInfo.address };
+            for (let key in searchInfo) {
+                if (searchInfo[key].indexOf(this.state.inputValue) > -1) {
+                    isMatched = true;
+                }
+            }
+            if (isMatched === true) {
+                searchList.push({ type: 'node', node, DCInfo });
+            }
+        })
+        console.log(searchList)
+
+        // {
+        //     region1:{
+        //         datacenter1:{
+        //             DC:
+        //             region:
+        //             address:                   
+        //         }
+        //         datacenter4:null
+        //     }
+        //     region2:null,
+        //     region3:{
+        //         datacenter3:null
+        //     }
+        // }
+
+
+        let MyMap = null;
+        if (this.state.isNodeListHidden) {
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{ longitude: 121, latitude: 31 }}>
+                {
+                    list.map((item, index) => {
+                        return <Marker key={item.Datacenter} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
+                    })
+                }
+            </Map>;
+        } else {
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter}>
+                <Marker position={this.state.mapCenter} />
+            </Map>;
+        }
+
+
         return (
 
             <div className={classes.dashboard}>
-                <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} >
+                {/* <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{ longitude: 121, latitude: 31 }}>
                     {
                         this.state.isNodeListHidden ? list.map((item, index) => {
                             return <Marker key={item.Datacenter} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
@@ -208,18 +320,16 @@ class Dashboard extends Component {
                             <Marker position={{ longitude: DCInfo.longitude, latitude: DCInfo.latitude }} /> : ''
                             )
                     }
-                    {/* <Marker position={this.position} />
-                    <Marker position={this.position2} /> */}
-                </Map>
-
+                </Map> */}
+                {MyMap}
 
 
                 <div className={classes.dashboardInnerWrap}>
-                    <SearchBox className={classes.searchWrap} />
+                    <SearchBox className={classes.searchWrap} onSearch={this.handleSearch} />
                     <div className={classes.listWrap}>
                         <FadeWrap className={classes.listBkg} isHidden={this.state.isDCListHidden} from="left" to="left">
                             {list.map((item, index) => {
-                                return <ListItem type='dc' itemData={item.DCInfo} region={item.region} Datacenter={item.Datacenter} index={index} onClick={this.showList} key={item.Datacenter} />
+                                return <ListItem type='dc' itemData={item.DCInfo} region={item.region} Datacenter={item.Datacenter} index={index} onClick={this.showList} key={index} />
                             })}
                         </FadeWrap>
                     </div>
@@ -233,6 +343,25 @@ class Dashboard extends Component {
                             </div>
                         </FadeWrap>
                     </div>
+                    {/* 搜索列表 */}
+                    <div className={classes.listWrap}>
+                        <FadeWrap className={classes.listBkg} isHidden={this.state.isSearchListHidden} from="bottom" to="top">
+                            
+                                 <EmptyListItem></EmptyListItem>
+                            
+                            {searchList.map((item,index)=>{
+                                if(item.type==='dc'){
+                                    return <ListItem type='dc' itemData={item.DC.DCInfo} region={item.DC.region} Datacenter={item.DC.Datacenter} index={index} onClick={this.showList} key={index} />
+                                }else if(item.type==='node'){
+                                    return <ListItem type='search_node' itemData={{ ...item.DCInfo, name: item.node.name, ID: item.node.ID }} region={item.node.region} Datacenter={item.node.Datacenter} index={index} onClick={this.showDetail} key={index} selected={index==this.state.nodeIndex} />
+                                }
+
+                            })}
+                            {/* <ListItem type='dc' itemData={{ address: '浙江省宁波市浙江大学软件学院', DC: '宁波', region: '华西' }} region={'huaxi'} Datacenter={'ningbo'} /> */}
+
+                        </FadeWrap>
+                    </div>
+                    {/* 搜索列表 */}
                     <div className={classes.detailWrap}>
                         <FadeWrap className={classes.darkBkg} isHidden={this.state.isNodeDetailHidden} from='left' to='left'>
                             <DashboardNodeView region={currentRegion} Datacenter={currentDatacenter} detail={detail} />

@@ -7,6 +7,7 @@ import { setRegion } from '../utils/handleRequest';
 function* getDClist(action) {
     let regionList = yield call(getRegionList);
     let DClist = [];
+    let allRegionNodelist = [];
 
     for (let i = 0; i < regionList.length; i++) {
         let DClistInRegion = [];
@@ -15,13 +16,18 @@ function* getDClist(action) {
         setRegion(regionList[i]);
         let workerList = yield call(getWorkerList);
         for (let j = 0; j < workerList.length; j++) {
-            if (DClistInRegion.indexOf(workerList[j].Datacenter) > -1) {
-            } 
-            else {
+            if (DClistInRegion.indexOf(workerList[j].Datacenter) > -1) {                
+            } else {
                 DClistInRegion.push(workerList[j].Datacenter);
                 let workerDetail = yield call(getWorkerDetail, workerList[j].ID);
                 DCInfoMap.set(workerList[j].Datacenter, workerDetail.Meta);
             }
+            allRegionNodelist.push(
+                {   name: workerList[j].Name,
+                    ID: workerList[j].ID, 
+                    region: regionList[i], 
+                    Datacenter: workerList[j].Datacenter 
+                });
         }
         DClist.push({ region: regionList[i], list: DClistInRegion, DCInfo: DCInfoMap });
     }
@@ -29,22 +35,23 @@ function* getDClist(action) {
     yield put({
         type: "DC_UPDATE_DCLIST",
         data: {
-            list: DClist || []
+            list: DClist || [],
+            allRegionNodelist: allRegionNodelist || []
         }
     });
 }
 
-function* getNodelist(action){
-    let nodelist=[];
+function* getNodelist(action) {
+    let nodelist = [];
 
     setRegion(action.region);
     let workerList = yield call(getWorkerList);
-    for(let i=0;i<workerList.length;i++){
-        if(workerList[i].Datacenter===action.Datacenter){
-            nodelist.push({name:workerList[i].Name,ID:workerList[i].ID});
+    for (let i = 0; i < workerList.length; i++) {
+        if (workerList[i].Datacenter === action.Datacenter) {
+            nodelist.push({ name: workerList[i].Name, ID: workerList[i].ID });
         }
     }
-    
+
     yield put({
         type: "DC_UPDATE_NODELIST",
         data: {
@@ -53,7 +60,7 @@ function* getNodelist(action){
     });
 }
 
-function* getDCCount(action){
+function* getDCCount(action) {
     let regionList = yield call(getRegionList);
     let DCArray = [];
 
@@ -61,15 +68,13 @@ function* getDCCount(action){
         setRegion(regionList[i]);
         let workerList = yield call(getWorkerList);
         for (let j = 0; j < workerList.length; j++) {
-            if (DCArray.indexOf(workerList[j].Datacenter) > -1) {
-            } 
-            else {
+            if (DCArray.indexOf(workerList[j].Datacenter) > -1) {} else {
                 DCArray.push(workerList[j].Datacenter);
             }
         }
     }
 
-    let count=DCArray.length;
+    let count = DCArray.length;
     yield put({
         type: "DC_UPDATE_DCCOUNT",
         data: {

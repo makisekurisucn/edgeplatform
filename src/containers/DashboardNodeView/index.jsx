@@ -79,7 +79,11 @@ const tabList = [
         component: NodeWorkload
     }
 ];
-class ListItem extends Component {
+const status={
+    ready:'就绪',
+    running:'运行中'
+}
+class NodeView extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -95,7 +99,7 @@ class ListItem extends Component {
     //   console.log('hello');
     // }
     // componentWillReceiveProps(nextProp) {
-
+    //     console.log(nextProp)
     // }
 
     // componentDidUpdate(){
@@ -108,9 +112,6 @@ class ListItem extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
-        const statusMap = new Map();
-        statusMap.set('ready', '就绪');
-        statusMap.set('running', '运行中');
 
         return (
             <div className={classNameWrap}>
@@ -118,7 +119,7 @@ class ListItem extends Component {
                     <div className={classes.headerTop}>
                         <div className={classes.headerName}>
                             <p className={classes.mainTitle}>{detail.Name}</p>
-                            <span className={classes.status}>{statusMap.get(detail.Status)}</span>
+                            <span className={classes.status}>{status[detail.Status]}</span>
                         </div>
                         <p className={classes.subTitle}>{detail.Meta ? detail.Meta.region : ''} - {detail.Meta ? detail.Meta.DC : ''}</p>
                     </div>
@@ -132,11 +133,11 @@ class ListItem extends Component {
     }
 }
 
-ListItem.propTypes = {
+NodeView.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
     return state.region;
 }
-export default connect(mapStateToProps)(withStyles(styles)(ListItem));
+export default connect(mapStateToProps)(withStyles(styles)(NodeView));

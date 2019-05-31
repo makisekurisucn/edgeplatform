@@ -4,6 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 import DesktopMac from '@material-ui/icons/DesktopMac';
+import PinDrop from '@material-ui/icons/PinDrop';
+import Computer from '@material-ui/icons/Computer';
 
 
 const styles = theme => ({
@@ -142,7 +144,12 @@ class ListItem extends Component {
             <div className={classNameWrap} onClick={this.clickHandler(item, index)}>
                 <div className={classes.innerWrap}>
                     {
-                        type === 'dc' && (<DesktopMac className={classes.index} />)
+                        // type === 'dc' && (<DesktopMac className={classes.index} />)
+                        type === 'dc' && (<PinDrop className={classes.index} />)
+                    }
+                    {
+                        // type === 'dc' && (<DesktopMac className={classes.index} />)
+                        type === 'search_node' && (<Computer className={classes.index} />)
                     }
                     {
                         type === 'node' && (<p className={classes.index}>{index + 1}</p>)
@@ -157,7 +164,7 @@ class ListItem extends Component {
                             )
                         }
                         {
-                            type === 'node' && (
+                            (type === 'node'||type==='search_node') && (
                                 <div className={classes.mainUpper}>
                                     <p className={classes.mainTitle}>{itemData.name}</p>
                                     <p className={classes.subTitle}>{itemData.region} - {itemData.DC}</p>

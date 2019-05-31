@@ -52,6 +52,8 @@ class SearchBox extends Component {
         this.state = {
             currentRegion: null
         };
+        this.input=null;
+        this.timeID=null;
     }
     //   componentWillMount() {
     //     const { dispatch } = this.props;
@@ -69,6 +71,21 @@ class SearchBox extends Component {
             currentRegion: region
         });
     }
+    handleClick=()=>{
+        clearTimeout(this.timeID);
+        this.props.onSearch(this.input.value.trim());
+    }
+    handleKeyDown=(e)=>{
+        if(e.keyCode===13){
+            this.handleClick();
+        }
+    }
+    handleChange=()=>{
+        clearTimeout(this.timeID);
+        this.timeID=setTimeout(() => {
+            this.handleClick();
+        }, 500);
+    }
     render() {
         const { classes, barName, regionList, className } = this.props;
         let classNameWrap;
@@ -80,8 +97,8 @@ class SearchBox extends Component {
         }
         return (
             <div className={classNameWrap}>
-                <input type="text" className={classes.inputs} />
-                <Search className={classes.searchSign} />
+                <input type="text" className={classes.inputs} ref={ele=>{this.input=ele}} onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
+                <Search className={classes.searchSign} onClick={this.handleClick} />
             </div>
         );
     }
