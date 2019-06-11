@@ -13,7 +13,8 @@ const styles = theme => ({
         padding: '30px 45px'
     },
     kvItem: {
-        marginBottom: 30
+        marginBottom: 30,
+        color: '#EEF9FF'
     }
 });
 class NodeInfo extends Component {
@@ -24,7 +25,7 @@ class NodeInfo extends Component {
     }
 
     render() {
-        const { classes, className ,data} = this.props;
+        const { classes, className, data } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -34,14 +35,14 @@ class NodeInfo extends Component {
         return (
             <div className={classNameWrap}>
                 <KvItem keyName="类型" className={classes.kvItem} value="工作节点" />
-                <KvItem keyName="主机名" className={classes.kvItem} value={data.Attributes?data.Attributes["unique.hostname"]:''} />
-                <KvItem keyName="处理器架构" className={classes.kvItem} value={data.Attributes?data.Attributes["cpu.arch"]:''} />
-                <KvItem keyName="处理器频率" className={classes.kvItem} value={data.Attributes?data.Attributes["cpu.frequency"]:''} />
-                <KvItem keyName="处理器型号" className={classes.kvItem} value={data.Attributes?data.Attributes["cpu.modelname"]:''} />
-                <KvItem keyName="处理器核数" className={classes.kvItem} value={data.Attributes?data.Attributes["cpu.numcores"]:''} />
-                <KvItem keyName="操作系统" className={classes.kvItem} value={data.Attributes?data.Attributes["os.name"]:''} />
-                <KvItem keyName="操作系统版本" className={classes.kvItem} value={data.Attributes?data.Attributes["os.version"]:''} />
-                <KvItem keyName="内核版本" className={classes.kvItem} value={data.Attributes?data.Attributes["kernel.version"]:''} />
+                <KvItem keyName="主机名" className={classes.kvItem} value={data.Attributes ? data.Attributes["unique.hostname"] : ''} />
+                <KvItem keyName="处理器架构" className={classes.kvItem} value={data.Attributes ? data.Attributes["cpu.arch"] : ''} />
+                <KvItem keyName="处理器频率" className={classes.kvItem} value={data.Attributes ? data.Attributes["cpu.frequency"] : ''} />
+                <KvItem keyName="处理器型号" className={classes.kvItem} value={data.Attributes ? data.Attributes["cpu.modelname"] : ''} />
+                <KvItem keyName="处理器核数" className={classes.kvItem} value={data.Attributes ? data.Attributes["cpu.numcores"] : ''} />
+                <KvItem keyName="操作系统" className={classes.kvItem} value={data.Attributes ? data.Attributes["os.name"] : ''} />
+                <KvItem keyName="操作系统版本" className={classes.kvItem} value={data.Attributes ? data.Attributes["os.version"] : ''} />
+                <KvItem keyName="内核版本" className={classes.kvItem} value={data.Attributes ? data.Attributes["kernel.version"] : ''} />
             </div>
         );
     }

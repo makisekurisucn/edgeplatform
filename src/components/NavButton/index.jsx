@@ -8,23 +8,24 @@ const styles = theme => ({
         boxSizing: 'border-box',
         lineHeight: '60px',
         textAlign: 'center',
-        padding: '0px 4px',
+        // padding: '0px 4px',
         fontSize: 18,
         color: "#EEF9FF",
         '&:hover': {
             backgroundColor: "#262E2F"
         },
         cursor: 'pointer',
-        position: 'relative'
+        position: 'relative',
+        backgroundColor: 'rgb(51,66,69)'
     },
     selectedWrap: {
         backgroundColor: "#262E2F"
     },
-    selected: {
-        height: 4,
-        backgroundColor: '#4B8BAF',
-        marginTop: -60
-    }
+    // selected: {
+    //     height: 4,
+    //     backgroundColor: '#4B8BAF',
+    //     marginTop: -60
+    // }
 });
 const hasRouter = (current, link) => {
     let currentArray = current.split('/');
@@ -69,6 +70,12 @@ class Button extends Component {
         })
     }
 
+    componentWillMount() {
+        this.setState({
+            selected: hasRouter(this.props.location.pathname, this.props.link)
+        });
+    }
+
     componentWillReceiveProps(nextProp) {
         if (nextProp.location.pathname && nextProp.link) {
             this.setState({
@@ -78,27 +85,27 @@ class Button extends Component {
     }
     goTo = (link) => (event) => {
         console.log(link);
-        if (!this.state.selected) {
-            this.props.history.push(link);
-        }
+        // if (!this.state.selected) {
+        this.props.history.push(link);
+        // }
     }
     render() {
-        const { classes, content, link } = this.props;
+        const { classes, content, link, className } = this.props;
         const { selected } = this.state;
-        let className = '';
+        let classNameWrap = '';
         if (selected) {
-            className = classes.root + ' ' + classes.selectedWrap
+            classNameWrap = classes.root + ' ' + classes.selectedWrap + ' ' + (className.buttonRoot || '')
         }
         else {
-            className = classes.root;
+            classNameWrap = classes.root + ' ' + (className.buttonRoot || '');
         }
         console.log(this.props)
 
         return (
-            <div className={className} onClick={this.goTo(link)}>
+            <div className={classNameWrap} onClick={this.goTo(link)}>
                 <span>{content}</span>
                 {
-                    selected && (<div className={classes.selected}></div>)
+                    selected && (<div className={className.selected}></div>)
                 }
             </div>
         );

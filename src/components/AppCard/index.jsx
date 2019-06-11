@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {formatTime} from '../../utils/formatTime';
+import { formatTime } from '../../utils/formatTime';
 
 
 const styles = theme => ({
@@ -92,14 +92,14 @@ class AppCard extends Component {
 
     }
 
-    handleClick=()=>{
+    handleClick = () => {
         this.props.onItemClick(this.props.data.ID);
     }
 
     render() {
-        const { classes, className,data } = this.props;
+        const { classes, className, data } = this.props;
         let classNameWrap;
-        
+
         if (className) {
             classNameWrap = className + " " + classes.root;
         }
@@ -117,21 +117,21 @@ class AppCard extends Component {
                         <p className={classes.statusItem}>
                             <span className={classes.itemCount}>
                                 {data.runningTaskNumber}
-                 </span>
+                            </span>
                             <span className={classes.mr4}>个任务</span>
                             <span className={classes.colorGreen}>运行中</span>
                         </p>
                         <p className={classes.statusItem}>
                             <span className={classes.itemCount}>
                                 {data.pendingTasksNumber}
-                 </span>
+                            </span>
                             <span className={classes.mr4}>个任务</span>
                             <span className={classes.colorYellow}>启动中</span>
                         </p>
                         <p className={classes.statusItem}>
                             <span className={classes.itemCount}>
                                 {data.deadTasksNumber}
-                 </span>
+                            </span>
                             <span className={classes.mr4}>个任务</span>
                             <span className={classes.colorGray}>已停止</span>
                         </p>

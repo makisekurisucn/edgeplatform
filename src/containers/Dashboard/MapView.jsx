@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import ReactEcharts from 'echarts-for-react';
 import echarts from 'echarts';
-import { Map, Marker } from 'react-amap';
+import { Map, Marker,Circle } from 'react-amap';
 import Search from '@material-ui/icons/Search';
 import SearchBox from '../../components/SearchBox';
 import ListItem from '../../components/DashboardListItem';
@@ -91,6 +91,39 @@ const styles = {
     }
 
 };
+const mapCircleStyle={
+    yellowCircle:{
+        fillColor:'#AF954B',
+        fillOpacity:0.5,
+        strokeWeight:0,
+        strokeColor:'#AF954B',
+        zIndex:10
+    },
+    greenCircle:{
+        fillColor:'#4BAF7E',
+        fillOpacity:0.5,
+        strokeWeight:0,
+        strokeColor:'#4BAF7E',
+        zIndex:1000
+    },
+    grayCircle:{
+        fillColor:'#ff0000',
+        fillOpacity:0.5,
+        strokeWeight:0,
+        strokeColor:'#ABABAB',
+        zIndex:10
+    }
+
+}
+function getRadius(str){
+    if(str.indexOf('km')>-1){
+        return parseInt(str)*1000;
+    }else if(str.indexOf('m')>-1){
+        return parseInt(str);
+    }else{
+        return 0;
+    }
+}
 class Dashboard extends Component {
     constructor() {
         super();
@@ -294,39 +327,107 @@ class Dashboard extends Component {
 
 
         let MyMap = null;
-        if(!this.state.isNodeListHidden){
-            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{longitude:DCInfo.longitude,latitude:DCInfo.latitude}}>
-                <Marker position={{longitude:DCInfo.longitude,latitude:DCInfo.latitude}} />
-            </Map>;
-        }else if(!this.state.isSearchListHidden){
-            if(this.state.nodeIndex>-1){
-                const node=searchList[this.state.nodeIndex];
-                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{longitude:node.DCInfo.longitude,latitude:node.DCInfo.latitude}}>
-                    <Marker position={{longitude:node.DCInfo.longitude,latitude:node.DCInfo.latitude}} />
-                </Map>;
-            }else{
-                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={searchListCenter}>
-                {
-                    searchList.map((item, index) => {
-                        if(item.type==='dc'){
-                            return <Marker key={index} position={{ longitude: item.DC.DCInfo.longitude, latitude: item.DC.DCInfo.latitude }} />
-                        }else if(item.type==='node'){
-                            return <Marker key={index} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
-                        }
-                    })
-                }
-                </Map>;
-            }
-        }else{
-            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={DCListCenter}>
-                {
-                    list.map((item, index) => {
-                        return <Marker key={item.Datacenter} position={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} />
-                    })
-                }
-            </Map>;
-        }
+        let radius=0;
+        // if(!this.state.isNodeListHidden){
+        //     radius=getRadius(DCInfo.range);
+        //     MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{longitude:DCInfo.longitude,latitude:DCInfo.latitude}}>
+        //         <Circle center={{longitude:DCInfo.longitude,latitude:DCInfo.latitude}} style={mapCircleStyle.yellowCircle} radius={radius}/>
+        //     </Map>;
+        // }else if(!this.state.isSearchListHidden){
+        //     if(this.state.nodeIndex>-1){
+        //         const node=searchList[this.state.nodeIndex];
+        //         radius=getRadius(node.DCInfo.range);
+        //         MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{longitude:node.DCInfo.longitude,latitude:node.DCInfo.latitude}}>
+        //             <Circle center={{longitude:node.DCInfo.longitude,latitude:node.DCInfo.latitude}} style={mapCircleStyle.yellowCircle} radius={radius}/>
+        //         </Map>;
+        //     }else{
+        //         MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={searchListCenter}>
+        //         {
+        //             searchList.map((item, index) => {
+        //                 if(item.type==='dc'){
+        //                     radius=getRadius(item.DC.DCInfo.range);
+        //                     return <Circle key={index} center={{ longitude: item.DC.DCInfo.longitude, latitude: item.DC.DCInfo.latitude }} style={mapCircleStyle.yellowCircle} radius={radius}/>
+        //                 }else if(item.type==='node'){
+        //                     radius=getRadius(item.DCInfo.range);
+        //                     return <Circle key={index} center={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} style={mapCircleStyle.yellowCircle} radius={radius}/>
+        //                 }
+        //             })
+        //         }
+        //         </Map>;
+        //     }
+        // }else{
+        //     MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={DCListCenter}>
+        //         {
+        //             list.map((item, index) => {
+        //                 radius=getRadius(item.DCInfo.range);
+        //                 return <Circle key={item.Datacenter} center={{ longitude: item.DCInfo.longitude, latitude: item.DCInfo.latitude }} style={mapCircleStyle.yellowCircle} radius={radius}/>
+        //             })
+        //         }
+        //     </Map>;
+        // }
+        MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{ longitude: 115, latitude: 31 }}>
+{/* 最左三个，左侧为  先大后小    上方为  两个黄色同心圆   中间为  先小后大*/}
+                <Circle center={{ longitude: 113, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 113, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
 
+                <Circle center={{ longitude: 110, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 110, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
+
+                <Circle center={{ longitude: 113, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
+                <Circle center={{ longitude: 113, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+
+
+{/* 红黄大小“ 同心圆 ”上方为：先红后黄  下方为：先黄后红 */}
+                <Circle center={{ longitude: 116, latitude: 36 }} style={mapCircleStyle.grayCircle} radius={100000}/>
+                <Circle center={{ longitude: 116, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+
+                <Circle center={{ longitude: 116, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 116, latitude: 34 }} style={mapCircleStyle.grayCircle} radius={100000}/>
+
+
+{/* 红黄大小”不同“同心圆，红小黄大  上方为：先红后黄  下方为：先黄后红 */}
+                <Circle center={{ longitude: 119, latitude: 36 }} style={mapCircleStyle.grayCircle} radius={50000}/>
+                <Circle center={{ longitude: 119, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+
+                <Circle center={{ longitude: 119, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 119, latitude: 34 }} style={mapCircleStyle.grayCircle} radius={50000}/>
+
+
+{/* 最右列，从上至下依次为   先绿（大）后黄（小）  先黄后绿   先绿后黄 */}
+                <Circle center={{ longitude: 122, latitude: 36 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+                <Circle center={{ longitude: 122, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
+
+                <Circle center={{ longitude: 122, latitude: 34 }} style={mapCircleStyle.yelowCircle} radius={100000}/>
+                <Circle center={{ longitude: 122, latitude: 34 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+
+                <Circle center={{ longitude: 122, latitude: 32 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+                <Circle center={{ longitude: 122, latitude: 32 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+
+                <Circle center={{ longitude: 125, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
+                <Circle center={{ longitude: 125, latitude: 36 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+
+                <Circle center={{ longitude: 125, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 125, latitude: 34 }} style={mapCircleStyle.greenCircle} radius={50000}/>
+
+                <Circle center={{ longitude: 125, latitude: 32 }} style={mapCircleStyle.greenCircle} radius={50000}/>
+                <Circle center={{ longitude: 125, latitude: 32 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+
+
+{/* 中间行，分开三个  从左至右分别为  黄色  红色  绿色*/}
+                <Circle center={{ longitude: 113, latitude: 32 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 116, latitude: 32 }} style={mapCircleStyle.grayCircle} radius={100000}/>
+                <Circle center={{ longitude: 119, latitude: 32 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+
+
+{/* 最下行，部分重叠 */}
+                <Circle center={{ longitude: 113.5, latitude: 30 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 115, latitude: 30 }} style={mapCircleStyle.grayCircle} radius={100000}/>
+                <Circle center={{ longitude: 115.75, latitude: 28.8 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+                <Circle center={{ longitude: 116.5, latitude: 30 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
+                <Circle center={{ longitude: 118, latitude: 30 }} style={mapCircleStyle.greenCircle} radius={100000}/>
+                
+                
+            </Map>;
 
         return (
 

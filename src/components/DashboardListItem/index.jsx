@@ -32,7 +32,7 @@ const styles = theme => ({
         '&:before': {
             content: '""',
             position: 'absolute',
-            height: '81%',
+            height: '80%',
             width: 6,
             top: 0,
             bottom: 0,
@@ -164,7 +164,7 @@ class ListItem extends Component {
                             )
                         }
                         {
-                            (type === 'node'||type==='search_node') && (
+                            (type === 'node' || type === 'search_node') && (
                                 <div className={classes.mainUpper}>
                                     <p className={classes.mainTitle}>{itemData.name}</p>
                                     <p className={classes.subTitle}>{itemData.region} - {itemData.DC}</p>

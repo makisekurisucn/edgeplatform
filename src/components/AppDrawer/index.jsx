@@ -9,30 +9,43 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
+import SideButton from '../NavButton';
 
 
 
 const drawerWidth = 260;
 
 const styles = theme => ({
-    selectedListItem:{
-        // backgroundColor:'#262E2F',
-        '&:before': {
-            content: '""',
-            position: 'absolute',
-            height: '81%',
-            width: 4,
-            top: 0,
-            bottom: 0,
-            left: 0,
-            margin: 'auto',
-            backgroundColor: '#4B8BAF',
-            cursor: 'default'
-        }
+    buttonRoot: {
+        height: 50,
+        width: 260,
+        boxSizing: 'border-box',
+        lineHeight: '46px',
+        textAlign: 'center',
+        fontSize: 18
     },
-    listItem: {
-        backgroundColor: 'rgb(51,66,69)'
+    selected1: {
+        height: '80%',
+        backgroundColor: '#4B8BAF',
+        width: 4,
+        display: 'inline',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        margin: 'auto'
+    },
+    selected2: {
+        height: '80%',
+        backgroundColor: '#4B8BAF',
+        width: 4,
+        display: 'inline',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        margin: 'auto'
     },
     link: {
         'text-decoration': 'none'
@@ -47,10 +60,6 @@ const styles = theme => ({
     drawerPaper: {
         width: drawerWidth,
         backgroundColor: "rgba(33,54,66,0.82)"
-    },
-    listItemText: {
-        'text-align': 'center',
-        color: '#EEF9FF'
     },
     toolbar: theme.mixins.toolbar
 });
@@ -82,16 +91,9 @@ class AppDrawer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedIndex:-1
         };
     }
 
-    handleClick=(index)=>{
-        this.setState({
-            selectedIndex:index
-        })
-    }
-    
     // const origin = ['集群', '应用', '服务', '节点'];
     render() {
         const { classes } = this.props;
@@ -107,16 +109,11 @@ class AppDrawer extends Component {
                 <List>
                     {menuList.map((item, index) => {
                         if (item.type === "link") {
-                            return <NavLink className={classes.link} to={item.link} key={item.text} onClick={()=>{this.handleClick(index)}}>
-                                <ListItem 
-                                    selected={index===this.state.selectedIndex} 
-                                    classes={{ button: classes.listItem,selected:classes.selectedListItem }} 
-                                    style={index===this.state.selectedIndex?{backgroundColor:'#262E2F'}:{backgroundColor:'rgb(51,66,69)'}}
-                                    button>
-
-                                    <ListItemText classes={{ primary: classes.listItemText }} primary={item.text} />
-                                </ListItem>
-                            </NavLink>
+                            if (index === 1) {
+                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected1 }} key={item.text}></SideButton>
+                            } else {
+                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected2 }} key={item.text}></SideButton>
+                            }
                         }
                         if (item.type === "divider") {
                             return <Divider classes={{ root: classes.divider }} key={index} />;

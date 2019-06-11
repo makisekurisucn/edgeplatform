@@ -11,13 +11,13 @@ const styles = theme => ({
     },
     keyName: {
         fontSize: 14,
-        color: '#EEF9FF',
+        // color: '#EEF9FF',
         fontWeight: 400,
         marginBottom: 6
     },
     value: {
         fontSize: 16,
-        color: '#EEF9FF',
+        // color: '#EEF9FF',
         fontWeight: 600
     }
 });

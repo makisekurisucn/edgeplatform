@@ -79,9 +79,9 @@ const tabList = [
         component: NodeWorkload
     }
 ];
-const status={
-    ready:'就绪',
-    running:'运行中'
+const status = {
+    ready: '就绪',
+    running: '运行中'
 }
 class NodeView extends Component {
     constructor(props) {
@@ -127,7 +127,7 @@ class NodeView extends Component {
                         {detail.Meta ? detail.Meta.address : ''}
                     </p>
                 </div>
-                <Tabs contentList={tabList} viewProps={{ ...detail, region, Datacenter }} />
+                <Tabs contentList={tabList} viewProps={{ ...detail, region, Datacenter }} reducedHeight={268} tabWrapColor="rgba(75,139,175,0.7)" />
             </div>
         );
     }

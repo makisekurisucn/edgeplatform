@@ -50,6 +50,21 @@ const styles = theme => ({
     },
     actionArea: {
         // padding: "0px 10px"
+    },
+    buttonRoot:{
+        height: 60,
+        width: 180,
+        // boxSizing: 'border-box',
+        lineHeight: '60px',
+        textAlign: 'center',
+        padding: '0px 4px',
+        fontSize: 18
+        
+    },
+    selected: {
+        height: 4,
+        backgroundColor: '#4B8BAF',
+        marginTop: -60
     }
 });
 // let regionListDemo = [
@@ -96,8 +111,8 @@ class TopBar extends Component {
                     </Typography>
 
                     <div className={classes.menuList}>
-                        <TopButton content="看板" link="/dashboard"></TopButton>
-                        <TopButton content="控制台" link="/console"></TopButton>
+                        <TopButton content="看板" link="/dashboard" className={{buttonRoot:classes.buttonRoot,selected:classes.selected}}></TopButton>
+                        <TopButton content="控制台" link="/console" className={{buttonRoot:classes.buttonRoot,selected:classes.selected}}></TopButton>
                     </div>
                 </div>
                 <div className={classes.actionArea}>

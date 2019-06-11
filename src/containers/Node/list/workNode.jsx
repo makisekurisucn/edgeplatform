@@ -19,9 +19,9 @@ const styles = theme => ({
     root: {
         // width: '100%',
         overflowX: 'auto',
-        paddingLeft: theme.spacing.unit * 3,
-        paddingRight: theme.spacing.unit * 3,
-        paddingTop: theme.spacing.unit * 3
+        // paddingLeft: theme.spacing.unit * 3,
+        // paddingRight: theme.spacing.unit * 3,
+        // paddingTop: theme.spacing.unit * 3
     },
     table: {
         minWidth: 700,
@@ -33,6 +33,9 @@ const styles = theme => ({
         bottom: 3 * theme.spacing.unit,
 
     },
+    tableBody:{
+        cursor:'pointer'
+    }
 });
 const header = [{ name: "名称", key: "Name" }, { name: "地址", key: "Address" }, { name: "DC", key: "Datacenter" }, { name: "状态", key: "Status" }];
 class SimpleTable extends Component {
@@ -44,9 +47,9 @@ class SimpleTable extends Component {
     }
     itemClick = data => {
         // console.log(this);
-        if (data.key === 'Name') {
-            this.props.history.push(`/console/node/worker/${data.item.ID}`);
-        }
+        // if (data.key === 'Name') {
+        this.props.history.push(`/console/node/worker/${data.item.ID}`);
+        // }
     }
     componentDidMount() {
         const { dispatch } = this.props;
@@ -60,7 +63,7 @@ class SimpleTable extends Component {
             <div className={classes.root}>
                 <Paper>
                     <Loading loading={loading}>
-                        <Table header={header} list={list} onItemClick={this.itemClick} />
+                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody}/>
                     </Loading>
                 </Paper>
             </div>

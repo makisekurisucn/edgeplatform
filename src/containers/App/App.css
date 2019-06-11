@@ -43,6 +43,7 @@ li{
 }
 .App-wrap{
   display: flex;
+  padding-top: 60px;
 }
 .App-menu{
   flex: none;

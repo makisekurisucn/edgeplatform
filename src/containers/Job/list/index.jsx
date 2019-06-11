@@ -9,7 +9,9 @@ import AddIcon from '@material-ui/icons/Add';
 import Loading from '../../../components/Loading';
 import { getJobList } from '../../../actions/Job';
 import Tooltip from '@material-ui/core/Tooltip';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
+import Divider from '@material-ui/core/Divider';
+import AppMainUpper from '../../../components/AppMainUpper';
 
 
 
@@ -19,9 +21,9 @@ const styles = theme => ({
     root: {
         // width: '100%',
         overflowX: 'auto',
-        paddingLeft: theme.spacing.unit * 3,
-        paddingRight: theme.spacing.unit * 3,
-        paddingTop: theme.spacing.unit * 3
+        // paddingLeft: theme.spacing.unit * 3,
+        // paddingRight: theme.spacing.unit * 3,
+        // paddingTop: theme.spacing.unit * 3
     },
     table: {
         minWidth: 700,
@@ -33,6 +35,9 @@ const styles = theme => ({
         bottom: 3 * theme.spacing.unit,
 
     },
+    tableBody:{
+        cursor:'pointer'
+    }
 });
 const header = [{ name: "名称", key: "Name" }, { name: "类型", key: "Type" }, { name: "状态", key: "Status" }, { name: "创建时间", key: "SubmitTime", type: "time" }];
 const list = [{ name: "hello", test: "没过", id: 1 }];
@@ -45,9 +50,9 @@ class SimpleTable extends Component {
     }
     itemClick = data => {
         // console.log(this);
-        if (data.key === 'Name') {
-            this.props.history.push(`/console/jobs/detail/${data.item.Name}`);
-        }
+        // if (data.key === 'Name') {
+        this.props.history.push(`/console/jobs/detail/${data.item.Name}`);
+        // }
     }
     componentDidMount() {
         const { dispatch } = this.props;
@@ -63,16 +68,11 @@ class SimpleTable extends Component {
             <div className={classes.root}>
                 <Paper>
                     <Loading loading={loading}>
-                        <Table header={header} list={list} onItemClick={this.itemClick} />
+                        <AppMainUpper type='job_list' />
+                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody}/>
                     </Loading>
                 </Paper>
-                <NavLink to="/console/jobs/create">
-                    <Tooltip title="新增" placement="top-start" aria-label="Add">
-                        <Fab color="primary" size="medium" className={classes.fab}>
-                            <AddIcon />
-                        </Fab>
-                    </Tooltip>
-                </NavLink>
+
 
             </div>
         );

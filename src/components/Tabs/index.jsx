@@ -46,7 +46,7 @@ const styles = theme => ({
     },
     tabContentWrap: {
         position: 'relative',
-        height: 600
+        // height: 600
     },
     itemWrap: {
         // position: 'absolute',
@@ -90,7 +90,7 @@ class Tabs extends Component {
 
     }
     render() {
-        const { classes, className, contentList, index, viewProps } = this.props;
+        const { classes, className, contentList, index, viewProps, reducedHeight, tabWrapColor } = this.props;
         const currentIndex = this.state.index;
         const prevIndex = this.state.prevIndex;
         let classNameWrap = classes.root;
@@ -101,7 +101,7 @@ class Tabs extends Component {
 
         return (
             <div className={classNameWrap}>
-                <ul className={classes.tabWrap}>
+                <ul className={classes.tabWrap} style={tabWrapColor ? { backgroundColor: tabWrapColor } : {}}>
                     {
                         tabList.map((item, index) => {
                             let cls = classes.tabItem;
@@ -112,7 +112,7 @@ class Tabs extends Component {
                         })
                     }
                 </ul>
-                <FixedHeight reducedHeight={268}>
+                <FixedHeight reducedHeight={reducedHeight}>
                     <div className={classes.tabContentWrap}>
                         {
                             tabList.map((item, index) => {
@@ -138,7 +138,7 @@ class Tabs extends Component {
                         }
                     </div>
                 </FixedHeight>
-                
+
             </div>
         );
     }

@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import moment from 'moment';
-import {formatTime} from '../../utils/formatTime';
+import { formatTime } from '../../utils/formatTime';
 
 // import AddIcon from '@material-ui/icons/Add';
 
@@ -16,12 +16,44 @@ import { isAbsolute } from 'path';
 const styles = theme => ({
     root: {
         width: '100%',
-        overflowX: 'auto',
+        overflowX: 'auto'
     },
     table: {
-        minWidth: 700,
+        minWidth: 700
     },
+    tableHead: {
+        height: 62
+    },
+    tableBody: {
+        height: 56,
+        '&:hover': {
+            backgroundColor: 'rgba(33, 28, 28, 0.09)'
+        }
+    },
+    tableRow: {
+        backgroundColor: 'rgb(241,241,241)'
+    },
+    tableCell: {
+        fontSize: '18px'
+    },
+    status: {
+        display: 'inline-block',
+        width: '82px',
+        height: '29px',
+        border: '2px solid #4BAF7E',
+        color: '#4BAF7E',
+        lineHeight: '29px',
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 400
+    }
 });
+
+const kvMap = {
+    service: '服务',
+    pending: '启动中',
+    running: '运行中'
+}
 
 class SimpleTable extends Component {
     constructor(props) {
@@ -51,23 +83,34 @@ class SimpleTable extends Component {
         }
     }
     render() {
-        const { classes, header, list } = this.props;
+        const { classes, header, list, className } = this.props;
         console.log(header)
+        let tableBodyWrap = classes.tableBody;
+        if (className) {
+            tableBodyWrap = classes.tableBody + ' ' + className
+        }
         return (
             <Table className={classes.table}>
                 <TableHead>
-                    <TableRow>
+                    <TableRow className={classes.tableRow + ' ' + classes.tableHead}>
                         {header.map((head) => (
-                            <TableCell align="center" key={head.name}>{head.name}</TableCell>
+                            <TableCell className={classes.tableCell} align="center" key={head.name}>{head.name}</TableCell>
                         ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {list.map((row) => (
-                        <TableRow key={row.ID?row.ID:row.Name}>
-                            {header.map((head) => (
-                                <TableCell align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {this.processItem(head, row)}</TableCell>
-                            ))}
+                        <TableRow className={tableBodyWrap} key={row.ID ? row.ID : row.Name}>
+                            {header.map((head) => {
+                                if (head.key === 'Status') {
+                                    return <TableCell align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} >
+                                        <span className={classes.status}>{kvMap[this.processItem(head, row)] || this.processItem(head, row)}</span>
+                                    </TableCell>
+                                } else {
+                                    return <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>
+                                }
+                                // <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>
+                            })}
                         </TableRow>
                     ))}
                     {
