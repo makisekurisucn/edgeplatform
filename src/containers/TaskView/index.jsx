@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Tabs from '../../components/Tabs';
-import NodeInfo from './NodeInfo';
-import NodeMetric from './NodeMetric';
-import NodeWorkload from './NodeWorkload';
+import RunningEvent from './RunningEvent';
+import TaskMetric from './TaskMetric';
+import TaskLog from './TaskLog';
 
 const styles = theme => ({
     root: {
@@ -35,27 +35,29 @@ const styles = theme => ({
     },
     status: {
         display: 'inline-block',
-        width: '48px',
-        height: '18px',
-        border: '1px solid #4BAF7E',
+        width: '82px',
+        height: '29px',
+        border: '2px solid #4BAF7E',
         color: '#4BAF7E',
-        lineHeight: '18px',
+        lineHeight: '29px',
         textAlign: 'center',
-        fontSize: '14px',
+        fontSize: '18px',
         fontWeight: 400
     },
     mainTitle: {
         color: '#EEF9FF',
-        fontSize: '28px',
+        fontSize: '22px',
         marginRight: '4px',
-        fontWeight: 600
+        fontWeight: 400
     },
     subTitle: {
         fontSize: '16px',
-        color: '#EEF9FF'
+        color: '#EEF9FF',
+        fontWeight: 400
     },
     headerContent: {
         fontSize: '18px',
+        fontWeight: 300,
         color: '#EEF9FF',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
@@ -67,24 +69,25 @@ const styles = theme => ({
 });
 const tabList = [
     {
-        name: '基本信息',
-        component: NodeInfo
+        name: '运行时间',
+        component: RunningEvent
     },
     {
         name: '监控',
-        component: NodeMetric
+        component: TaskMetric
     },
     {
-        name: '应用',
-        component: NodeWorkload
+        name: '应用日志',
+        component: TaskLog
     }
 ];
 const status = {
     ready: '就绪',
     running: '运行中',
-    down: '已停止'
+    dead:'已停止',
+    pending:'启动中'
 }
-class NodeView extends Component {
+class TaskView extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -107,16 +110,12 @@ class NodeView extends Component {
 
     // }
     render() {
-        const { classes, className, children, detail, region, Datacenter, DCInfoMap } = this.props;
+        const { classes, className, children, DCInfo, allocDetail={} } = this.props;
         // const { isHidden, stage} = this.state;
+        const allocName=allocDetail.Name;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
-        }
-
-        let DCInfo = {};
-        if (Datacenter) {
-            DCInfo = DCInfoMap[region][Datacenter];
         }
 
         return (
@@ -124,8 +123,8 @@ class NodeView extends Component {
                 <div className={classes.appHeader}>
                     <div className={classes.headerTop}>
                         <div className={classes.headerName}>
-                            <p className={classes.mainTitle}>{detail.Name}</p>
-                            <span className={classes.status}>{status[detail.Status]}</span>
+                            <p className={classes.mainTitle}>{allocName}</p>
+                            <span className={classes.status}>运行中</span>
                         </div>
                         <p className={classes.subTitle}>{DCInfo.region} - {DCInfo.DC}</p>
                     </div>
@@ -133,17 +132,17 @@ class NodeView extends Component {
                         {DCInfo.address}
                     </p>
                 </div>
-                <Tabs contentList={tabList} viewProps={{ ...detail, region, Datacenter }} reducedHeight={268} tabWrapColor="rgba(75,139,175,0.7)" />
+                <Tabs contentList={tabList} viewProps={{}} reducedHeight={343} tabWrapColor="rgba(75,139,175,0.7)" />
             </div>
         );
     }
 }
 
-NodeView.propTypes = {
+TaskView.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
     return state.region;
 }
-export default connect(mapStateToProps)(withStyles(styles)(NodeView));
+export default connect(mapStateToProps)(withStyles(styles)(TaskView));

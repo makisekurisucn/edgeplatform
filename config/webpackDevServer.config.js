@@ -88,7 +88,8 @@ module.exports = function(proxy, allowedHost) {
                 // target: 'http://10.10.101.117:4646' 多region,无meta
             },
             '/api': {
-                target: 'http://134.209.9.106:9999'
+                // target: 'http://134.209.9.106:9999'
+                target: 'http://10.10.101.135:9090'
             }
         },
         before(app, server) {

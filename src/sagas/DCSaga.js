@@ -8,35 +8,49 @@ function* getDClist(action) {
     let regionList = yield call(getRegionList);
     let DClist = [];
     let allRegionNodelist = [];
+    let DCInfoMap = {};
+
+    const initialMeta = {
+        DC: "未知",
+        address: "未知",
+        arch: "未知",
+        latitude: "未知",
+        longitude: "未知",
+        range: "未知",
+        region: "未知"
+    }
 
     for (let i = 0; i < regionList.length; i++) {
         let DClistInRegion = [];
-        let DCInfoMap = new Map();
+        DCInfoMap[regionList[i]] = {};
 
         setRegion(regionList[i]);
         let workerList = yield call(getWorkerList);
         for (let j = 0; j < workerList.length; j++) {
-            if (DClistInRegion.indexOf(workerList[j].Datacenter) > -1) {                
+            if (DClistInRegion.indexOf(workerList[j].Datacenter) > -1) {
+                let workerDetail = yield call(getWorkerDetail, workerList[j].ID);
+                DCInfoMap[regionList[i]][workerList[j].Datacenter] = Object.assign({}, DCInfoMap[regionList[i]][workerList[j].Datacenter], workerDetail.Meta);
             } else {
                 DClistInRegion.push(workerList[j].Datacenter);
                 let workerDetail = yield call(getWorkerDetail, workerList[j].ID);
-                DCInfoMap.set(workerList[j].Datacenter, workerDetail.Meta);
+                DCInfoMap[regionList[i]][workerList[j].Datacenter] = Object.assign({}, initialMeta, workerDetail.Meta);
             }
-            allRegionNodelist.push(
-                {   name: workerList[j].Name,
-                    ID: workerList[j].ID, 
-                    region: regionList[i], 
-                    Datacenter: workerList[j].Datacenter 
-                });
+            allRegionNodelist.push({
+                name: workerList[j].Name,
+                ID: workerList[j].ID,
+                region: regionList[i],
+                Datacenter: workerList[j].Datacenter
+            });
         }
-        DClist.push({ region: regionList[i], list: DClistInRegion, DCInfo: DCInfoMap });
+        DClist.push({ region: regionList[i], list: DClistInRegion });
     }
 
     yield put({
         type: "DC_UPDATE_DCLIST",
         data: {
             list: DClist || [],
-            allRegionNodelist: allRegionNodelist || []
+            allRegionNodelist: allRegionNodelist || [],
+            DCInfoMap
         }
     });
 }
@@ -60,33 +74,10 @@ function* getNodelist(action) {
     });
 }
 
-function* getDCCount(action) {
-    let regionList = yield call(getRegionList);
-    let DCArray = [];
-
-    for (let i = 0; i < regionList.length; i++) {
-        setRegion(regionList[i]);
-        let workerList = yield call(getWorkerList);
-        for (let j = 0; j < workerList.length; j++) {
-            if (DCArray.indexOf(workerList[j].Datacenter) > -1) {} else {
-                DCArray.push(workerList[j].Datacenter);
-            }
-        }
-    }
-
-    let count = DCArray.length;
-    yield put({
-        type: "DC_UPDATE_DCCOUNT",
-        data: {
-            DCCount: count || 0
-        }
-    });
-}
 
 function* detailSaga() {
     yield takeLatest('DC_GETDCLIST_SAGA', getDClist);
     yield takeLatest('DC_GETNODELIST_SAGA', getNodelist);
-    yield takeLatest('DC_GETDCCOUNT_SAGA', getDCCount);
 
 }
 

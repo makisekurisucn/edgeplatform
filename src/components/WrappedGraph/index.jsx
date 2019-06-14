@@ -11,7 +11,8 @@ const styles = theme => ({
         height: 172,
         width: '100%',
         border: '1px solid rgba(136, 136, 136, 0.44)',
-        backgroundColor: 'rgba(238, 249, 255, 0.05)'
+        backgroundColor: 'rgba(238, 249, 255, 0.05)',
+        boxSizing: 'border-box'
     },
     graph: {
         width: '100%',

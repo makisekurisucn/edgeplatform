@@ -127,7 +127,6 @@ const jobStatusProcess = (allocInfo) => {
         statusIndex[tgname] = {};
         taskGroup[tgname].forEach((instance, index) => {
             let tasks = instance.TaskStates;
-            delete instance.TaskStates;
             for (let taskName in tasks) {
                 if (index === 0) {
                     newTG[taskName] = [];
@@ -135,6 +134,7 @@ const jobStatusProcess = (allocInfo) => {
                 }
                 let newTaskItem = {};
                 newTaskItem = Object.assign(newTaskItem, tasks[taskName], instance);
+                delete newTaskItem.TaskStates;
                 // 整理日志
                 let log = [];
                 newTaskItem.Events.forEach(logItem => {
@@ -168,11 +168,29 @@ const jobStatusProcess = (allocInfo) => {
         }
     }
 }
+const jobAllocationListProcess = (list) => {
+    let listFilter = {};
+    let allocationList = [];
+    list.forEach(alloc => {
+        if (listFilter[alloc.Name]) {
+            if (alloc.CreateTime > listFilter[alloc.Name].CreateTime) {
+                listFilter[alloc.Name] = alloc;
+            }
+        } else {
+            listFilter[alloc.Name] = alloc;
+        }
+    })
+    for (let name in listFilter) {
+        allocationList.push(listFilter[name]);
+    }
+    return allocationList;
+}
 const initialState = {
     index: 0,
     detail: {},
     history: [],
-    status: {}
+    status: {},
+    allocationList: []
 };
 const JobRedu = (state = initialState, action) => {
     // alert(action.type);
@@ -185,6 +203,8 @@ const JobRedu = (state = initialState, action) => {
             return Object.assign({}, state, jobStatusProcess(action.data));
         case 'RESET_JOB_DETAIL':
             return Object.assign({}, state, initialState);
+        case 'JOB_UPDATE_ALLOCATIONLIST':
+            return Object.assign({}, state, { allocationList: jobAllocationListProcess(action.data.allocationList) });
         default:
             return state;
     }

@@ -147,7 +147,7 @@ class AppMainUpper extends Component {
         this.props.history.goBack();
     }
     render() {
-        const { classes, className, type, status, defaultCommand, commandList } = this.props;
+        const { classes, className, type, status, data={} } = this.props;
         const { selected } = this.state;
         let classNameWrap = '';
 
@@ -166,11 +166,11 @@ class AppMainUpper extends Component {
                 myAppMainUpper = <div className={classes.root2}>
                     <div className={classes.title}>
                         <ArrowBackIos className={classes.arrow2} onClick={this.goBack} />
-                        <div className={classes.jobApp}>应用APP</div>
+                        <div className={classes.jobApp}>{data.name}</div>
                         <div className={classes.status}>{status}</div>
                     </div>
                     <div className={classes.select}>
-                        <CommandSet defaultCommand={defaultCommand} commandList={commandList} />
+                        <CommandSet defaultCommand={data.defaultCommand} commandList={data.commandList} />
 
                         {/* <span className={classes.command}>{defaultCommandName}</span>
                         <div className={classes.expandMore}>

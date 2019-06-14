@@ -52,10 +52,11 @@ class JobInfo extends Component {
     }
 
     render() {
-        const { classes, className, data } = this.props;
+        const { classes, className, data: jobDetail } = this.props;
+        const { detail, status } = jobDetail;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
-        const taskInfo = data.TaskGroups ? data.TaskGroups[0].Tasks[0] : { Config: {} };
+        const taskInfo = detail.TaskGroups ? detail.TaskGroups[0].Tasks[0] : { Config: {} };
         if (className) {
             classNameWrap += ' ' + className;
         }
@@ -64,12 +65,12 @@ class JobInfo extends Component {
             <div className={classNameWrap}>
                 <div className={classes.subContent}>
                     <div className={classes.subTitle}>基本信息</div>
-                    <KvItem keyName="类型" className={classes.kvItem} value={kvMap[data.Type] || data.Type} />
-                    <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(data.SubmitTime)} />
-                    <KvItem keyName="Region" className={classes.kvItem} value={data.Region} />
-                    <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(data.Datacenters)} />
-                    <KvItem keyName="当前版本" className={classes.kvItem} value={data.Version} />
-                    <KvItem keyName="状态" className={classes.kvItem} value={kvMap[data.Status] || data.Status} />
+                    <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} />
+                    <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} />
+                    <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} />
+                    <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} />
+                    <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} />
+                    <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} />
                 </div>
                 <div className={classes.subContent}>
                     <div className={classes.subTitle}>应用信息</div>

@@ -4,7 +4,7 @@ const getDCList = (dispatch) => {
     });
 }
 
-const getNodeList = (dispatch,region,Datacenter) => {
+const getNodeList = (dispatch, region, Datacenter) => {
     dispatch({
         type: 'DC_GETNODELIST_SAGA',
         region,
@@ -12,12 +12,5 @@ const getNodeList = (dispatch,region,Datacenter) => {
     });
 }
 
-const getDCCount = (dispatch) => {
-    dispatch({
-        type: 'DC_GETDCCOUNT_SAGA'
-    });
-}
 
-
-
-export { getDCList ,getNodeList,getDCCount};
+export { getDCList, getNodeList };

@@ -55,13 +55,14 @@ function* getJobDetail(action) {
             put({
                 type: "JOB_HISTORY_SAGA",
                 data: {
-                    name: jobdetail.Name
+                    id: jobdetail.ID
                 }
             }),
             put({
                 type: "JOB_STATUS_SAGA",
                 data: {
                     name: jobdetail.Name,
+                    id: jobdetail.ID,
                     taskGroup: tg
                 }
             })
@@ -71,7 +72,7 @@ function* getJobDetail(action) {
 }
 
 function* getJobHistory(action) {
-    let jobHistory = yield call(history, action.data.name);
+    let jobHistory = yield call(history, action.data.id);
     if (!jobHistory.error) {
         yield put({
             type: "JOB_UPDATE_JOBHISTORY",
@@ -84,7 +85,7 @@ function* getJobHistory(action) {
 
 function* getJobStatus(action) {
     let [jobStatus, nodeList] = yield all([
-        call(status, action.data.name),
+        call(status, action.data.id),
         call(listNode)
     ]);
 
@@ -95,6 +96,12 @@ function* getJobStatus(action) {
                 status: jobStatus || {},
                 nodeList: nodeList || [],
                 jobInfo: action.data
+            }
+        });
+        yield put({
+            type: 'JOB_UPDATE_ALLOCATIONLIST',
+            data: {
+                allocationList: jobStatus
             }
         });
     }

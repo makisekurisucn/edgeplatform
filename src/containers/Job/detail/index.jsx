@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Tabs from '../../../components/Tabs';
 import Paper from '@material-ui/core/Paper';
 import { getJobDetail, resetStatus } from '../../../actions/Job';
+import { getDCList } from '../../../actions/DC';
 import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
 import { formatTime } from '../../../utils/formatTime';
@@ -61,6 +62,7 @@ class JobDetail extends Component {
         resetStatus(dispatch);
         let id = this.props.match.params.id;
         getJobDetail(dispatch, id);
+        getDCList(dispatch);
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.statusIndex) {
@@ -85,7 +87,7 @@ class JobDetail extends Component {
         // alert(params);
     }
     render() {
-        const { classes, match, detail, history, status } = this.props;
+        const { classes, match, detail, history, status, allocationList } = this.props;
         console.log(status);
         const { taskGroup, nodeInfo } = status;
         const { index, statusIndex } = this.state;
@@ -119,8 +121,8 @@ class JobDetail extends Component {
 
         return (
             <Paper className={classes.root}>
-                <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} defaultCommand={defaultCommand} commandList={commandList} />
-                <Tabs contentList={tabList} viewProps={detail} reducedHeight={163} tabWrapColor='rgb(96,139,162)' />
+                <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} data={{ defaultCommand, commandList, name: detail.Name }} />
+                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList }} reducedHeight={163} tabWrapColor='rgb(96,139,162)' />
             </Paper>
         );
     }
