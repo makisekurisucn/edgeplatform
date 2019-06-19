@@ -79,7 +79,7 @@ class NodeMetric extends Component {
         };
     }
 
-    componentWillUpdate() {
+    componentDidUpdate() {
         const { dispatch } = this.props;
         if (this.props.data.ID) {
             clearTimeout(timeID);
@@ -114,6 +114,10 @@ class NodeMetric extends Component {
             })
         }
         return metricData;
+    }
+
+    componentWillUnmount() {
+        clearTimeout(timeID);
     }
 
     render() {

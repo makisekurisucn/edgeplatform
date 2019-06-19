@@ -6,7 +6,8 @@ import Tabs from '../../components/Tabs';
 import RunningEvent from './RunningEvent';
 import TaskMetric from './TaskMetric';
 import TaskLog from './TaskLog';
-import Select from '../../components/Select/SelectButton'
+import Select from '../../components/Select/SelectButton';
+import { setRegion } from '../../utils/handleRequest';
 import { stat } from 'fs';
 
 const styles = theme => ({
@@ -61,6 +62,19 @@ const styles = theme => ({
         color: '#EEF9FF',
         fontWeight: 400
     },
+    link: {
+        fontSize: '12px',
+        fontWeight: '400',
+        color: 'rgb(97,139,162)',
+        backgroundColor: 'rgba(238,249,255,0.35)',
+        padding: '2px 4px',
+        lineHeight: '16px',
+        height: '16px',
+        position: 'absolute',
+        top: '52px',
+        right: '15px',
+        cursor: 'pointer'
+    },
     headerContent: {
         fontSize: '18px',
         fontWeight: 300,
@@ -112,6 +126,15 @@ class TaskView extends Component {
     // componentDidUpdate(){
 
     // }
+    turnToNodeDetail = () => {
+        const currentRegion = this.props.region;
+        const nodeID = this.props.node.ID;
+        if (nodeID) {
+            setRegion(currentRegion);
+            window.location.href = `/#/console/node/worker/${nodeID}`;
+        }
+    }
+
     selectTask = (index) => {
         this.setState({
             currentTaskIndex: index
@@ -145,7 +168,10 @@ class TaskView extends Component {
                             <Select list={list} value={list[this.state.currentTaskIndex]} onSelected={this.selectTask} />
                             <span className={classes.status}>{status}</span>
                         </div>
-                        <p className={classes.subTitle}>{DCInfo.region} - {DCInfo.DC}</p>
+                        <div>
+                            <div className={classes.subTitle}>{DCInfo.region} - {DCInfo.DC}</div>
+                            <div className={classes.link} onClick={this.turnToNodeDetail}>{node.Name}</div>
+                        </div>
                     </div>
                     <p className={classes.headerContent} title={DCInfo.address}>
                         {DCInfo.address}

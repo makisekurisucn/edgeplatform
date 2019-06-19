@@ -3,7 +3,7 @@ import { getCPUUtilization as getCPUData, getDiskUtilization as getDiskData, get
 
 
 function* getCPUUtilization(action) {
-    let CPUData = yield call(getCPUData,action.nodeID,action.DC);
+    let CPUData = yield call(getCPUData, action.nodeID, action.DC, action.duration);
 
     yield put({
         type: "PROMETHEUS_UPDATE_CPUUTILIZATION",
@@ -12,7 +12,7 @@ function* getCPUUtilization(action) {
 }
 
 function* getDiskUtilization(action) {
-    let DiskData = yield call(getDiskData,action.nodeID,action.DC);
+    let DiskData = yield call(getDiskData, action.nodeID, action.DC, action.duration);
 
     yield put({
         type: "PROMETHEUS_UPDATE_DISKUTILIZATION",
@@ -21,7 +21,7 @@ function* getDiskUtilization(action) {
 }
 
 function* getMemoryUtilization(action) {
-    let MemoryData = yield call(getMemoryData,action.nodeID,action.DC);
+    let MemoryData = yield call(getMemoryData, action.nodeID, action.DC, action.duration);
 
     yield put({
         type: "PROMETHEUS_UPDATE_MEMORYUTILIZATION",

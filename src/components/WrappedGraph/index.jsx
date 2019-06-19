@@ -96,9 +96,7 @@ class WrappedGraph extends Component {
                                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'65px'}></Select>
                             </div> : null
                     }
-                    {/* <div>
-                        <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData}></Select>
-                    </div> */}
+                   
                     <span className={classes.current}>{current}</span>
 
                 </div>

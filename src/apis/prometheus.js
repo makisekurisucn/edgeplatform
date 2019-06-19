@@ -1,15 +1,13 @@
 // import { request } from '../utils/request';
-import { request } from '../utils/request'
+import { request } from '../utils/request';
+import { transformTimeFromStrToNum as transformTime } from '../utils/formatTime';
 
 
-function getCPUUtilization(nodeID, DC) {
-    const endTimestamp = Math.floor(new Date().valueOf() / 10000) * 10000;
-    const startTimestamp = new Date(endTimestamp - 3600000).valueOf();
+function getCPUUtilization(nodeID, DC, duration) {
+    const result = transformTime(duration);
 
-    // let label=`{}`
     return request({
-        // url: `/api/v1/query_range?query=nomad_client_host_cpu_total{nodeID='${nodeID}',DC='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=10`,
-        url: `/api/v1/query_range?query=nomad_client_host_cpu_total{node_id='${nodeID}',datacenter='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=10`,
+        url: `/api/v1/query_range?query=nomad_client_host_cpu_total{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
         options: {
             method: 'GET',
             expectedDataType: 'json'
@@ -18,12 +16,11 @@ function getCPUUtilization(nodeID, DC) {
 }
 
 
-function getDiskUtilization(nodeID, DC) {
-    const endTimestamp = Math.floor(new Date().valueOf() / 10000) * 10000;
-    const startTimestamp = new Date(endTimestamp - 3600000).valueOf();
-    // let label=`{}`
+function getDiskUtilization(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
     return request({
-        url: `/api/v1/query_range?query=nomad_client_host_disk_used{node_id='${nodeID}',datacenter='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=10`,
+        url: `/api/v1/query_range?query=nomad_client_host_disk_used{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
         options: {
             method: 'GET',
             expectedDataType: 'json'
@@ -31,12 +28,11 @@ function getDiskUtilization(nodeID, DC) {
     });
 }
 
-function getMemoryUtilization(nodeID, DC) {
-    const endTimestamp = Math.floor(new Date().valueOf() / 10000) * 10000;
-    const startTimestamp = new Date(endTimestamp - 3600000).valueOf();
-    // let label=`{}`
+function getMemoryUtilization(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
     return request({
-        url: `/api/v1/query_range?query=nomad_client_host_memory_used{node_id='${nodeID}',datacenter='${DC}'}&start=${startTimestamp/1000}&end=${endTimestamp/1000}&step=10`,
+        url: `/api/v1/query_range?query=nomad_client_host_memory_used{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
         options: {
             method: 'GET',
             expectedDataType: 'json'

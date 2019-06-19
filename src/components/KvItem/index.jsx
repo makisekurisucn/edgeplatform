@@ -28,7 +28,7 @@ class KvItem extends Component {
         };
     }
     render() {
-        const { classes, className, keyName, value } = this.props;
+        const { classes, className, keyName, value, style = {} } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -36,8 +36,8 @@ class KvItem extends Component {
         }
         return (
             <div className={classNameWrap}>
-                <p className={classes.keyName}>{keyName}</p>
-                <p className={classes.value}>{value}</p>
+                <p className={classes.keyName} style={style.keyName}>{keyName}</p>
+                <p className={classes.value} style={style.value}>{value}</p>
             </div>
         );
     }

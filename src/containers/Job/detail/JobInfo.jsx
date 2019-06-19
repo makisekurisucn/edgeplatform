@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import KvItem from '../../../components/KvItem';
 import Tabs from '../../../components/Tabs';
 import { formatTime } from '../../../utils/formatTime';
+import Select from '../../../components/Select/SelectButton';
 
 const styles = theme => ({
     root: {
@@ -12,21 +13,40 @@ const styles = theme => ({
         top: '0',
         left: 0,
         opacity: 1,
-        padding: '30px 71px',
+        padding: '19px 52px',
         color: 'rgb(97,139,162)',
         display: 'flex'
     },
+    kvContent: {
+        backgroundColor: 'rgba(68,105,128,0.02)',
+        paddingTop: '20px',
+        paddingBottom: '1px',
+        marginBottom: '35px'
+    },
     kvItem: {
-        marginBottom: 30
+        marginBottom: 30,
+        paddingLeft: '24px'
     },
     subContent: {
-        flex: 'auto'
+        flex: 'auto',
+        minWidth: '400px',
+        maxWidth: '520px',
+        width: '27%',
+        marginRight: '35px'
+    },
+    aboveContent: {
+
+    },
+    belowContent: {
+
     },
     subTitle: {
-        height: 64,
+        height: 42,
         fontSize: 30,
         fontWeight: 300,
-        lineHeight: '50px'
+        lineHeight: '42px',
+        backgroundColor: 'rgba(97, 139, 162, 0.1)',
+        paddingLeft: '24px'
     }
 });
 
@@ -40,6 +60,7 @@ class JobInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
+
         };
     }
 
@@ -60,26 +81,59 @@ class JobInfo extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
+
+        const style = {
+            keyName: {
+                fontSize: '14',
+                fontWeight: '300',
+                marginBottom: '3px'
+            },
+            value: {
+                fontSize: '16',
+                fontWeight: '400'
+            }
+        }
         console.log(taskInfo)
         return (
             <div className={classNameWrap}>
                 <div className={classes.subContent}>
-                    <div className={classes.subTitle}>基本信息</div>
-                    <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} />
-                    <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} />
-                    <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} />
-                    <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} />
-                    <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} />
-                    <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} />
+                    <div className={classes.aboveContent}>
+                        <div className={classes.subTitle}>基本信息</div>
+                        <div className={classes.kvContent}>
+                            <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
+                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
+                            <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
+                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
+                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} />
+                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
+                        </div>
+                    </div>
+                    <div className={classes.belowContent}>
+                        <div className={classes.subTitle}>调度策略</div>
+                        <div className={classes.kvContent}>
+                            <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
+                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
+                            <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
+                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
+                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} style={style} />
+                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
+                        </div>
+                    </div>
                 </div>
                 <div className={classes.subContent}>
-                    <div className={classes.subTitle}>应用信息</div>
-                    <KvItem keyName="运行时类型" className={classes.kvItem} value={taskInfo.Driver} />
-                    <KvItem keyName="容器镜像" className={classes.kvItem} value={taskInfo.Config.image} />
-                    <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.CPU} />
-                    <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.MemoryMB} />
-                    <KvItem keyName="当前版本" className={classes.kvItem} value={''} />
-                    <KvItem keyName="主机名" className={classes.kvItem} value={''} />
+                    <div className={classes.subTitle}>
+                        <div>应用信息</div>
+                        <div></div>
+                    </div>
+                    {/* <div className={classes.subTitle}>应用信息</div> */}
+                    <div className={classes.kvContent}>
+                        <KvItem keyName="运行时类型" className={classes.kvItem} value={taskInfo.Driver} style={style} />
+                        <KvItem keyName="容器镜像" className={classes.kvItem} value={taskInfo.Config.image} style={style} />
+                        <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.CPU} style={style} />
+                        <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.MemoryMB} style={style} />
+                        <KvItem keyName="当前版本" className={classes.kvItem} value={''} style={style} />
+                        <KvItem keyName="主机名" className={classes.kvItem} value={''} style={style} />
+                    </div>
                 </div>
             </div>
         );

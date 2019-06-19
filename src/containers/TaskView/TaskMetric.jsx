@@ -100,21 +100,30 @@ class TaskMetric extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedIndex: 3
+            selectedIndex: 3,
+            duration: '0.5hour'
         };
     }
 
-    componentWillUpdate() {
+    componentDidUpdate() {
         const { dispatch } = this.props;
-        // if (this.props.data.ID) {
-        //     clearTimeout(timeID);
-        //     const nodeID = this.props.data.ID;
-        //     const Datacenter = this.props.data.Datacenter;
-        //     timeID = setTimeout(function () {
-        //         getPrometheus(dispatch, nodeID, Datacenter);
-        //     }, 300000)
-        //     //暂时将刷新时间设为5分钟，等接到prometheus数据后再改成10s,且刷新时间要和api中的时间对应,确保每次取的点时间戳一致
-        // }
+        if (this.props.data.node.ID) {
+            clearTimeout(timeID);
+            console.log('clear')
+            const nodeID = this.props.data.node.ID;
+            const Datacenter = this.props.data.node.Datacenter;
+            const duration = this.state.duration;
+            console.log('set timeout')
+            timeID = setTimeout(function () {
+                // getPrometheus(dispatch, nodeID, Datacenter, this.state.duration);
+                getPrometheus(dispatch, nodeID, Datacenter, duration);
+            }, 300000)
+            //暂时将刷新时间设为5分钟，等接到prometheus数据后再改成10s,且刷新时间要和api中的时间对应,确保每次取的点时间戳一致
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(timeID);
     }
 
     dataWrapper = (results, config) => {
@@ -142,9 +151,16 @@ class TaskMetric extends Component {
     }
 
     selectData = (index) => {
-        //dispatch
+        const { dispatch } = this.props;
+        if (this.props.data.node.ID) {
+            clearTimeout(timeID);
+            const nodeID = this.props.data.node.ID;
+            const Datacenter = this.props.data.node.Datacenter;
+            getPrometheus(dispatch, nodeID, Datacenter, selectList[index].duration);
+        }
         this.setState({
-            selectedIndex: index
+            selectedIndex: index,
+            duration: selectList[index].duration
         })
     }
 
@@ -157,7 +173,7 @@ class TaskMetric extends Component {
         const memoryResult = this.dataWrapper(memoryData, memoryConfig);
         console.log('-----this is taskMetric------')
         console.log(data)
-        console.log(data.node?'true':'false')
+        console.log(data.node ? 'true' : 'false')
 
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;

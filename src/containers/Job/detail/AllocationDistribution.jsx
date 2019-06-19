@@ -10,7 +10,7 @@ import ListItem from '../../../components/AllocationListItem';
 import EmptyListItem from '../../../components/DashboardListItem/EmptyListItem';
 import FadeWrap from '../../../components/FadeWrap';
 import TaskView from '../../TaskView';
-import { getWorkerDetail, getWorkerList } from '../../../actions/Node';
+import { getWorkerList } from '../../../actions/Node';
 import { getPrometheus } from '../../../actions/Prometheus';
 
 const styles = theme => ({
@@ -123,7 +123,6 @@ class AllocationDistribution extends Component {
     showAlloc = (item, index) => {
         let isHidden = false;
         const { dispatch } = this.props;
-        // getWorkerDetail(dispatch, nodeID);
         getPrometheus(dispatch, item.id, item.Datacenter);
         if (this.state.allocIndex !== index) {
             this.setState({
@@ -142,7 +141,7 @@ class AllocationDistribution extends Component {
     }
 
     render() {
-        const { classes, className, data, nodeDetail, DCInfoMap, nodelist } = this.props;
+        const { classes, className, data, DCInfoMap, nodelist } = this.props;
         const { detail: jobDetail, status, allocationList } = data;
         const plugins = ['Scale', 'ControlBar'];
         let DCInfo = {};

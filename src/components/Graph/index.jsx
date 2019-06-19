@@ -77,12 +77,14 @@ class Graph extends Component {
     }
 
     initGraph = () => {
-        const values=this.props.values
+        const values = this.props.values
         const config = this.props.config;
-        let myChart = echarts.init(this.ID);
-        let options = getOption(values, config);
-        myChart.setOption(options);
-        myChart.resize({ width: this.ID.clientWidth });
+        if (this.ID) {
+            let myChart = echarts.init(this.ID);
+            let options = getOption(values, config);
+            myChart.setOption(options);
+            myChart.resize({ width: this.ID.clientWidth });
+        }
     }
 
     //   componentDidMount() {
