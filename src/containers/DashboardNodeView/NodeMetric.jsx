@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import WrappedGraph from '../../components/WrappedGraph';
 import { getPrometheus } from '../../actions/Prometheus';
-import { getPreciseTime } from '../../utils/formatTime'
+import { getPreciseTime } from '../../utils/formatTime';
 
 const styles = theme => ({
     root: {
@@ -15,6 +15,7 @@ const styles = theme => ({
     }
 });
 const CPUConfig = {
+    name: 'cpu',
     title: 'CPU',
     unit: '%',
     dataWrap: (data) => {
@@ -28,12 +29,13 @@ const CPUConfig = {
             type: 'value',
             boundaryGap: [0, '100%'],
             show: false,
-            min:0,
-            max:100
+            min: 0,
+            max: 100
         }
     }
 }
 const diskConfig = {
+    name: 'disk',
     title: '磁盘',
     unit: 'GB',
     dataWrap: (data) => {
@@ -51,6 +53,7 @@ const diskConfig = {
     }
 }
 const memoryConfig = {
+    name: 'memory',
     title: '内存',
     unit: 'GB',
     dataWrap: (data) => {
@@ -89,29 +92,40 @@ class NodeMetric extends Component {
         }
     }
 
-    valuesWrapper=(arr,config)=>{
-        let values={
-            data:[],
-            date:[]
+    dataWrapper = (results, config) => {
+        let metricData = [];
+
+        if (results.length > 0) {
+            results.forEach(result => {
+                let values = {
+                    data: [],
+                    date: []
+                };
+                let prevValues = result.values;
+                for (let i = 0; i < prevValues.length; i++) {
+                    let dateString = getPreciseTime(prevValues[i][0] * 1000);
+                    values.date.push(dateString);
+                    values.data.push(config.dataWrap(prevValues[i][1]));
+                }
+                metricData.push({
+                    name: result.metric[config.name],
+                    values: values
+                });
+            })
         }
-        if(arr.length>0){
-            let data=arr[0].values;
-            for (let i = 0; i < data.length; i++) {
-                let dateString = getPreciseTime(data[i][0] * 1000);
-                values.date.push(dateString);
-                values.data.push(config.dataWrap(data[i][1]));
-            }
-        }
-        return values;
+        return metricData;
     }
 
     render() {
         const { classes, className, children, data, PrometheusData } = this.props;
         const { CPUData, diskData, memoryData } = PrometheusData;
 
-        const CPUValues=this.valuesWrapper(CPUData,CPUConfig);
-        const diskValues=this.valuesWrapper(diskData,diskConfig);
-        const memoryValues=this.valuesWrapper(memoryData,memoryConfig);
+        const CPUResult = this.dataWrapper(CPUData, CPUConfig);
+        const diskResult = this.dataWrapper(diskData, diskConfig);
+        const memoryResult = this.dataWrapper(memoryData, memoryConfig);
+
+        let CPUSelectList = [], diskSelectList = [], memorySelectList = [];
+
 
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
@@ -121,9 +135,9 @@ class NodeMetric extends Component {
 
         return (
             <div className={classNameWrap}>
-                <WrappedGraph className={classes.graph} config={CPUConfig} values={CPUValues} />
-                <WrappedGraph className={classes.graph} config={diskConfig} values={diskValues} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} values={memoryValues} />
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} />
+                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} />
             </div>
         );
     }

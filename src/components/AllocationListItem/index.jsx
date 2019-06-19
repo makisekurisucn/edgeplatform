@@ -29,8 +29,12 @@ const styles = theme => ({
         fontSize: 14,
         boxSizing: 'border-box',
         textAlign: 'center',
-        width: 80,
+        maxWidth: 119,
         height: 20,
+        padding: '0px 9px',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
         backgroundColor: 'rgb(105,105,105)'
 
     },
@@ -61,25 +65,9 @@ const styles = theme => ({
         lineHeight: '22px',
         marginRight: 5
     },
-    // innerWrap: {
-    //     height: '100%',
-    //     borderBottom: '1px solid rgba(255,255,255,0.46)',
-    //     boxSizing: 'border-box',
-    //     display: 'flex',
-    //     justifyContent: 'space-between',
-    //     alignItems: 'center'
-    // },
     selectedBkg: {
         backgroundColor: 'rgba(0,0,0,0.12)'
     },
-    // index: {
-    //     fontSize: 38,
-    //     color: '#EEF9FF',
-    //     width: 60,
-    //     textAlign: 'center',
-    //     textShadow: '0px 0px 20px #009AF0'
-
-    // },
     arrow: {
         // color: '#979797',
         fontSize: 18,
@@ -91,41 +79,6 @@ const styles = theme => ({
     selectedTitle: {
         backgroundColor: 'rgba(73,117,142,0.83)'
     }
-    // main: {
-    //     height: '100%',
-    //     width: '80%'
-    // },
-    // mainUpper: {
-    //     height: '65%',
-    //     display: 'flex',
-    //     justifyContent: 'space-between',
-    //     alignItems: 'center'
-    // },
-    // mainTitle: {
-    //     color: '#EEF9FF',
-    //     fontSize: 22,
-    //     '&:before': {
-    //         content: '""',
-    //         backgroundColor: "#4BAF7E",
-    //         width: 12,
-    //         height: 12,
-    //         display: 'inline-block',
-    //         borderRadius: '50%',
-    //         marginRight: 4
-    //     }
-    // },
-    // subTitle: {
-    //     color: '#EEF9FF',
-    //     fontSize: 16
-    // },
-    // mainLower: {
-    //     fontSize: 14,
-    //     color: '#EEF9FF',
-    //     width: '100%',
-    //     overflow: 'hidden',
-    //     textOverflow: 'ellipsis',
-    //     whiteSpace: 'nowrap'
-    // }
 
 });
 class AllocationListItem extends Component {
@@ -135,29 +88,15 @@ class AllocationListItem extends Component {
             currentRegion: null
         };
     }
-    //   componentWillMount() {
-    //     const { dispatch } = this.props;
-    //     getRegionList(dispatch);
-    //   }
-    // componentWillReceiveProps(nextProp) {
-    //     if (nextProp.regionList.length && !this.state.currentRegion) {
-    //         this.setState({
-    //             currentRegion: nextProp.regionList[0]
-    //         });
-    //     }
-    // }
-    clickHandler = (nodeID, index) => (event) => {
+
+    clickHandler = (item, index) => (event) => {
         if (this.props.onClick) {
-            this.props.onClick(nodeID, index)
+            this.props.onClick(item, index)
         }
     }
-    // selectRegion = region => {
-    //     this.setState({
-    //         currentRegion: region
-    //     });
-    // }
+
     render() {
-        const { classes, className, index, selected, itemData={}, region, Datacenter } = this.props;
+        const { classes, className, index, selected, itemData = {} } = this.props;
         let classNameWrap = classes.root;
         let titleWrap = classes.title;
         let arrowWrap = classes.arrow;
@@ -175,21 +114,20 @@ class AllocationListItem extends Component {
         console.log(classNameWrap)
 
         return (
-            <div className={classNameWrap} onClick={this.clickHandler(itemData.NodeID, index)}>
+            <div className={classNameWrap} onClick={this.clickHandler(itemData, index)}>
                 <div className={classes.topContent}>
-                    <div className={titleWrap}>组名称-1</div>
-                    <div className={classes.date}>2019/01/23 12:32:33</div>
+                    <div className={titleWrap} title={itemData.title}>{itemData.title}</div>
+                    <div className={classes.date}>{itemData.date}</div>
                 </div>
                 <div className={classes.middleContent}>
                     <ArrowForwardIos className={arrowWrap} />
                 </div>
                 <div className={classes.bottomContent}>
                     <div>
-                        <span className={classes.itemCount}>1</span>
+                        <span className={classes.itemCount}>{itemData.itemCount}</span>
                         <span className={classes.status}>运行中</span>
                     </div>
-                    {/* <div className={classes.status}>1运行中</div> */}
-                    <div className={classes.location}>杭州-华东</div>
+                    <div className={classes.location}>{itemData.location}</div>
                 </div>
 
             </div>

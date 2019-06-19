@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import EventItem from '../../components/EventItem';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import { formatTime } from '../../utils/formatTime';
 
 const styles = theme => ({
     root: {
@@ -17,9 +18,11 @@ const styles = theme => ({
         // marginBottom: 30,
         color: '#EEF9FF'
     },
-    arrow:{
-        color:'#EEF9FF',
-        paddingLeft:'56px'
+    arrow: {
+        fontSize: '19px',
+        marginBottom: '-3px',
+        color: '#EEF9FF',
+        paddingLeft: '56px'
     }
 });
 class RunningEvent extends Component {
@@ -36,17 +39,35 @@ class RunningEvent extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
+        let taskEvents = [];
+        if (data.alloc.TaskStates) {
+            console.log('-------')
+            console.log(data.alloc.TaskStates[data.taskName].Events)
+            let tmpArr=data.alloc.TaskStates[data.taskName].Events || [];
+            tmpArr.forEach(event=>{
+                taskEvents.push(event);
+            })
+
+            // taskEvents = data.alloc.TaskStates[data.taskName].Events.reverse;
+        }
+        taskEvents=taskEvents.reverse();
+        console.log(taskEvents);
 
         return (
             <div className={classNameWrap}>
-                <EventItem date="类型" className={classes.eventItem} event="工作节点" />
-                {/* <EventItem date="主机名" className={classes.eventItem} event={'aaa'} /> */}
-                <KeyboardArrowUp className={classes.arrow}></KeyboardArrowUp>
-                <EventItem date="类型" className={classes.eventItem} event="工作节点" />
-                <KeyboardArrowUp className={classes.arrow}></KeyboardArrowUp>
-                <EventItem date="类型" className={classes.eventItem} event="工作节点" />
-                <KeyboardArrowUp className={classes.arrow}></KeyboardArrowUp>
-                <EventItem date="类型" className={classes.eventItem} event="工作节点" />
+                {
+                    taskEvents.map((event, index) => {
+                        if (index === (taskEvents.length - 1)) {
+                            return <EventItem date={formatTime(event.Time)} event={event.DisplayMessage} key={index} />
+                        } else {
+                            return <div key={index}>
+                                <EventItem date={formatTime(event.Time)} event={event.DisplayMessage} />
+                                <KeyboardArrowUp className={classes.arrow}></KeyboardArrowUp>
+                            </div>
+
+                        }
+                    })
+                }
             </div>
         );
     }

@@ -20,6 +20,10 @@ const styles = theme => ({
         justifyContent: 'space-between'
     },
     appName: {
+        maxWidth: '333px',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
         display: 'block',
         height: 31,
         lineHeight: '31px',
@@ -109,7 +113,7 @@ class AppCard extends Component {
         return (
             <div className={classNameWrap}>
                 <p className={classes.appHeader}>
-                    <span className={classes.appName}>{data.name}</span>
+                    <span className={classes.appName} title={data.name}>{data.name}</span>
                     <span className={classes.appDate}>{formatTime(data.time)}</span>
                 </p>
                 <div className={classes.appBrief}>

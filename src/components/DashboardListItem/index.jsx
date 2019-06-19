@@ -85,7 +85,7 @@ const styles = theme => ({
     mainLower: {
         fontSize: 14,
         color: '#EEF9FF',
-        width: '100%',
+        maxWidth: '286px',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'

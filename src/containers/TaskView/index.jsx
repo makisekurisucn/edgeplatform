@@ -6,6 +6,8 @@ import Tabs from '../../components/Tabs';
 import RunningEvent from './RunningEvent';
 import TaskMetric from './TaskMetric';
 import TaskLog from './TaskLog';
+import Select from '../../components/Select/SelectButton'
+import { stat } from 'fs';
 
 const styles = theme => ({
     root: {
@@ -45,6 +47,10 @@ const styles = theme => ({
         fontWeight: 400
     },
     mainTitle: {
+        maxWidth: '200px',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
         color: '#EEF9FF',
         fontSize: '22px',
         marginRight: '4px',
@@ -59,6 +65,7 @@ const styles = theme => ({
         fontSize: '18px',
         fontWeight: 300,
         color: '#EEF9FF',
+        maxWidth: '480px',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
@@ -69,7 +76,7 @@ const styles = theme => ({
 });
 const tabList = [
     {
-        name: '运行时间',
+        name: '运行事件',
         component: RunningEvent
     },
     {
@@ -81,41 +88,52 @@ const tabList = [
         component: TaskLog
     }
 ];
-const status = {
+const statusMap = {
     ready: '就绪',
     running: '运行中',
-    dead:'已停止',
-    pending:'启动中'
+    dead: '已停止',
+    pending: '启动中'
+}
+const getAllocationName = (prevName) => {
+    if (typeof prevName === 'string') {
+        const index = prevName.indexOf('.');
+        return prevName.substr(index + 1);
+    }
+    return prevName;
 }
 class TaskView extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentTaskIndex: 0
         };
     }
-    // componentWillMount() {
-
-    //   this.setState({
-    //     isHidden: true,
-    //     animateStarted: false,
-    //     animateFinished: false
-    //   });
-    //   console.log('hello');
-    // }
-    // componentWillReceiveProps(nextProp) {
-    //     console.log(nextProp)
-    // }
 
     // componentDidUpdate(){
 
     // }
+    selectTask = (index) => {
+        this.setState({
+            currentTaskIndex: index
+        })
+    }
     render() {
-        const { classes, className, children, DCInfo, allocDetail={} } = this.props;
+        const { classes, className, children, DCInfo, alloc = {}, node, region } = this.props;
         // const { isHidden, stage} = this.state;
-        const allocName=allocDetail.Name;
+        console.log('-----------')
+        console.log(alloc)
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
+        }
+
+        let list = [];
+        let status = '';
+        for (let task in alloc.TaskStates) {
+            list.push(task)
+        }
+        if (alloc.TaskStates) {
+            status = statusMap[alloc.TaskStates[list[this.state.currentTaskIndex]].State]
         }
 
         return (
@@ -123,16 +141,17 @@ class TaskView extends Component {
                 <div className={classes.appHeader}>
                     <div className={classes.headerTop}>
                         <div className={classes.headerName}>
-                            <p className={classes.mainTitle}>{allocName}</p>
-                            <span className={classes.status}>运行中</span>
+                            <p className={classes.mainTitle} title={getAllocationName(alloc.Name)}>{getAllocationName(alloc.Name)}</p>
+                            <Select list={list} value={list[this.state.currentTaskIndex]} onSelected={this.selectTask} />
+                            <span className={classes.status}>{status}</span>
                         </div>
                         <p className={classes.subTitle}>{DCInfo.region} - {DCInfo.DC}</p>
                     </div>
-                    <p className={classes.headerContent}>
+                    <p className={classes.headerContent} title={DCInfo.address}>
                         {DCInfo.address}
                     </p>
                 </div>
-                <Tabs contentList={tabList} viewProps={{}} reducedHeight={343} tabWrapColor="rgba(75,139,175,0.7)" />
+                <Tabs contentList={tabList} viewProps={{ alloc, node, region, taskName: list[this.state.currentTaskIndex] }} reducedHeight={343} tabWrapColor="rgba(75,139,175,0.7)" />
             </div>
         );
     }

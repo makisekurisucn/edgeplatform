@@ -21,7 +21,7 @@ const styles = theme => ({
         height: 50,
         width: 260,
         boxSizing: 'border-box',
-        lineHeight: '46px',
+        lineHeight: '50px',
         textAlign: 'center',
         fontSize: 18
     },

@@ -10,7 +10,7 @@ function formatTime(time) {
 
 function getPreciseTime(time) {
     if (typeof time === "number") {
-        return moment(time).format('YYYY/MM/DD  HH:mm:ss');
+        return moment(time).format('YYYY/MM/DD HH:mm:ss');
     }
     return time;
 }

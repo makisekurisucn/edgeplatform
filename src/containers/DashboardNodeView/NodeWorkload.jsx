@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import AppCard from '../../components/AppCard';
-import {setRegion} from '../../utils/handleRequest';
+import { setRegion } from '../../utils/handleRequest';
 // import Tabs from '../../components/Tabs';
 const styles = theme => ({
     root: {
@@ -20,11 +20,11 @@ class NodeWorkload extends Component {
         };
     }
 
-    turnToJobDetail=(ID)=>{
-        const currentRegion=this.props.data.region;
+    turnToJobDetail = (ID) => {
+        const currentRegion = this.props.data.region;
 
         setRegion(currentRegion);
-        window.location.href=`/#/console/jobs/detail/${ID}`;
+        window.location.href = `/#/console/jobs/detail/${ID}`;
 
     }
 
@@ -41,22 +41,22 @@ class NodeWorkload extends Component {
                 {
                     list.map((item) => {
                         if (item.NodeID === data.ID) {
-                            let pendingTasksNumber=0,deadTasksNumber=0,runningTaskNumber=0;
-                            Object.keys(item.TaskStates).forEach(task=>{
-                                switch(item.TaskStates[task].State){
+                            let pendingTasksNumber = 0, deadTasksNumber = 0, runningTaskNumber = 0;
+                            Object.keys(item.TaskStates).forEach(task => {
+                                switch (item.TaskStates[task].State) {
                                     case 'dead':
-                                        deadTasksNumber++;break;
+                                        deadTasksNumber++; break;
                                     case 'pending':
-                                        pendingTasksNumber++;break;
+                                        pendingTasksNumber++; break;
                                     case 'running':
-                                        runningTaskNumber++;break;
+                                        runningTaskNumber++; break;
                                     default:
                                 }
                             })
-                            const wrappedData={
-                                ID:item.JobID,
-                                name:item.Name,
-                                time:item.CreateTime,
+                            const wrappedData = {
+                                ID: item.JobID,
+                                name: item.Name,
+                                time: item.CreateTime,
                                 deadTasksNumber,
                                 pendingTasksNumber,
                                 runningTaskNumber
@@ -74,6 +74,8 @@ NodeWorkload.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    return state.Allocationlist;
+    return {
+        list: state.Allocationlist.list
+    };
 }
 export default connect(mapStateToProps)(withStyles(styles)(NodeWorkload));

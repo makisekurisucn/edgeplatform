@@ -11,20 +11,11 @@ import EmptyListItem from '../../../components/DashboardListItem/EmptyListItem';
 import FadeWrap from '../../../components/FadeWrap';
 import TaskView from '../../TaskView';
 import { getWorkerDetail, getWorkerList } from '../../../actions/Node';
+import { getPrometheus } from '../../../actions/Prometheus';
 
 const styles = theme => ({
     root: {
-        position: 'relative',
-        // height:'300px',
-        // height:'100px',
-        // width:'100px',
-        // backgroundColor:'gray'
-        // top: '0',
-        // left: 0,
-        // opacity: 1,
-        // padding: '30px 71px',
-        // color: 'rgb(97,139,162)',
-        // display: 'flex'
+        position: 'relative'
     },
     searchWrap: {
         position: 'absolute',
@@ -57,11 +48,6 @@ const styles = theme => ({
 
 });
 
-const kvMap = {
-    pending: '启动中',
-    service: '服务',
-    running: '运行中'
-}
 
 const mapCircleStyle = {
     yellowCircle: {
@@ -86,6 +72,14 @@ const mapCircleStyle = {
         zIndex: 10
     }
 
+}
+
+const getAllocationName = (prevName) => {
+    if (typeof prevName === 'string') {
+        const index = prevName.indexOf('.');
+        return prevName.substr(index + 1);
+    }
+    return prevName;
 }
 
 class AllocationDistribution extends Component {
@@ -126,17 +120,16 @@ class AllocationDistribution extends Component {
         }
     }
 
-    showAlloc = (nodeID, index) => {
+    showAlloc = (item, index) => {
         let isHidden = false;
-        // setRegion(item.region);
         const { dispatch } = this.props;
         // getWorkerDetail(dispatch, nodeID);
-        // getPrometheus(dispatch, item.ID, item.Datacenter);        记得取消注释
+        getPrometheus(dispatch, item.id, item.Datacenter);
         if (this.state.allocIndex !== index) {
             this.setState({
                 isTaskDetailHidden: isHidden,
                 allocIndex: index,
-                currentNodeID: nodeID
+                currentNodeID: item.id
             })
         }
         else {
@@ -154,7 +147,6 @@ class AllocationDistribution extends Component {
         const plugins = ['Scale', 'ControlBar'];
         let DCInfo = {};
         let currentNode = {}
-        console.log(jobDetail)
         nodelist.forEach(node => {
             if (node.ID === this.state.currentNodeID) {
                 currentNode = node;
@@ -163,12 +155,6 @@ class AllocationDistribution extends Component {
         if (jobDetail.Region && currentNode.Datacenter) {
             DCInfo = DCInfoMap[jobDetail.Region][currentNode.Datacenter];
         }
-        // console.log('render')
-        // console.log(this.props.isHidden)
-        // console.log('canupdate: '+this.state.canUpdata)
-        // console.log('height: '+this.rootDiv.clientHeight)
-        //  传入listItem和taskView的内容应该是什么，alloc、node、dcinfo（还有吗？
-        //  怎么传？
 
         return (
             <div className={classes.root}>
@@ -187,16 +173,35 @@ class AllocationDistribution extends Component {
                             <FixedHeight reducedHeight={227}>
                                 {
                                     allocationList.map((alloc, index) => {
-                                        let DCInfo={};
-                                        nodelist.forEach(node=>{
-                                            if(node.ID===alloc.NodeID && jobDetail.Region){
-                                                DCInfo=DCInfoMap[jobDetail.Region][node.Datacenter];
+                                        let DCInfo = {};
+                                        let runningTasksNumber = 0;
+                                        let Datacenter = '';
+                                        nodelist.forEach(node => {
+                                            if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
+                                                DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
+                                                Datacenter = node.Datacenter;
                                             }
                                         })
+                                        console.log(alloc.TaskStates)
+                                        for (let task in alloc.TaskStates) {
+                                            if (alloc.TaskStates[task].State === 'running') {
+                                                runningTasksNumber++;
+                                            }
+
+                                        }
+                                        const itemData = {
+                                            title: getAllocationName(alloc.Name),
+                                            date: formatTime(alloc.CreateTime),
+                                            itemCount: runningTasksNumber,
+                                            location: `${DCInfo.DC}-${DCInfo.region}`,
+                                            id: alloc.NodeID,
+                                            Datacenter,
+                                            region: jobDetail.Region
+                                        }
                                         if (index === this.state.allocIndex) {
-                                            return <ListItem onClick={this.showAlloc} index={index} itemData={alloc} key={alloc.ID} DCInfo={DCInfo} selected></ListItem>;
+                                            return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID} selected></ListItem>;
                                         } else {
-                                            return <ListItem onClick={this.showAlloc} index={index} itemData={alloc} key={alloc.ID} DCInfo={DCInfo}></ListItem>;
+                                            return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID}></ListItem>;
                                         }
                                     })
                                 }
@@ -204,8 +209,7 @@ class AllocationDistribution extends Component {
                         </div>
                         <div className={classes.detailWrap}>
                             <FadeWrap className={classes.darkBkg} isHidden={this.state.isTaskDetailHidden} from='left' to='left'>
-                                <TaskView DCInfo={DCInfo} node={currentNode} allocDetail={allocationList[this.state.allocIndex]} />
-                                {/* <TaskView region={currentRegion} Datacenter={currentDatacenter} detail={detail} /> */}
+                                <TaskView DCInfo={DCInfo} node={currentNode} alloc={allocationList[this.state.allocIndex]} region={jobDetail.Region} />
                             </FadeWrap>
                         </div>
                     </div>
@@ -222,7 +226,6 @@ AllocationDistribution.propTypes = {
 
 function mapStateToProps(state, ownProps) {
     return {
-        // nodeDetail: state.nodeWorkerDetail.detail,
         DCInfoMap: state.DClist.DCInfoMap,
         nodelist: state.nodeWorkerList.list
     };

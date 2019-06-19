@@ -57,6 +57,7 @@ const styles = theme => ({
     headerContent: {
         fontSize: '18px',
         color: '#EEF9FF',
+        maxWidth: '480px',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
@@ -129,7 +130,7 @@ class NodeView extends Component {
                         </div>
                         <p className={classes.subTitle}>{DCInfo.region} - {DCInfo.DC}</p>
                     </div>
-                    <p className={classes.headerContent}>
+                    <p className={classes.headerContent} title={DCInfo.address}>
                         {DCInfo.address}
                     </p>
                 </div>

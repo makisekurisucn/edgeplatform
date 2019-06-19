@@ -28,7 +28,16 @@ function request({ url, options, callback }) {
     options.credentials = 'include';
     return fetch(getApi + url, options)
         .then(checkStatus)
-        .then(parseJSON)
+        // .then(parseJSON)
+        .then((response)=>{
+            if(options.expectedDataType==='json'){
+                return response.json();
+            }else if(options.expectedDataType==='plain'){
+                return response.text();
+            }else{
+                return response.json();
+            }
+        })
         .then((data) => {
             return data;
         }).catch((err) => {

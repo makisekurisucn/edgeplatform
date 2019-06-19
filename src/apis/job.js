@@ -6,7 +6,8 @@ function list(postId) {
     return handleRequest({
         url: `/v1/jobs`,
         options: {
-            method: 'GET'
+            method: 'GET',
+            expectedDataType: 'json'
         }
     });
 }
@@ -16,7 +17,8 @@ function create(data) {
         url: `/v1/jobs`,
         options: {
             method: 'POST',
-            body: data
+            body: data,
+            expectedDataType: 'json'
         }
     });
 }
@@ -25,7 +27,8 @@ function detail(data) {
     return handleRequest({
         url: `/v1/job/${data}`,
         options: {
-            method: 'GET'
+            method: 'GET',
+            expectedDataType: 'json'
         }
     });
 }
@@ -34,7 +37,8 @@ function history(data) {
     return handleRequest({
         url: `/v1/job/${data}/versions`,
         options: {
-            method: 'GET'
+            method: 'GET',
+            expectedDataType: 'json'
         }
     });
 }
@@ -43,7 +47,8 @@ function status(data) {
     return handleRequest({
         url: `/v1/job/${data}/allocations`,
         options: {
-            method: 'GET'
+            method: 'GET',
+            expectedDataType: 'json'
         }
     });
 }

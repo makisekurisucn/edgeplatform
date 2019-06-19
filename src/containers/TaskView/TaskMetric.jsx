@@ -4,7 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import WrappedGraph from '../../components/WrappedGraph';
 import { getPrometheus } from '../../actions/Prometheus';
-import { getPreciseTime } from '../../utils/formatTime'
+import { getPreciseTime } from '../../utils/formatTime';
+import Select from '../../components/Select/HorizontalButton';
 
 const styles = theme => ({
     root: {
@@ -14,30 +15,12 @@ const styles = theme => ({
         marginBottom: 10
     },
     selectList: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginBottom: 10,
-        backgroundColor: 'rgba(22,22,22,0.4)',
-        fontSize: 12,
-        fontWeight: 300,
-        color: '#EEF9FF',
         height: 24,
-        lineHeight: '24px'
-    },
-    selectItem: {
-        width: '25%',
-        textAlign: 'center',
-        '&:hover': {
-            backgroundColor: 'rgba(75,139,175,0.60)'
-        },
-        lineHeight: '24px',
-        cursor: 'pointer'
-    },
-    selected: {
-        backgroundColor: 'rgba(75,139,175,0.60)'
+        width: '100%'
     }
 });
 const CPUConfig = {
+    name: 'cpu',
     title: 'CPU',
     unit: '%',
     dataWrap: (data) => {
@@ -57,6 +40,7 @@ const CPUConfig = {
     }
 }
 const diskConfig = {
+    name: 'disk',
     title: '磁盘',
     unit: 'GB',
     dataWrap: (data) => {
@@ -74,6 +58,7 @@ const diskConfig = {
     }
 }
 const memoryConfig = {
+    name: 'memory',
     title: '内存',
     unit: 'GB',
     dataWrap: (data) => {
@@ -95,19 +80,19 @@ let timeID = '';
 const selectList = [
     {
         text: '近7天',
-        duration: '7day'
+        duration: '7days'
     },
     {
         text: '近24小时',
-        duration: '24h'
+        duration: '24hours'
     },
     {
         text: '近6小时',
-        duration: '6h'
+        duration: '6hours'
     },
     {
         text: '近半小时',
-        duration: '0.5h'
+        duration: '0.5hour'
     }
 ]
 
@@ -132,23 +117,31 @@ class TaskMetric extends Component {
         // }
     }
 
-    valuesWrapper = (arr, config) => {
-        let values = {
-            data: [],
-            date: []
+    dataWrapper = (results, config) => {
+        let metricData = [];
+
+        if (results.length > 0) {
+            results.forEach(result => {
+                let values = {
+                    data: [],
+                    date: []
+                };
+                let prevValues = result.values;
+                for (let i = 0; i < prevValues.length; i++) {
+                    let dateString = getPreciseTime(prevValues[i][0] * 1000);
+                    values.date.push(dateString);
+                    values.data.push(config.dataWrap(prevValues[i][1]));
+                }
+                metricData.push({
+                    name: result.metric[config.name],
+                    values: values
+                });
+            })
         }
-        if (arr.length > 0) {
-            let data = arr[0].values;
-            for (let i = 0; i < data.length; i++) {
-                let dateString = getPreciseTime(data[i][0] * 1000);
-                values.date.push(dateString);
-                values.data.push(config.dataWrap(data[i][1]));
-            }
-        }
-        return values;
+        return metricData;
     }
 
-    selectData = (duration, index) => (event) => {
+    selectData = (index) => {
         //dispatch
         this.setState({
             selectedIndex: index
@@ -159,9 +152,12 @@ class TaskMetric extends Component {
         const { classes, className, children, data, PrometheusData } = this.props;
         const { CPUData, diskData, memoryData } = PrometheusData;
 
-        const CPUValues = this.valuesWrapper(CPUData, CPUConfig);
-        const diskValues = this.valuesWrapper(diskData, diskConfig);
-        const memoryValues = this.valuesWrapper(memoryData, memoryConfig);
+        const CPUResult = this.dataWrapper(CPUData, CPUConfig);
+        const diskResult = this.dataWrapper(diskData, diskConfig);
+        const memoryResult = this.dataWrapper(memoryData, memoryConfig);
+        console.log('-----this is taskMetric------')
+        console.log(data)
+        console.log(data.node?'true':'false')
 
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
@@ -169,25 +165,13 @@ class TaskMetric extends Component {
             classNameWrap += ' ' + className;
         }
 
-        const selectedItem = classes.selectItem + ' ' + classes.selected;
 
         return (
             <div className={classNameWrap}>
-                <div className={classes.selectList}>
-                    {
-                        selectList.map((item, index) => {
-                            if(index===this.state.selectedIndex){
-                                return <div className={selectedItem} onClick={this.selectData(item.duration, index)} key={item.text}>{item.text}</div>
-                            }
-                            else{
-                                return <div className={classes.selectItem} onClick={this.selectData(item.duration, index)} key={item.text}>{item.text}</div>
-                            }
-                        })
-                    }
-                </div>
-                <WrappedGraph className={classes.graph} config={CPUConfig} values={CPUValues} />
-                <WrappedGraph className={classes.graph} config={diskConfig} values={diskValues} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} values={memoryValues} />
+                <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'33px'}></Select>
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} />
+                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} />
             </div>
         );
     }

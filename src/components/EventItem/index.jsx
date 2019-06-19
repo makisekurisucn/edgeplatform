@@ -8,22 +8,32 @@ const styles = theme => ({
         top: 0,
         left: 0,
         opacity: 1,
-        display:'flex',
-        backgroundColor:'rgba(0,0,0,0.44)'
+        display: 'table',
+        backgroundColor: 'rgba(0,0,0,0.44)',
+        color: '#EEF9FF',
     },
     date: {
+        display: 'table-cell',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        width: '134px',
         fontSize: 12,
         // color: '#EEF9FF',
         fontWeight: 400,
         // marginBottom: 6,
-        backgroundColor:'rgba(255, 255, 255,0.22)',
-        padding:'16px 13px'
+        backgroundColor: 'rgba(255, 255, 255,0.22)',
+        // padding:'16px 13px',
+        boxSizing: 'border-box'
     },
     event: {
+        display: 'table-cell',
+        width: '354px',
+        lineHeight: '16px',
         fontSize: 12,
         // color: '#EEF9FF',
         fontWeight: 400,
-        padding:'16px 0px 16px 16px'
+        padding: '16px 1px 16px 16px',
+        boxSizing: 'border-box'
     }
 });
 class EventItem extends Component {
@@ -41,8 +51,8 @@ class EventItem extends Component {
         }
         return (
             <div className={classNameWrap}>
-                <div className={classes.date}>2019/08/02 12:32:32</div>
-                <div className={classes.event}>Task's sibling "jobmanageri1" failed</div>
+                <div className={classes.date}>{date}</div>
+                <div className={classes.event}>{event}</div>
             </div>
         );
     }

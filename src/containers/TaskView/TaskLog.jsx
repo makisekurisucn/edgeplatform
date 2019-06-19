@@ -4,6 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import EventItem from '../../components/EventItem';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import { getTaskLogs } from '../../actions/Allocation';
+import FixedHeight from '../../components/FixedHeight';
+import Select from '../../components/Select/HorizontalButton';
 
 const styles = theme => ({
     root: {
@@ -13,46 +16,135 @@ const styles = theme => ({
         opacity: 1,
         padding: '11px'
     },
+    selectList: {
+        height: 24,
+        width: '100%'
+    },
     log: {
         // marginBottom: 30,
         color: '#EEF9FF',
-        border:'1px solid rgba(113,113,113,1)',
-        backgroundColor:'rgba(0,0,0,0.3)',
-        fontSize:12,
-        fontWeight:300,
-        boxSizing:'border-box',
-        padding:'11px 14px'
-    },
+        border: '1px solid rgba(113,113,113,1)',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        fontSize: 12,
+        fontWeight: 300,
+        boxSizing: 'border-box',
+        padding: '11px 5px 11px 14px',
+        whiteSpace: 'pre-line'
+    }
 
 });
+const selectList = [
+    {
+        text: 'stdout'
+    },
+    {
+        text: 'stderr'
+    }
+]
 class TaskLog extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedIndex: 0,
+            currentOffset: 100
         };
     }
 
+    componentDidMount() {
+        if (this.props.data.alloc.id && this.props.data.taskName) {
+            const params = {
+                task: this.props.data.taskName,
+                follow: false,
+                type: this.state.selectedIndex === 0 ? 'stdout' : 'stderr',
+                offset: 0,
+                origin: 'end',
+                plain: true
+            };
+            const { dispatch } = this.props;
+            getTaskLogs(dispatch, this.props.data.alloc.id, params);
+        }
+    }
+
+    componentDidUpdate() {
+        // console.log('%%%%%')
+        // console.log(this.props.data.alloc);
+        const { dispatch } = this.props;
+        // getTaskLogs(dispatch, '96efbdaa-795d-1b45-6be6-14f3d84e67be', { task: 'jobmanager' });
+        if (this.props.data.alloc.ID && this.props.data.taskName) {
+            const params = {
+                task: this.props.data.taskName,
+                follow: false,
+                type: this.state.selectedIndex === 0 ? 'stdout' : 'stderr',
+                offset: 0,
+                origin: 'end',
+                plain: true
+            };
+            console.log('get taskLogs')
+            const { dispatch } = this.props;
+            getTaskLogs(dispatch, this.props.data.alloc.ID, params);
+        }
+    }
+
+    componentWillReceiveProps(next) {
+        //需要修改，这里传进来的props为stdout和stderr，因此重复发一个相同请求后，判断前后props相同，不会更新，不会无限循环
+        // console.log('prev')
+        // console.log(this.props.taskLogs)
+        // console.log('next')
+        // console.log(next.taskLogs)
+        // console.log(this.props.taskLogs.stdout === next.taskLogs.stdout)
+        // console.log(this.props.taskLogs === next.taskLogs)
+
+    }
+
+    selectData = (index) => {
+        //dispatch
+        this.setState({
+            selectedIndex: index,
+            currentOffset: 100
+        })
+    }
+
     render() {
-        const { classes, className, data } = this.props;
+        const { classes, className, data, taskLogs, stdout, stderr } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
         }
+        // console.log(taskLogs)
+        const selectedItem = classes.selectItem + ' ' + classes.selected;
 
         return (
             <div className={classNameWrap}>
+                <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData}></Select>
+                {/* <div className={classes.selectList}>
+                    {
+                        selectList.map((item, index) => {
+                            if (index === this.state.selectedIndex) {
+                                return <div className={selectedItem} onClick={this.selectData(index)} key={item.text}>{item.text}</div>
+                            }
+                            else {
+                                return <div className={classes.selectItem} onClick={this.selectData(index)} key={item.text}>{item.text}</div>
+                            }
+                        })
+                    }
+                </div> */}
+                {/* <FixedHeight reducedHeight={399}>
+                    <div className={classes.log}>
+                        {this.state.selectedIndex === 0 ? stdout : stderr}
+                    </div>
+                </FixedHeight > */}
                 <div className={classes.log}>
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.nomad.broker.total_blocked': 0.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.nomad.plan.queue_depth': 0.000 [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.malloc_count': 7568.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.total_gc_runs': 8.000 [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.nomad.broker.total_ready': 0.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.num_goroutines': 56.000 [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.sys_bytes': 3999992.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.heap_objects': 4135.000 [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.nomad.heartbeat.active': 1.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.nomad.broker.total_unacked': 0.000 [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.nomad.broker.total_waiting': 0.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.alloc_bytes': 634056.000 [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.free_count': 3433.000 
-                    [2015-09-17 16:59:40 -0700 PDT][G] 'nomad.runtime.total_gc_pause_ns': 6572135.000 [2015-09-17 16:59:40 -0700 PDT][C] 'nomad.memberlist.msg.alive': Count: 1 Sum: 1.000 
-                    [2015-09-17 16:59:40 -0700 PDT][C] 'nomad.serf.m
+                    {/* {this.state.selectedIndex === 0 ? taskLogs.stdout : taskLogs.stderr} */}
+                    <FixedHeight reducedHeight={423}>
+                        {this.state.selectedIndex === 0 ? stdout : stderr}
+                    </FixedHeight>
+
                 </div>
+                {/* <div className={classes.log}> */}
+                {/* {this.state.selectedIndex === 0 ? taskLogs.stdout : taskLogs.stderr} */}
+                {/* {this.state.selectedIndex === 0 ? stdout : stderr} */}
+                {/* </div> */}
             </div>
         );
     }
@@ -62,6 +154,17 @@ TaskLog.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    return state.region;
+    console.log(state)
+    // return { taskLogs: state.Allocationlist.taskLogs }
+    return {
+        stdout: state.Allocationlist.taskLogs.stdout,
+        stderr: state.Allocationlist.taskLogs.stderr
+    }
+    // return {
+    //     taskLogs: {
+    //         stdout: state.Allocationlist.taskLogs.stdout,
+    //         stderr: state.Allocationlist.taskLogs.stderr
+    //     }
+    // }
 }
 export default connect(mapStateToProps)(withStyles(styles)(TaskLog));
