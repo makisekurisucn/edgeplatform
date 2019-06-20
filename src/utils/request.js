@@ -1,6 +1,7 @@
 // import { message } from 'antd';
 //生产环境还是开发环境
-const getApi = process.env.NODE_ENV === 'production' ? 'http://10.10.101.130:4646' : 'http://localhost:3000';
+const getApi = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
+// const getApi = process.env.NODE_ENV === 'production' ? 'http://10.10.101.130:4646' : 'http://localhost:3000';
 
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
