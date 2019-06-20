@@ -41,12 +41,21 @@ const styles = theme => ({
 
     },
     subTitle: {
+        display: 'flex',
         height: 42,
         fontSize: 30,
         fontWeight: 300,
         lineHeight: '42px',
         backgroundColor: 'rgba(97, 139, 162, 0.1)',
         paddingLeft: '24px'
+    },
+    SelectButton: {
+        top: '12px',
+        position: 'relative',
+        fontSize: '14px',
+        fontWeight: '400',
+        verticalAlign: 'middle',
+        backgroundColor: 'rgba(97,139,162,0.8)'
     }
 });
 
@@ -60,7 +69,7 @@ class JobInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            selectedTaskIndex: 0
         };
     }
 
@@ -72,12 +81,20 @@ class JobInfo extends Component {
         }
     }
 
+    selectTask = (index) => [
+        this.setState({
+            selectedTaskIndex: index
+        })
+    ]
+
     render() {
         const { classes, className, data: jobDetail } = this.props;
         const { detail, status } = jobDetail;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
-        const taskInfo = detail.TaskGroups ? detail.TaskGroups[0].Tasks[0] : { Config: {} };
+        const taskList = detail.TaskGroups ? detail.TaskGroups[0].Tasks : [];
+        // const taskInfo = detail.TaskGroups ? detail.TaskGroups[0].Tasks[0] : { Config: {} };
+        const taskInfo = taskList[this.state.selectedTaskIndex] || { Config: {} };
         if (className) {
             classNameWrap += ' ' + className;
         }
@@ -104,7 +121,7 @@ class JobInfo extends Component {
                             <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
                             <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
                             <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} />
+                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} style={style} />
                             <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
                         </div>
                     </div>
@@ -123,7 +140,8 @@ class JobInfo extends Component {
                 <div className={classes.subContent}>
                     <div className={classes.subTitle}>
                         <div>应用信息</div>
-                        <div></div>
+                        {/* <div></div> */}
+                        <Select className={classes.SelectButton} list={taskList} value={taskInfo.Name} valueKey={'Name'} displayKey={'Name'} onSelected={this.selectTask} />
                     </div>
                     {/* <div className={classes.subTitle}>应用信息</div> */}
                     <div className={classes.kvContent}>

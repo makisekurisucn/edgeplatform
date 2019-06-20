@@ -30,6 +30,9 @@ const styles = theme => ({
         boxSizing: 'border-box',
         padding: '11px 5px 11px 14px',
         whiteSpace: 'pre-line'
+    },
+    fixedHeight: {
+        overflow: 'hidden'
     }
 
 });
@@ -48,6 +51,7 @@ class TaskLog extends Component {
             selectedIndex: 0,
             currentOffset: 100
         };
+        this.logText = null;
     }
 
     componentDidMount() {
@@ -98,10 +102,19 @@ class TaskLog extends Component {
 
     selectData = (index) => {
         //dispatch
-        this.setState({
-            selectedIndex: index,
-            currentOffset: 100
-        })
+        if (this.state.selectedIndex !== index) {
+            this.setState({
+                selectedIndex: index,
+                currentOffset: 100
+            });
+        }
+    }
+
+    logHeight = () => {
+        console.log('clientHeight= ' + this.logText.clientHeight)
+        console.log('scrollHeight= ' + this.logText.scrollHeight)
+        console.log('scrollTop= ' + this.logText.scrollTop)
+
     }
 
     render() {
@@ -117,18 +130,6 @@ class TaskLog extends Component {
         return (
             <div className={classNameWrap}>
                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData}></Select>
-                {/* <div className={classes.selectList}>
-                    {
-                        selectList.map((item, index) => {
-                            if (index === this.state.selectedIndex) {
-                                return <div className={selectedItem} onClick={this.selectData(index)} key={item.text}>{item.text}</div>
-                            }
-                            else {
-                                return <div className={classes.selectItem} onClick={this.selectData(index)} key={item.text}>{item.text}</div>
-                            }
-                        })
-                    }
-                </div> */}
                 {/* <FixedHeight reducedHeight={399}>
                     <div className={classes.log}>
                         {this.state.selectedIndex === 0 ? stdout : stderr}
@@ -137,14 +138,13 @@ class TaskLog extends Component {
                 <div className={classes.log}>
                     {/* {this.state.selectedIndex === 0 ? taskLogs.stdout : taskLogs.stderr} */}
                     <FixedHeight reducedHeight={423}>
+                        {/* <div onClick={this.logHeight} ref={ele => { this.logText = ele }}>
+                            {this.state.selectedIndex === 0 ? stdout : stderr}
+                        </div> */}
                         {this.state.selectedIndex === 0 ? stdout : stderr}
                     </FixedHeight>
 
                 </div>
-                {/* <div className={classes.log}> */}
-                {/* {this.state.selectedIndex === 0 ? taskLogs.stdout : taskLogs.stderr} */}
-                {/* {this.state.selectedIndex === 0 ? stdout : stderr} */}
-                {/* </div> */}
             </div>
         );
     }

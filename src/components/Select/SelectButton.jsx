@@ -4,7 +4,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 const styles = theme => ({
     root: {
         height: 22,
-        width: 92,
+        // width: 92,
         boxSizing: 'border-box',
         lineHeight: '22px',
         textAlign: 'center',
@@ -12,7 +12,7 @@ const styles = theme => ({
         fontSize: 12,
         color: "#EEF9FF",
         '&:hover': {
-            backgroundColor: "#262E2F",
+            backgroundColor: 'rgba(97,139,162,0.8)',
             '& $textArrow': {
                 transform: 'rotate(180deg)'
             },
@@ -28,13 +28,13 @@ const styles = theme => ({
         margin: 0,
     },
     textArrow: {
-        fontSize:'12px',
+        fontSize: '12px',
         position: 'relative',
         verticalAlign: 'middle',
         transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     selectListWrap: {
-        backgroundColor: 'rgba(38,46,47,0.82)',
+        backgroundColor: 'rgba(97,139,162,0.8)',
         position: "absolute",
         padding: 0,
         margin: 0,
@@ -46,22 +46,22 @@ const styles = theme => ({
         overflow: 'hidden',
         //   height: 100,
         '& li:hover': {
-            backgroundColor: 'rgba(38,46,47,0.82)'
+            backgroundColor: 'rgba(97,139,162,0.8)'
         }
     },
     selected: {
-        backgroundColor: 'rgba(38,46,47,0.82)',
+        backgroundColor: 'rgba(97,139,162,0.8)',
         position: 'relative',
-        '&:before': {
-            height: 22,
-            display: 'block',
-            width: 4,
-            backgroundColor: '#4B8BAF',
-            position: 'absolute',
-            top: 4,
-            left: 0,
-            content: "''"
-        }
+        // '&:before': {
+        //     height: 22,
+        //     display: 'block',
+        //     width: 4,
+        //     backgroundColor: '#4B8BAF',
+        //     position: 'absolute',
+        //     top: 4,
+        //     left: 0,
+        //     content: "''"
+        // }
     }
 
 });
@@ -106,9 +106,13 @@ class SelectButton extends Component {
     }
 
     render() {
-        const { classes, title, list, valueKey, displayKey, value } = this.props;
+        const { classes, className, title, list, valueKey, displayKey, value } = this.props;
         const internalList = this.list;
         let display;
+        let classNameWrap = classes.root;
+        if (className) {
+            classNameWrap += ' ' + className;
+        }
         internalList.forEach(item => {
             if (item.value === value) {
                 display = item.display;
@@ -116,7 +120,7 @@ class SelectButton extends Component {
         });
         console.log(internalList)
         return (
-            <div className={classes.root}>
+            <div className={classNameWrap}>
                 <p className={classes.display}>
                     <span className={classes.displayText}>{display}</span>
                     <ExpandMore className={classes.textArrow} />

@@ -65,7 +65,7 @@ const styles = theme => ({
     link: {
         fontSize: '12px',
         fontWeight: '400',
-        color: 'rgb(97,139,162)',
+        color: 'rgb(44,99,130)',
         backgroundColor: 'rgba(238,249,255,0.35)',
         padding: '2px 4px',
         lineHeight: '16px',

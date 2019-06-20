@@ -489,7 +489,7 @@ class Dashboard extends Component {
                             {
                                 searchList.length < 1 ? <EmptyListItem></EmptyListItem> : searchList.map((item, index) => {
                                     if (item.type === 'dc') {
-                                        return <ListItem type='dc' itemData={item.DC.DCInfo} region={item.DC.region} Datacenter={item.DC.Datacenter} index={index} onClick={this.showList} key={index} />
+                                        return <ListItem type='dc' itemData={item.DCInfo} region={item.DC.region} Datacenter={item.DC.Datacenter} index={index} onClick={this.showList} key={index} />
                                     } else if (item.type === 'node') {
                                         return <ListItem type='search_node' itemData={{ ...item.DCInfo, name: item.node.name, ID: item.node.ID }} region={item.node.region} Datacenter={item.node.Datacenter} index={index} onClick={this.showDetail} key={index} selected={index == this.state.nodeIndex} />
                                     }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 import Search from '@material-ui/icons/Search';
 
 const styles = theme => ({
@@ -9,6 +8,10 @@ const styles = theme => ({
         position: 'relative',
         height: 48,
         width: 384,
+        lineHeight: "48px",
+        fontSize: 20,
+        fontWeight: '400',
+        color: '#EEF9FF'
     },
     inputs: {
         height: "100%",
@@ -21,11 +24,12 @@ const styles = theme => ({
         // top: 24,
         // left: 24,
 
-        lineHeight: "48px",
+        lineHeight: "inherit",
         textIndent: 10,
-        fontSize: 20,
+        fontSize: 'inherit',
+        fontWeight: 'inherit',
         border: 'none',
-        color: '#EEF9FF',
+        color: 'inherit',
         '&:focus': {
             outline: 'none'
         }
@@ -50,44 +54,28 @@ class SearchBox extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentRegion: null
         };
-        this.input=null;
-        this.timeID=null;
+        this.input = null;
+        this.timeID = null;
     }
-    //   componentWillMount() {
-    //     const { dispatch } = this.props;
-    //     getRegionList(dispatch);
-    //   }
-    componentWillReceiveProps(nextProp) {
-        if (nextProp.regionList.length && !this.state.currentRegion) {
-            this.setState({
-                currentRegion: nextProp.regionList[0]
-            });
-        }
-    }
-    selectRegion = region => {
-        this.setState({
-            currentRegion: region
-        });
-    }
-    handleClick=()=>{
+
+    handleClick = () => {
         clearTimeout(this.timeID);
         this.props.onSearch(this.input.value.trim());
     }
-    handleKeyDown=(e)=>{
-        if(e.keyCode===13){
+    handleKeyDown = (e) => {
+        if (e.keyCode === 13) {
             this.handleClick();
         }
     }
-    handleChange=()=>{
+    handleChange = () => {
         clearTimeout(this.timeID);
-        this.timeID=setTimeout(() => {
+        this.timeID = setTimeout(() => {
             this.handleClick();
         }, 500);
     }
     render() {
-        const { classes, barName, regionList, className } = this.props;
+        const { classes, className } = this.props;
         let classNameWrap;
         if (className) {
             classNameWrap = className + " " + classes.root;
@@ -97,7 +85,7 @@ class SearchBox extends Component {
         }
         return (
             <div className={classNameWrap}>
-                <input type="text" className={classes.inputs} ref={ele=>{this.input=ele}} onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
+                <input type="text" className={classes.inputs} ref={ele => { this.input = ele }} onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
                 <Search className={classes.searchSign} onClick={this.handleClick} />
             </div>
         );
@@ -108,7 +96,4 @@ SearchBox.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
-    return state.region;
-}
-export default connect(mapStateToProps)(withStyles(styles)(SearchBox));
+export default withStyles(styles)(SearchBox);

@@ -22,7 +22,10 @@ const styles = theme => ({
         top: 10,
         left: 8,
         height: '36px',
-        width: '256px'
+        width: '256px',
+        lineHeight: '36px',
+        fontSize: '15px',
+        fontWeight: '300'
     },
     listWrap: {
         position: 'absolute',
@@ -89,7 +92,9 @@ class AllocationDistribution extends Component {
             canUpdata: true,
             allocIndex: -1,
             currentNodeID: '',
-            isTaskDetailHidden: true
+            isTaskDetailHidden: true,
+            inputValue: '',
+            isSearched: false
         };
         this.mapDiv = {};
     }
@@ -140,12 +145,31 @@ class AllocationDistribution extends Component {
         }
     }
 
+    handleSearch = (inputValue) => {
+        if (inputValue === '') {
+            this.setState({
+                isTaskDetailHidden: true,
+                inputValue: '',
+                isSearched: false,
+                allocIndex: -1
+            })
+        } else {
+            this.setState({
+                isTaskDetailHidden: true,
+                inputValue: inputValue,
+                isSearched: true,
+                allocIndex: -1
+            })
+        }
+    }
+
     render() {
         const { classes, className, data, DCInfoMap, nodelist } = this.props;
         const { detail: jobDetail, status, allocationList } = data;
         const plugins = ['Scale', 'ControlBar'];
         let DCInfo = {};
-        let currentNode = {}
+        let currentNode = {};
+        let searchList = [];
         nodelist.forEach(node => {
             if (node.ID === this.state.currentNodeID) {
                 currentNode = node;
@@ -154,6 +178,57 @@ class AllocationDistribution extends Component {
         if (jobDetail.Region && currentNode.Datacenter) {
             DCInfo = DCInfoMap[jobDetail.Region][currentNode.Datacenter];
         }
+
+
+        allocationList.forEach(alloc => {
+            let DCInfo = {};
+            let runningTasksNumber = 0;
+            let Datacenter = '';
+            nodelist.forEach(node => {
+                if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
+                    DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
+                    Datacenter = node.Datacenter;
+                }
+            })
+            for (let task in alloc.TaskStates) {
+                if (alloc.TaskStates[task].State === 'running') {
+                    runningTasksNumber++;
+                }
+            }
+            const date = formatTime(alloc.CreateTime);
+            const allocName = getAllocationName(alloc.Name);
+            const location = `${DCInfo.DC}-${DCInfo.region}`;
+            const itemData = {
+                title: allocName,
+                date,
+                itemCount: runningTasksNumber,
+                location,
+                id: alloc.NodeID,
+                Datacenter,
+                region: jobDetail.Region
+            }
+            if (this.state.isSearched === true) {
+                let searchInfo = {
+                    allocName,
+                    date,
+                    status: runningTasksNumber + '运行中',
+                    location
+                }
+                let isMatched = false;
+                for (let key in searchInfo) {
+                    if (searchInfo[key].indexOf(this.state.inputValue) > -1) {
+                        isMatched = true;
+                    }
+                }
+                if (isMatched === true) {
+                    searchList.push(itemData);
+                }
+            } else {
+                searchList.push(itemData);
+            }
+
+        })
+
 
         return (
             <div className={classes.root}>
@@ -171,38 +246,45 @@ class AllocationDistribution extends Component {
                             {/* <EmptyListItem></EmptyListItem> */}
                             <FixedHeight reducedHeight={227}>
                                 {
-                                    allocationList.map((alloc, index) => {
-                                        let DCInfo = {};
-                                        let runningTasksNumber = 0;
-                                        let Datacenter = '';
-                                        nodelist.forEach(node => {
-                                            if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
-                                                DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
-                                                Datacenter = node.Datacenter;
-                                            }
-                                        })
-                                        console.log(alloc.TaskStates)
-                                        for (let task in alloc.TaskStates) {
-                                            if (alloc.TaskStates[task].State === 'running') {
-                                                runningTasksNumber++;
-                                            }
-
-                                        }
-                                        const itemData = {
-                                            title: getAllocationName(alloc.Name),
-                                            date: formatTime(alloc.CreateTime),
-                                            itemCount: runningTasksNumber,
-                                            location: `${DCInfo.DC}-${DCInfo.region}`,
-                                            id: alloc.NodeID,
-                                            Datacenter,
-                                            region: jobDetail.Region
-                                        }
+                                    searchList.map((item, index) => {
                                         if (index === this.state.allocIndex) {
-                                            return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID} selected></ListItem>;
+                                            return <ListItem onClick={this.showAlloc} index={index} itemData={item} key={item.title} selected></ListItem>;
                                         } else {
-                                            return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID}></ListItem>;
+                                            return <ListItem onClick={this.showAlloc} index={index} itemData={item} key={item.title}></ListItem>;
                                         }
                                     })
+                                    // allocationList.map((alloc, index) => {
+                                    //     let DCInfo = {};
+                                    //     let runningTasksNumber = 0;
+                                    //     let Datacenter = '';
+                                    //     nodelist.forEach(node => {
+                                    //         if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
+                                    //             DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
+                                    //             Datacenter = node.Datacenter;
+                                    //         }
+                                    //     })
+                                    //     console.log(alloc.TaskStates)
+                                    //     for (let task in alloc.TaskStates) {
+                                    //         if (alloc.TaskStates[task].State === 'running') {
+                                    //             runningTasksNumber++;
+                                    //         }
+
+                                    //     }
+                                    //     const itemData = {
+                                    //         title: getAllocationName(alloc.Name),
+                                    //         date: formatTime(alloc.CreateTime),
+                                    //         itemCount: runningTasksNumber,
+                                    //         location: `${DCInfo.DC}-${DCInfo.region}`,
+                                    //         id: alloc.NodeID,
+                                    //         Datacenter,
+                                    //         region: jobDetail.Region
+                                    //     }
+                                    //     if (index === this.state.allocIndex) {
+                                    //         return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID} selected></ListItem>;
+                                    //     } else {
+                                    //         return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID}></ListItem>;
+                                    //     }
+                                    // })
                                 }
                             </FixedHeight>
                         </div>
