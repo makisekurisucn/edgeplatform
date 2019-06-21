@@ -12,5 +12,13 @@ const getTaskLogs = (dispatch, id, params) => {
     })
 }
 
+const getBothTaskLogs = (dispatch, id, params) => {
+    dispatch({
+        type: 'ALLOCATION_GETBOTHTASKLOGS_SAGA',
+        id: id,
+        params: params
+    })
+}
 
-export { getAllocationList, getTaskLogs };
+
+export { getAllocationList, getTaskLogs, getBothTaskLogs };

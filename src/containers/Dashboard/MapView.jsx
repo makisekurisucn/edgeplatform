@@ -159,14 +159,6 @@ class Dashboard extends Component {
             },
             moveend: () => { this.showCenter() }
         };
-        this.position = {
-            longitude: 120,
-            latitude: 30
-        }
-        this.position2 = {
-            longitude: 121,
-            latitude: 30
-        }
     }
     componentDidMount() {
         const { dispatch } = this.props;

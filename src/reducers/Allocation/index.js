@@ -8,10 +8,8 @@ const initialState = {
 
 const taskLogsProcess = (state, data) => {
     if (data.logType === 'stdout') {
-        console.log('stdout')
         return Object.assign({}, state.taskLogs, { stdout: data.logs });
     } else if (data.logType === 'stderr') {
-        console.log('stderr')
         return Object.assign({}, state.taskLogs, { stderr: data.logs });
     } else {
         return state.taskLogs;

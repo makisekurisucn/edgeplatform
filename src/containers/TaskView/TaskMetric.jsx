@@ -75,7 +75,7 @@ const memoryConfig = {
         }
     }
 }
-let timeID = '';
+
 
 const selectList = [
     {
@@ -103,18 +103,19 @@ class TaskMetric extends Component {
             selectedIndex: 3,
             duration: '0.5hour'
         };
+        this.timeID = null;
     }
 
     componentDidUpdate() {
         const { dispatch } = this.props;
         if (this.props.data.node.ID) {
-            clearTimeout(timeID);
+            clearTimeout(this.timeID);
             console.log('clear')
             const nodeID = this.props.data.node.ID;
             const Datacenter = this.props.data.node.Datacenter;
             const duration = this.state.duration;
             console.log('set timeout')
-            timeID = setTimeout(function () {
+            this.timeID = setTimeout(function () {
                 // getPrometheus(dispatch, nodeID, Datacenter, this.state.duration);
                 getPrometheus(dispatch, nodeID, Datacenter, duration);
             }, 300000)
@@ -123,7 +124,7 @@ class TaskMetric extends Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(timeID);
+        clearTimeout(this.timeID);
     }
 
     dataWrapper = (results, config) => {
@@ -153,7 +154,7 @@ class TaskMetric extends Component {
     selectData = (index) => {
         const { dispatch } = this.props;
         if (this.props.data.node.ID) {
-            clearTimeout(timeID);
+            clearTimeout(this.timeID);
             const nodeID = this.props.data.node.ID;
             const Datacenter = this.props.data.node.Datacenter;
             getPrometheus(dispatch, nodeID, Datacenter, selectList[index].duration);

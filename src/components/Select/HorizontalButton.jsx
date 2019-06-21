@@ -63,7 +63,9 @@ class HorizontalButton extends Component {
                 {
                     selectList.map((item, index) => {
                         if (index === selectedIndex) {
-                            return <div className={selectedItem} title={item.text} style={style} onClick={this.handleClick(index)} key={item.text}>{item.text}</div>
+                            return <div className={selectedItem} title={item.text} style={style} key={item.text}>{item.text}</div>
+                            // return <div className={selectedItem} title={item.text} style={style} onClick={this.handleClick(index)} key={item.text}>{item.text}</div>
+                            // 当前逻辑为重复点击选中项不起作用
                         }
                         else {
                             return <div className={classes.selectItem} title={item.text} style={style} onClick={this.handleClick(index)} key={item.text}>{item.text}</div>

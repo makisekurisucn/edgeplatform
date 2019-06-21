@@ -26,10 +26,33 @@ function* getTaskLogs(action) {
     })
 }
 
+function* getBothTaskLogs(action) {
+    let stdoutParams = Object.assign({}, action.params, { type: 'stdout' });
+    const stdoutLogs = yield call(taskLogs, action.id, stdoutParams);
+    let stderrParams = Object.assign({}, action.params, { type: 'stderr' });
+    const stderrLogs = yield call(taskLogs, action.id, stderrParams);
+
+    yield put({
+        type: 'ALLOCATION_UPDATE_TASKLOGS',
+        data: {
+            logs: stdoutLogs,
+            logType: 'stdout'
+        }
+    })
+    yield put({
+        type: 'ALLOCATION_UPDATE_TASKLOGS',
+        data: {
+            logs: stderrLogs,
+            logType: 'stderr'
+        }
+    })
+}
+
 
 function* detailSaga() {
     yield takeLatest('ALLOCATION_GETALLOCATIONLIST_SAGA', getAllocationlist);
     yield takeLatest('ALLOCATION_GETTASKLOGS_SAGA', getTaskLogs);
+    yield takeLatest('ALLOCATION_GETBOTHTASKLOGS_SAGA', getBothTaskLogs);
 }
 
 export default detailSaga;

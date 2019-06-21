@@ -70,22 +70,23 @@ const memoryConfig = {
         }
     }
 }
-let timeID = '';
+
 
 class NodeMetric extends Component {
     constructor(props) {
         super(props);
         this.state = {
         };
+        this.timeID = null;
     }
 
     componentDidUpdate() {
         const { dispatch } = this.props;
         if (this.props.data.ID) {
-            clearTimeout(timeID);
+            clearTimeout(this.timeID);
             const nodeID = this.props.data.ID;
             const Datacenter = this.props.data.Datacenter;
-            timeID = setTimeout(function () {
+            this.timeID = setTimeout(function () {
                 getPrometheus(dispatch, nodeID, Datacenter);
             }, 300000)
             //暂时将刷新时间设为5分钟，等接到prometheus数据后再改成10s,且刷新时间要和api中的时间对应,确保每次取的点时间戳一致
@@ -117,7 +118,7 @@ class NodeMetric extends Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(timeID);
+        clearTimeout(this.timeID);
     }
 
     render() {
