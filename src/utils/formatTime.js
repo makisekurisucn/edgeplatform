@@ -1,18 +1,12 @@
 import moment from 'moment';
 
-function formatTime(time) {
-    if (typeof time === "number") {
-        let momentValue = parseInt(time.toString().substr(0, 13));
-        return getPreciseTime(momentValue);
-    }
-    return time;
+function formatTime(time = 0) {
+    let momentValue = parseInt(time.toString().substr(0, 13));
+    return getPreciseTime(momentValue);
 }
 
 function getPreciseTime(time) {
-    if (typeof time === "number") {
-        return moment(time).format('YYYY/MM/DD HH:mm:ss');
-    }
-    return time;
+    return moment(time).format('YYYY/MM/DD HH:mm:ss');
 }
 
 function transformTimeFromStrToNum(timeStr) {

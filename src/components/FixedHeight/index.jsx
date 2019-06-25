@@ -17,11 +17,14 @@ class FixedHeight extends Component {
             expectedHeight: 0,
             needFixed: true
         };
+        this.timeID = null;
+        this.delay = 200;
+        this.prevResize = 0;
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.reducedHeight) {
-            window.addEventListener('resize', this.changeHeight);
+            window.addEventListener('resize', this.resizeListener);
             this.setState({
                 expectedHeight: window.innerHeight - this.props.reducedHeight
             });
@@ -33,13 +36,23 @@ class FixedHeight extends Component {
         }
     }
 
-    componentDidMount() {
-        // window.addEventListener('resize',this.changeHeight);
-    }
-
     componentWillUnmount() {
         if (this.state.needFixed) {
-            window.removeEventListener('resize', this.changeHeight);
+            window.removeEventListener('resize', this.resizeListener);
+        }
+    }
+
+    resizeListener = () => {
+        const current = Date.now();
+        if ((current - this.prevResize) >= this.delay) {
+            this.changeHeight();
+            this.prevResize = current;
+        } else {
+            clearTimeout(this.timeID);
+            this.timeID = setTimeout(() => {
+                this.prevResize = current;
+                this.changeHeight();
+            }, this.delay);
         }
     }
 

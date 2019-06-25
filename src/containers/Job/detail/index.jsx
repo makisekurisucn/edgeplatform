@@ -9,6 +9,7 @@ import { getDCList } from '../../../actions/DC';
 import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
 import { formatTime } from '../../../utils/formatTime';
+import { setRegion, getRegion } from '../../../utils/handleRequest';
 import AppMainUpper from '../../../components/AppMainUpper';
 import JobInfo from './JobInfo';
 import AllocationDistribution from './AllocationDistribution';
@@ -57,12 +58,13 @@ class JobDetail extends Component {
         };
     }
     componentDidMount() {
-
+        const currentRegion = getRegion();
         const { dispatch } = this.props;
         resetStatus(dispatch);
         let id = this.props.match.params.id;
         getJobDetail(dispatch, id);
         getDCList(dispatch);
+        setRegion(currentRegion);
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.statusIndex) {

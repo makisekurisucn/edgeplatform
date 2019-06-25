@@ -108,7 +108,8 @@ class JobInfo extends Component {
             value: {
                 fontSize: '16',
                 fontWeight: '400',
-                whiteSpace: 'pre'
+                whiteSpace: 'pre-line',
+                wordBreak: 'break-all'
             }
         }
         console.log(taskInfo)
@@ -155,6 +156,7 @@ class JobInfo extends Component {
                         <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} style={style} />
                         <KvItem keyName="环境变量" className={classes.kvItem} value={''} style={style} />
                         <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} />
+                        {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>
                 </div>
             </div>
