@@ -99,6 +99,11 @@ class TaskLog extends Component {
         this.stderrLog.addEventListener('scroll', this.scrollListener);
     }
 
+    componentWillUnmount() {
+        this.stdoutLog.removeEventListener('scroll', this.scrollListener);
+        this.stderrLog.removeEventListener('scroll', this.scrollListener);
+    }
+
     componentDidUpdate() {
         // console.log('%%%%%')
         // console.log(this.props.data.alloc);

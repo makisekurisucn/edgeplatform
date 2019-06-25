@@ -57,9 +57,18 @@ const styles = theme => ({
         marginLeft: 4,
         marginRight: 3
     },
-    status: {
-        color: 'rgb(75, 175, 126)'
+    colorGreen: {
+        color: '#4BAF7E'
     },
+    colorYellow: {
+        color: '#AF954B'
+    },
+    colorGray: {
+        color: '#ABABAB'
+    },
+    // status: {
+    //     color: 'rgb(75, 175, 126)'
+    // },
     location: {
         fontWeight: 500,
         lineHeight: '22px',
@@ -124,8 +133,39 @@ class AllocationListItem extends Component {
                 </div>
                 <div className={classes.bottomContent}>
                     <div>
-                        <span className={classes.itemCount}>{itemData.itemCount}</span>
-                        <span className={classes.status}>运行中</span>
+                        {
+                            itemData.runningTasksNumber > 0 ?
+                                <div>
+                                    <span className={classes.itemCount}>{itemData.runningTasksNumber}</span>
+                                    <span className={classes.colorGreen}>运行中</span>
+                                </div> : null
+                        }
+                        {
+                            itemData.pendingTaskNumber > 0 ?
+                                <div>
+                                    <span className={classes.itemCount}>{itemData.pendingTaskNumber}</span>
+                                    <span className={classes.colorYellow}>启动中</span>
+                                </div> : null
+                        }
+                        {
+                            itemData.deadTaskNumber > 0 ?
+                                <div>
+                                    <span className={classes.itemCount}>{itemData.deadTaskNumber}</span>
+                                    <span className={classes.colorGray}>已停止</span>
+                                </div> : null
+                        }
+                        {/* <div>
+                            <span className={classes.itemCount}>{itemData.runningTasksNumber}</span>
+                            <span className={classes.colorGreen}>运行中</span>
+                        </div>
+                        <div>
+                            <span className={classes.itemCount}>{itemData.pendingTaskNumber}</span>
+                            <span className={classes.colorYellow}>启动中</span>
+                        </div>
+                        <div>
+                            <span className={classes.itemCount}>{itemData.deadTaskNumber}</span>
+                            <span className={classes.colorGray}>已停止</span>
+                        </div> */}
                     </div>
                     <div className={classes.location}>{itemData.location}</div>
                 </div>

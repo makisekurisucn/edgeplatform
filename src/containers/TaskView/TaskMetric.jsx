@@ -123,6 +123,18 @@ class TaskMetric extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        const prevAlloc = this.props.data.alloc || {};
+        const nextAlloc = nextProps.data.alloc || {};
+        console.log('-----------------')
+        console.log(prevAlloc)
+        console.log(nextAlloc)
+        if (prevAlloc.ID !== nextAlloc.ID || this.props.data.taskName !== nextProps.data.taskName) {
+            console.log('reset')
+            this.selectData(3);
+        }
+    }
+
     componentWillUnmount() {
         clearTimeout(this.timeID);
     }
@@ -172,6 +184,8 @@ class TaskMetric extends Component {
         const CPUResult = this.dataWrapper(CPUData, CPUConfig);
         const diskResult = this.dataWrapper(diskData, diskConfig);
         const memoryResult = this.dataWrapper(memoryData, memoryConfig);
+
+        const node = data.node || {};
         console.log('-----this is taskMetric------')
         console.log(data)
         console.log(data.node ? 'true' : 'false')
@@ -186,9 +200,9 @@ class TaskMetric extends Component {
         return (
             <div className={classNameWrap}>
                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'33px'}></Select>
-                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} />
-                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} />
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={node.ID} />
+                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} dataSource={node.ID} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={node.ID} />
             </div>
         );
     }

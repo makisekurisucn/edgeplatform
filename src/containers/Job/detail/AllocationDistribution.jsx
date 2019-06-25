@@ -183,6 +183,8 @@ class AllocationDistribution extends Component {
         allocationList.forEach(alloc => {
             let DCInfo = {};
             let runningTasksNumber = 0;
+            let pendingTaskNumber = 0;
+            let deadTaskNumber = 0;
             let Datacenter = '';
             nodelist.forEach(node => {
                 if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
@@ -191,8 +193,16 @@ class AllocationDistribution extends Component {
                 }
             })
             for (let task in alloc.TaskStates) {
-                if (alloc.TaskStates[task].State === 'running') {
-                    runningTasksNumber++;
+                switch (alloc.TaskStates[task].State) {
+                    case 'running':
+                        runningTasksNumber++; break;
+                    case 'pending':
+                        pendingTaskNumber++; break;
+                    case 'dead':
+                        deadTaskNumber++; break;
+                    default:
+                        console.log('非预期的状态');
+                        console.log(alloc.TaskStates[task].State);
                 }
             }
             const date = formatTime(alloc.CreateTime);
@@ -201,7 +211,10 @@ class AllocationDistribution extends Component {
             const itemData = {
                 title: allocName,
                 date,
-                itemCount: runningTasksNumber,
+                runningTasksNumber,
+                pendingTaskNumber,
+                deadTaskNumber,
+                // itemCount: runningTasksNumber,
                 location,
                 id: alloc.NodeID,
                 Datacenter,
@@ -211,7 +224,9 @@ class AllocationDistribution extends Component {
                 let searchInfo = {
                     allocName,
                     date,
-                    status: runningTasksNumber + '运行中',
+                    runningStatus: runningTasksNumber > 0 ? runningTasksNumber + '运行中' : '',
+                    pendingStatus: pendingTaskNumber > 0 ? pendingTaskNumber + '启动中' : '',
+                    deadStatus: deadTaskNumber > 0 ? deadTaskNumber + '已停止' : '',
                     location
                 }
                 let isMatched = false;

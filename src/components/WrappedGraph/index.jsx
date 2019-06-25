@@ -57,6 +57,12 @@ class WrappedGraph extends Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.dataSource !== this.props.dataSource) {
+            this.selectData(0);
+        }
+    }
+
     selectData = (index) => {
         this.setState({
             selectedIndex: index
@@ -96,7 +102,7 @@ class WrappedGraph extends Component {
                                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'65px'}></Select>
                             </div> : null
                     }
-                   
+
                     <span className={classes.current}>{current}</span>
 
                 </div>

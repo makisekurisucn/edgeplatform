@@ -140,9 +140,9 @@ class NodeMetric extends Component {
 
         return (
             <div className={classNameWrap}>
-                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} />
-                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} />
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={data.ID} />
+                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} dataSource={data.ID} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={data.ID} />
             </div>
         );
     }

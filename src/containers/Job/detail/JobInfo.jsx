@@ -107,7 +107,8 @@ class JobInfo extends Component {
             },
             value: {
                 fontSize: '16',
-                fontWeight: '400'
+                fontWeight: '400',
+                whiteSpace: 'pre'
             }
         }
         console.log(taskInfo)
@@ -149,8 +150,11 @@ class JobInfo extends Component {
                         <KvItem keyName="容器镜像" className={classes.kvItem} value={taskInfo.Config.image} style={style} />
                         <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.CPU} style={style} />
                         <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.MemoryMB} style={style} />
-                        <KvItem keyName="当前版本" className={classes.kvItem} value={''} style={style} />
-                        <KvItem keyName="主机名" className={classes.kvItem} value={''} style={style} />
+                        <KvItem keyName="实例数" className={classes.kvItem} value={detail.TaskGroups ? detail.TaskGroups[0].Count : ''} style={style} />
+                        <KvItem keyName="启动命令" className={classes.kvItem} value={taskInfo.Config.command} style={style} />
+                        <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} style={style} />
+                        <KvItem keyName="环境变量" className={classes.kvItem} value={''} style={style} />
+                        <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} />
                     </div>
                 </div>
             </div>
