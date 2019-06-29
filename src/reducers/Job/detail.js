@@ -188,7 +188,7 @@ const jobAllocationListProcess = (list) => {
 const initialState = {
     index: 0,
     detail: {},
-    history: [],
+    history: {},
     status: {},
     allocationList: []
 };

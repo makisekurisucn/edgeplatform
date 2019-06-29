@@ -13,7 +13,7 @@ import { setRegion, getRegion } from '../../../utils/handleRequest';
 import AppMainUpper from '../../../components/AppMainUpper';
 import JobInfo from './JobInfo';
 import AllocationDistribution from './AllocationDistribution';
-import NodeMetric from '../../DashboardNodeView/NodeMetric';
+import JobHistory from './JobHistory';
 
 
 
@@ -40,8 +40,8 @@ const tabList = [
         component: AllocationDistribution
     },
     {
-        name: '监控',
-        component: NodeMetric
+        name: '历史',
+        component: JobHistory
     }
 ];
 
@@ -124,7 +124,7 @@ class JobDetail extends Component {
         return (
             <Paper className={classes.root}>
                 <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} data={{ defaultCommand, commandList, name: detail.Name }} />
-                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList }} reducedHeight={163} tabWrapColor='rgb(96,139,162)' />
+                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, history }} reducedHeight={163} tabWrapColor='rgb(96,139,162)' />
             </Paper>
         );
     }
