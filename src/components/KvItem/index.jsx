@@ -15,10 +15,22 @@ const styles = theme => ({
         fontWeight: 400,
         marginBottom: 6
     },
+    valueContent: {
+        display: 'table',
+        width: '100%'
+    },
     value: {
+        display: 'table-cell',
         fontSize: 16,
         // color: '#EEF9FF',
         fontWeight: 600
+    },
+    sign: {
+        display: 'table-cell',
+        width: '44px',
+        paddingLeft: '14px',
+        textAlign: 'center',
+        verticalAlign: 'middle'
     }
 });
 class KvItem extends Component {
@@ -28,7 +40,7 @@ class KvItem extends Component {
         };
     }
     render() {
-        const { classes, className, keyName, value, style = {} } = this.props;
+        const { classes, className, keyName, value, style = {}, sign } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
@@ -36,8 +48,17 @@ class KvItem extends Component {
         }
         return (
             <div className={classNameWrap}>
-                <p className={classes.keyName} style={style.keyName}>{keyName}</p>
-                <p className={classes.value} style={style.value}>{value}</p>
+                <div className={classes.keyName} style={style.keyName}>{keyName}</div>
+                <div className={classes.valueContent}>
+                    {/* {
+                        sign ? <div className={classes.sign}>{sign}</div> : null
+                    } */}
+                    <div className={classes.value} style={style.value}>{value}</div>
+                    {
+                        sign ? <div className={classes.sign}>{sign}</div> : null
+                    }
+                </div>
+                {/* <div className={classes.value} style={style.value}>{value}</div> */}
             </div>
         );
     }

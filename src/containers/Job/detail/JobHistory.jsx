@@ -28,6 +28,16 @@ const styles = theme => ({
         marginBottom: 30,
         paddingLeft: '24px'
     },
+    greenKvItem: {
+        marginBottom: 30,
+        paddingLeft: '24px',
+        color: 'rgb(86,158,5)'
+    },
+    redKvItem: {
+        marginBottom: 30,
+        paddingLeft: '24px',
+        color: 'rgb(208, 2, 27)'
+    },
     versionList: {
         backgroundColor: 'rgba(68,105,128,0.02)',
         flex: 'auto',
@@ -72,12 +82,6 @@ const styles = theme => ({
         width: '27%',
         marginRight: '35px'
     },
-    aboveContent: {
-
-    },
-    belowContent: {
-
-    },
     subTitle: {
         display: 'flex',
         height: 42,
@@ -100,7 +104,41 @@ const styles = theme => ({
 const kvMap = {
     pending: '启动中',
     service: '服务',
-    running: '运行中'
+    running: '运行中',
+    dead: '已停止'
+}
+
+function HandleDifference(props) {
+    const style = {
+        keyName: {
+            fontSize: '14',
+            fontWeight: '300',
+            marginBottom: '3px'
+        },
+        value: {
+            fontSize: '16',
+            fontWeight: '400',
+            whiteSpace: 'pre-line',
+            wordBreak: 'break-all'
+        }
+    }
+    if (props.value === props.prevValue) {
+        return <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} />;
+    } else {
+        return <div>
+            <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} />
+            <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} />
+            {/* <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} sign={'--'} style={style} /> */}
+        </div>
+    }
+}
+
+const textWrapper = (arr = []) => {
+    if (arr instanceof Array) {
+        return arr.join('\n');
+    } else {
+        return '';
+    }
 }
 
 class JobHistory extends Component {
@@ -134,21 +172,40 @@ class JobHistory extends Component {
 
     render() {
         const { classes, className, data: jobDetail } = this.props;
-        const { detail, status,history } = jobDetail;
+        const { detail, status, history: jobHistory } = jobDetail;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
-        const taskList = detail.TaskGroups ? detail.TaskGroups[0].Tasks : [];
+        // const taskList = detail.TaskGroups ? detail.TaskGroups[0].Tasks : [];
         // const taskInfo = detail.TaskGroups ? detail.TaskGroups[0].Tasks[0] : { Config: {} };
-        const taskInfo = taskList[this.state.selectedTaskIndex] || { Config: {} };
+        // const taskInfo = taskList[this.state.selectedTaskIndex] || { Config: {} };
         const selectedVersion = classes.version + ' ' + classes.selected;
         if (className) {
             classNameWrap += ' ' + className;
         }
 
         console.log('------------------------')
-        console.log(history)
-
+        console.log(jobHistory)
+        let versions = jobHistory.Versions || [];
         let versionList = [];
+        versions.forEach((version, index) => {
+            versionList.push({
+                display: `v${version.Version}`,
+                info: version
+            })
+        })
+
+        let currentVersion = versionList[this.state.selectedVersionIndex] ? versionList[this.state.selectedVersionIndex].info : {};
+        let prevVersion = currentVersion;
+        if (this.state.selectedVersionIndex !== (versionList.length - 1)) {
+            prevVersion = versionList[this.state.selectedVersionIndex + 1] ? versionList[this.state.selectedVersionIndex + 1].info : {};
+        }
+
+        const taskGroup = currentVersion.TaskGroups ? currentVersion.TaskGroups[0] : {};
+        const taskInfo = taskGroup.Tasks ? taskGroup.Tasks[this.state.selectedTaskIndex] : { Config: {}, Resources: {} };
+
+        const prevTaskGroup = prevVersion.TaskGroups ? prevVersion.TaskGroups[0] : {};
+        const prevTaskInfo = taskGroup.Tasks ? taskGroup.Tasks[this.state.selectedTaskIndex] : { Config: {}, Resources: {} };
+
 
         const style = {
             keyName: {
@@ -170,15 +227,15 @@ class JobHistory extends Component {
                     {
                         versionList.map((version, index) => {
                             return (
-                                <div key={index} className={classes.versionContent}>
+                                <div key={version.display} className={classes.versionContent}>
                                     {
                                         index === 0 ?
                                             null : <KeyboardArrowUp className={classes.arrow}></KeyboardArrowUp>
                                     }
                                     {
                                         index === this.state.selectedVersionIndex ?
-                                            <div className={selectedVersion}>v{version}</div> :
-                                            <div className={classes.version} onClick={this.selectVersion(index)}>v{version}</div>
+                                            <div className={selectedVersion}>{version.display}</div> :
+                                            <div className={classes.version} onClick={this.selectVersion(index)}>{version.display}</div>
                                     }
 
                                 </div>
@@ -188,18 +245,25 @@ class JobHistory extends Component {
                     }
                 </div>
                 <div className={classes.subContent}>
-                    <div className={classes.aboveContent}>
+                    <div>
                         <div className={classes.subTitle}>基本信息</div>
                         <div className={classes.kvContent}>
-                            <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
-                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
-                            <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
-                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} style={style} />
-                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
+                            {/* <KvItem keyName="类型" className={classes.kvItem} value={kvMap[currentVersion.Type] || currentVersion.Type} style={style} />
+                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(currentVersion.SubmitTime)} style={style} />
+                            <KvItem keyName="Region" className={classes.kvItem} value={currentVersion.Region} style={style} />
+                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(currentVersion.Datacenters)} style={style} />
+                            <KvItem keyName="当前版本" className={classes.kvItem} value={currentVersion.Version} style={style} />
+                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[currentVersion.Status] || currentVersion.Status} style={style} /> */}
+                            <HandleDifference classes={classes} keyName="类型" value={kvMap[currentVersion.Type] || currentVersion.Type} prevValue={kvMap[prevVersion.Type] || prevVersion.Type} />
+                            <HandleDifference classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} prevValue={formatTime(prevVersion.SubmitTime)} />
+                            <HandleDifference classes={classes} keyName="Region" value={currentVersion.Region} prevValue={prevVersion.Region} />
+                            <HandleDifference classes={classes} keyName="数据中心" value={this.showDatacenter(currentVersion.Datacenters)} prevValue={this.showDatacenter(prevVersion.Datacenters)} />
+                            {/* <HandleDifference classes={classes} keyName="当前版本" value={currentVersion.Version} prevValue={prevVersion.Version} /> */}
+                            <KvItem keyName="当前版本" className={classes.kvItem} value={currentVersion.Version} style={style} />
+                            <HandleDifference classes={classes} keyName="状态" value={kvMap[currentVersion.Status] || currentVersion.Status} prevValue={kvMap[prevVersion.Status] || prevVersion.Status} />
                         </div>
                     </div>
-                    <div className={classes.belowContent}>
+                    <div>
                         <div className={classes.subTitle}>调度策略</div>
                         <div className={classes.kvContent}>
                             <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
@@ -215,19 +279,30 @@ class JobHistory extends Component {
                     <div className={classes.subTitle}>
                         <div>应用信息</div>
                         {/* <div></div> */}
-                        <Select className={classes.SelectButton} list={taskList} value={taskInfo.Name} valueKey={'Name'} displayKey={'Name'} onSelected={this.selectTask} />
+                        <Select className={classes.SelectButton} list={taskGroup.Tasks || []} value={taskInfo.Name} valueKey={'Name'} displayKey={'Name'} onSelected={this.selectTask} />
                     </div>
                     {/* <div className={classes.subTitle}>应用信息</div> */}
                     <div className={classes.kvContent}>
-                        <KvItem keyName="运行时类型" className={classes.kvItem} value={taskInfo.Driver} style={style} />
+                        <HandleDifference classes={classes} keyName="运行时类型" value={taskInfo.Driver} prevValue={prevTaskInfo.Driver} />
+                        <HandleDifference classes={classes} keyName="容器镜像" value={taskInfo.Config.image} prevValue={prevTaskInfo.Config.image} />
+                        <HandleDifference classes={classes} keyName="CPU" value={taskInfo.Resources.CPU} prevValue={prevTaskInfo.Resources.CPU} />
+                        <HandleDifference classes={classes} keyName="内存" value={taskInfo.Resources.MemoryMB} prevValue={prevTaskInfo.Resources.MemoryMB} />
+                        <HandleDifference classes={classes} keyName="实例数" value={taskGroup.Count} prevValue={prevTaskGroup.Count} />
+                        <HandleDifference classes={classes} keyName="启动命令" value={taskInfo.Config.command} prevValue={prevTaskInfo.Config.command} />
+                        <HandleDifference classes={classes} keyName="启动参数" value={textWrapper(taskInfo.Config.args)} prevValue={textWrapper(prevTaskInfo.Config.args)} />
+                        <HandleDifference classes={classes} keyName="环境变量" value={taskInfo.Env} prevValue={prevTaskInfo.Env} />
+                        <HandleDifference classes={classes} keyName="端口与服务" value={''} prevValue={''} />
+
+
+                        {/* <KvItem keyName="运行时类型" className={classes.kvItem} value={taskInfo.Driver} style={style} />
                         <KvItem keyName="容器镜像" className={classes.kvItem} value={taskInfo.Config.image} style={style} />
-                        <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.CPU} style={style} />
-                        <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.MemoryMB} style={style} />
-                        <KvItem keyName="实例数" className={classes.kvItem} value={detail.TaskGroups ? detail.TaskGroups[0].Count : ''} style={style} />
+                        <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.Resources.CPU} style={style} />
+                        <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.Resources.MemoryMB} style={style} />
+                        <KvItem keyName="实例数" className={classes.kvItem} value={taskGroup.Count} style={style} />
                         <KvItem keyName="启动命令" className={classes.kvItem} value={taskInfo.Config.command} style={style} />
-                        <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} style={style} />
-                        <KvItem keyName="环境变量" className={classes.kvItem} value={''} style={style} />
-                        <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} />
+                        <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} sign={'++'} style={style} />
+                        <KvItem keyName="环境变量" className={classes.kvItem} value={taskInfo.Env} style={style} />
+                        <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} /> */}
                         {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>
                 </div>
