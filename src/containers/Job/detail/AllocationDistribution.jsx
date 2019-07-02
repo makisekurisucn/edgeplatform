@@ -11,7 +11,6 @@ import EmptyListItem from '../../../components/DashboardListItem/EmptyListItem';
 import FadeWrap from '../../../components/FadeWrap';
 import TaskView from '../../TaskView';
 import { getWorkerList } from '../../../actions/Node';
-import { getPrometheus } from '../../../actions/Prometheus';
 
 const styles = theme => ({
     root: {
@@ -84,6 +83,29 @@ const getAllocationName = (prevName) => {
     }
     return prevName;
 }
+const getRadius = (str) => {
+    if (str) {
+        if (str === '未知') {
+            return 0;
+        } else if (str.indexOf('km') > -1) {
+            return parseInt(str) * 1000;
+        } else if (str.indexOf('m') > -1) {
+            return parseInt(str);
+        } else {
+            return 0;
+        }
+    }
+}
+const getCenter = (longitude, latitude) => {
+    let center = {};
+    if (longitude !== '未知' && latitude !== '未知') {
+        center.longitude = longitude;
+        center.latitude = latitude;
+    } else {
+        center = null;
+    }
+    return center;
+}
 
 class AllocationDistribution extends Component {
     constructor(props) {
@@ -128,7 +150,6 @@ class AllocationDistribution extends Component {
     showAlloc = (item, index) => {
         let isHidden = false;
         const { dispatch } = this.props;
-        getPrometheus(dispatch, item.id, item.Datacenter);
         if (this.state.allocIndex !== index) {
             this.setState({
                 isTaskDetailHidden: isHidden,
@@ -170,6 +191,8 @@ class AllocationDistribution extends Component {
         let DCInfo = {};
         let currentNode = {};
         let searchList = [];
+        let searchListLongitude = 0, searchListLatitude = 0, validSearchNumber = 0;
+        let searchListCenter = {};
         nodelist.forEach(node => {
             if (node.ID === this.state.currentNodeID) {
                 currentNode = node;
@@ -210,11 +233,11 @@ class AllocationDistribution extends Component {
             const location = `${DCInfo.DC}-${DCInfo.region}`;
             const itemData = {
                 title: allocName,
+                DCInfo,
                 date,
                 runningTasksNumber,
                 pendingTaskNumber,
                 deadTaskNumber,
-                // itemCount: runningTasksNumber,
                 location,
                 id: alloc.NodeID,
                 Datacenter,
@@ -237,12 +260,48 @@ class AllocationDistribution extends Component {
                 }
                 if (isMatched === true) {
                     searchList.push(itemData);
+                    if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
+                        searchListLongitude += parseInt(DCInfo.longitude);
+                        searchListLatitude += parseInt(DCInfo.latitude);
+                        validSearchNumber++;
+                    }
                 }
             } else {
                 searchList.push(itemData);
+                if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
+                    searchListLongitude += parseInt(DCInfo.longitude);
+                    searchListLatitude += parseInt(DCInfo.latitude);
+                    validSearchNumber++;
+                }
             }
 
         })
+        if (searchListLatitude === 0 && searchListLongitude === 0) {
+            searchListCenter = null;
+        } else {
+            searchListCenter.longitude = searchListLongitude / validSearchNumber;
+            searchListCenter.latitude = searchListLatitude / validSearchNumber;
+        }
+
+        let MyMap = null;
+        if (this.state.isTaskDetailHidden) {
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={searchListCenter} >
+                {
+                    searchList.map((item, index) => {
+                        const center = getCenter(item.DCInfo.longitude, item.DCInfo.latitude);
+                        const radius = getRadius(item.DCInfo.range);
+                        return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                    })
+                }
+            </Map>
+        } else {
+            const radius = getRadius(DCInfo.range);
+            const center = getCenter(DCInfo.longitude, DCInfo.latitude);
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={center} >
+                <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+            </Map>
+        }
+
 
 
         return (
@@ -251,8 +310,16 @@ class AllocationDistribution extends Component {
                     <div style={{ height: '100%', width: '100%' }} ref={(ele) => { this.mapDiv = ele }}>
                         {
                             this.mapDiv.clientHeight > 0 ?
-                                <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{ longitude: 120, latitude: 30 }} >
-                                </Map>
+                                // <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={searchListCenter} >
+                                //     {
+                                //         searchList.map((item, index) => {
+                                //             const center = getCenter(item.DCInfo.longitude, item.DCInfo.latitude);
+                                //             const radius = getRadius(item.DCInfo.range);
+                                //             return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                                //         })
+                                //     }
+                                // </Map>
+                                MyMap
                                 : null
                         }
                         <SearchBox className={classes.searchWrap} onSearch={this.handleSearch} />
@@ -268,38 +335,7 @@ class AllocationDistribution extends Component {
                                             return <ListItem onClick={this.showAlloc} index={index} itemData={item} key={item.title}></ListItem>;
                                         }
                                     })
-                                    // allocationList.map((alloc, index) => {
-                                    //     let DCInfo = {};
-                                    //     let runningTasksNumber = 0;
-                                    //     let Datacenter = '';
-                                    //     nodelist.forEach(node => {
-                                    //         if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
-                                    //             DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
-                                    //             Datacenter = node.Datacenter;
-                                    //         }
-                                    //     })
-                                    //     console.log(alloc.TaskStates)
-                                    //     for (let task in alloc.TaskStates) {
-                                    //         if (alloc.TaskStates[task].State === 'running') {
-                                    //             runningTasksNumber++;
-                                    //         }
 
-                                    //     }
-                                    //     const itemData = {
-                                    //         title: getAllocationName(alloc.Name),
-                                    //         date: formatTime(alloc.CreateTime),
-                                    //         itemCount: runningTasksNumber,
-                                    //         location: `${DCInfo.DC}-${DCInfo.region}`,
-                                    //         id: alloc.NodeID,
-                                    //         Datacenter,
-                                    //         region: jobDetail.Region
-                                    //     }
-                                    //     if (index === this.state.allocIndex) {
-                                    //         return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID} selected></ListItem>;
-                                    //     } else {
-                                    //         return <ListItem onClick={this.showAlloc} index={index} itemData={itemData} key={alloc.ID}></ListItem>;
-                                    //     }
-                                    // })
                                 }
                             </FixedHeight>
                         </div>

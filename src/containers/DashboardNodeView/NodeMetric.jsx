@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import WrappedGraph from '../../components/WrappedGraph';
-import { getPrometheus } from '../../actions/Prometheus';
+import { getNodePrometheus } from '../../actions/Prometheus';
 import { getPreciseTime } from '../../utils/formatTime';
 
 const styles = theme => ({
@@ -87,7 +87,7 @@ class NodeMetric extends Component {
             const nodeID = this.props.data.ID;
             const Datacenter = this.props.data.Datacenter;
             this.timeID = setTimeout(function () {
-                getPrometheus(dispatch, nodeID, Datacenter);
+                getNodePrometheus(dispatch, nodeID, Datacenter);
             }, 300000)
             //暂时将刷新时间设为5分钟，等接到prometheus数据后再改成10s,且刷新时间要和api中的时间对应,确保每次取的点时间戳一致
         }
@@ -154,7 +154,7 @@ NodeMetric.propTypes = {
 
 function mapStateToProps(state, ownProps) {
     return {
-        PrometheusData: state.Prometheus
+        PrometheusData: state.Prometheus.nodeMetric
     }
 }
 export default connect(mapStateToProps)(withStyles(styles)(NodeMetric));

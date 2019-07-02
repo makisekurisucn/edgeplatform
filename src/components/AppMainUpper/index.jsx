@@ -23,7 +23,7 @@ const styles = theme => ({
     root2: {
         height: 71,
         boxSizing: 'border-box',
-        lineHeight: '71px',
+        lineHeight: '64px',
         // textAlign: 'center',
         fontSize: 32,
         color: '#EEF9FF',
@@ -147,7 +147,7 @@ class AppMainUpper extends Component {
         this.props.history.goBack();
     }
     render() {
-        const { classes, className, type, status, data={} } = this.props;
+        const { classes, className, type, status, data = {} } = this.props;
         const { selected } = this.state;
         let classNameWrap = '';
 

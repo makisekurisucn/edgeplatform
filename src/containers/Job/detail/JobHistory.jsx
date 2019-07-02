@@ -255,7 +255,8 @@ class JobHistory extends Component {
                             <KvItem keyName="当前版本" className={classes.kvItem} value={currentVersion.Version} style={style} />
                             <KvItem keyName="状态" className={classes.kvItem} value={kvMap[currentVersion.Status] || currentVersion.Status} style={style} /> */}
                             <HandleDifference classes={classes} keyName="类型" value={kvMap[currentVersion.Type] || currentVersion.Type} prevValue={kvMap[prevVersion.Type] || prevVersion.Type} />
-                            <HandleDifference classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} prevValue={formatTime(prevVersion.SubmitTime)} />
+                            {/* <HandleDifference classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} prevValue={formatTime(prevVersion.SubmitTime)} /> */}
+                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(currentVersion.SubmitTime)} style={style} />
                             <HandleDifference classes={classes} keyName="Region" value={currentVersion.Region} prevValue={prevVersion.Region} />
                             <HandleDifference classes={classes} keyName="数据中心" value={this.showDatacenter(currentVersion.Datacenters)} prevValue={this.showDatacenter(prevVersion.Datacenters)} />
                             {/* <HandleDifference classes={classes} keyName="当前版本" value={currentVersion.Version} prevValue={prevVersion.Version} /> */}

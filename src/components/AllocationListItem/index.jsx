@@ -154,18 +154,7 @@ class AllocationListItem extends Component {
                                     <span className={classes.colorGray}>已停止</span>
                                 </div> : null
                         }
-                        {/* <div>
-                            <span className={classes.itemCount}>{itemData.runningTasksNumber}</span>
-                            <span className={classes.colorGreen}>运行中</span>
-                        </div>
-                        <div>
-                            <span className={classes.itemCount}>{itemData.pendingTaskNumber}</span>
-                            <span className={classes.colorYellow}>启动中</span>
-                        </div>
-                        <div>
-                            <span className={classes.itemCount}>{itemData.deadTaskNumber}</span>
-                            <span className={classes.colorGray}>已停止</span>
-                        </div> */}
+
                     </div>
                     <div className={classes.location}>{itemData.location}</div>
                 </div>

@@ -17,7 +17,7 @@ import { getDCList, getNodeList } from '../../actions/DC';
 import { getWorkerDetail } from '../../actions/Node';
 import { setRegion } from '../../utils/handleRequest';
 import { getAllocationList } from '../../actions/Allocation';
-import { getPrometheus } from '../../actions/Prometheus'
+import { getNodePrometheus } from '../../actions/Prometheus';
 import { node } from 'prop-types';
 
 
@@ -217,7 +217,7 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         getWorkerDetail(dispatch, item.ID);
         getAllocationList(dispatch);
-        getPrometheus(dispatch, item.ID, item.Datacenter);
+        getNodePrometheus(dispatch, item.ID, item.Datacenter);
         if (this.state.nodeIndex !== index) {
             this.setState({
                 isNodeDetailHidden: isHidden,

@@ -3,7 +3,7 @@ import { request } from '../utils/request';
 import { transformTimeFromStrToNum as transformTime } from '../utils/formatTime';
 
 
-function getCPUUtilization(nodeID, DC, duration) {
+function getNodeCPUUtilization(nodeID, DC, duration) {
     const result = transformTime(duration);
 
     return request({
@@ -16,7 +16,7 @@ function getCPUUtilization(nodeID, DC, duration) {
 }
 
 
-function getDiskUtilization(nodeID, DC, duration) {
+function getNodeDiskUtilization(nodeID, DC, duration) {
     const result = transformTime(duration);
 
     return request({
@@ -28,7 +28,7 @@ function getDiskUtilization(nodeID, DC, duration) {
     });
 }
 
-function getMemoryUtilization(nodeID, DC, duration) {
+function getNodeMemoryUtilization(nodeID, DC, duration) {
     const result = transformTime(duration);
 
     return request({
@@ -40,11 +40,37 @@ function getMemoryUtilization(nodeID, DC, duration) {
     });
 }
 
+function getTaskCPUUtilization(allocID, taskName, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_allocs_cpu_total_percent{alloc_id='${allocID}',task='${taskName}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function getTaskMemoryUtilization(allocID, taskName, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_allocs_memory_kernel_usage{alloc_id='${allocID}',task='${taskName}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
 
 
 export {
-    getCPUUtilization,
-    getDiskUtilization,
-    getMemoryUtilization,
+    getNodeCPUUtilization,
+    getNodeDiskUtilization,
+    getNodeMemoryUtilization,
+    getTaskCPUUtilization,
+    getTaskMemoryUtilization
     // getNetworkUtilization
 };

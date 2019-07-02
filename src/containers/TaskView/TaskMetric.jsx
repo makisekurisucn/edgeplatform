@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import WrappedGraph from '../../components/WrappedGraph';
-import { getPrometheus } from '../../actions/Prometheus';
+import { getTaskPrometheus } from '../../actions/Prometheus';
 import { getPreciseTime } from '../../utils/formatTime';
 import Select from '../../components/Select/HorizontalButton';
 
@@ -36,24 +36,6 @@ const CPUConfig = {
             show: false,
             min: 0,
             max: 100
-        }
-    }
-}
-const diskConfig = {
-    name: 'disk',
-    title: '磁盘',
-    unit: 'GB',
-    dataWrap: (data) => {
-        return (parseFloat(data) / 1024 / 1024 / 1024).toFixed(3);
-    },
-    option: {
-        tooltip: {
-            formatter: '时间 : {b0}<br/>{a0} : {c0} GB'
-        },
-        yAxis: {
-            type: 'value',
-            boundaryGap: [0, '100%'],
-            show: false
         }
     }
 }
@@ -108,16 +90,15 @@ class TaskMetric extends Component {
 
     componentDidUpdate() {
         const { dispatch } = this.props;
-        if (this.props.data.node.ID) {
+        if (this.props.data.alloc.ID) {
             clearTimeout(this.timeID);
             console.log('clear')
-            const nodeID = this.props.data.node.ID;
-            const Datacenter = this.props.data.node.Datacenter;
+            const allocID = this.props.data.alloc.ID;
+            const taskName = this.props.data.taskName;
             const duration = this.state.duration;
             console.log('set timeout')
             this.timeID = setTimeout(function () {
-                // getPrometheus(dispatch, nodeID, Datacenter, this.state.duration);
-                getPrometheus(dispatch, nodeID, Datacenter, duration);
+                getTaskPrometheus(dispatch, allocID, taskName, duration);
             }, 300000)
             //暂时将刷新时间设为5分钟，等接到prometheus数据后再改成10s,且刷新时间要和api中的时间对应,确保每次取的点时间戳一致
         }
@@ -130,8 +111,17 @@ class TaskMetric extends Component {
         console.log(prevAlloc)
         console.log(nextAlloc)
         if (prevAlloc.ID !== nextAlloc.ID || this.props.data.taskName !== nextProps.data.taskName) {
-            console.log('reset')
-            this.selectData(3);
+            const { dispatch } = this.props;
+
+            clearTimeout(this.timeID);
+            const allocID = nextAlloc.ID;
+            const taskName = nextProps.data.taskName;
+            getTaskPrometheus(dispatch, allocID, taskName, selectList[3].duration);
+
+            this.setState({
+                selectedIndex: 3,
+                duration: selectList[3].duration
+            })
         }
     }
 
@@ -165,11 +155,11 @@ class TaskMetric extends Component {
 
     selectData = (index) => {
         const { dispatch } = this.props;
-        if (this.props.data.node.ID) {
+        if (this.props.data.alloc.ID) {
             clearTimeout(this.timeID);
-            const nodeID = this.props.data.node.ID;
-            const Datacenter = this.props.data.node.Datacenter;
-            getPrometheus(dispatch, nodeID, Datacenter, selectList[index].duration);
+            const allocID = this.props.data.alloc.ID;
+            const taskName = this.props.data.taskName;
+            getTaskPrometheus(dispatch, allocID, taskName, selectList[index].duration);
         }
         this.setState({
             selectedIndex: index,
@@ -179,16 +169,14 @@ class TaskMetric extends Component {
 
     render() {
         const { classes, className, children, data, PrometheusData } = this.props;
-        const { CPUData, diskData, memoryData } = PrometheusData;
+        const { CPUData, memoryData } = PrometheusData;
 
         const CPUResult = this.dataWrapper(CPUData, CPUConfig);
-        const diskResult = this.dataWrapper(diskData, diskConfig);
         const memoryResult = this.dataWrapper(memoryData, memoryConfig);
 
-        const node = data.node || {};
+        const dataSourece = data.alloc.ID + ',' + data.taskName;
         console.log('-----this is taskMetric------')
         console.log(data)
-        console.log(data.node ? 'true' : 'false')
 
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
@@ -200,9 +188,8 @@ class TaskMetric extends Component {
         return (
             <div className={classNameWrap}>
                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'33px'}></Select>
-                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={node.ID} />
-                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} dataSource={node.ID} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={node.ID} />
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={dataSourece} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={dataSourece} />
             </div>
         );
     }
@@ -213,8 +200,9 @@ TaskMetric.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
+    console.log(state)
     return {
-        PrometheusData: state.Prometheus
+        PrometheusData: state.Prometheus.taskMetric
     }
 }
 export default connect(mapStateToProps)(withStyles(styles)(TaskMetric));
