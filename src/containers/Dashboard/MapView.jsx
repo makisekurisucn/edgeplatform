@@ -150,14 +150,22 @@ class Dashboard extends Component {
             currentDatacenter: '',
             nodeIndex: -1,
             isSearched: false,
-            inputValue: ''
+            inputValue: '',
+            mapZoom: '',
+            mapScale: '',
+            mapCenter: null
         };
+        this.timeID = null;
+        this.delay = 200;
+        this.prevScroll = 0;
         this.mapEvents = {
             created: (map) => {
                 this.mapInstance = map;
-                this.showCenter();
+                this.mapInstance.on('mousewheel', this.scrollListener);
+                //showcenter的原意？
+                // this.showCenter();
             },
-            moveend: () => { this.showCenter() }
+            // moveend: () => { this.showCenter() }
         };
     }
     componentDidMount() {
@@ -175,6 +183,38 @@ class Dashboard extends Component {
         // },2000)
 
     }
+    componentWillUnmount() {
+        if (this.mapInstance) {
+            // this.mapInstance.removeEventListener('scroll',this.scrollListener);
+            this.mapInstance.destroy();
+        }
+    }
+    scrollListener = () => {
+        console.log('sss')
+        const current = Date.now();
+        if ((current - this.prevScroll) >= this.delay) {
+            this.redrawMap();
+            this.prevScroll = current;
+        } else {
+            clearTimeout(this.timeID);
+            this.timeID = setTimeout(() => {
+                this.prevScroll = current;
+                this.redrawMap();
+            }, this.delay);
+        }
+    }
+    redrawMap = () => {
+        console.log('ddd')
+        console.log(this.mapInstance.getZoom())
+        console.log(this.mapInstance.getScale())
+        if (this.mapInstance) {
+            this.setState({
+                mapZoom: this.mapInstance.getZoom(),
+                mapScale: this.mapInstance.getScale(),
+                mapCenter: this.mapInstance.getCenter()
+            })
+        }
+    }
     goBack = (title) => {
         if (this.state.isSearched) {
             this.setState({
@@ -182,7 +222,8 @@ class Dashboard extends Component {
                 isNodeListHidden: true,
                 isNodeDetailHidden: true,
                 isSearchListHidden: false,
-                nodeIndex: -1
+                nodeIndex: -1,
+                mapCenter: null
             });
         } else {
             this.setState({
@@ -190,7 +231,8 @@ class Dashboard extends Component {
                 isNodeListHidden: true,
                 isNodeDetailHidden: true,
                 isSearchListHidden: true,
-                nodeIndex: -1
+                nodeIndex: -1,
+                mapCenter: null
             });
         }
     }
@@ -208,7 +250,8 @@ class Dashboard extends Component {
             currentRegion: item.region,
             currentDatacenter: item.Datacenter,
             DCInfo: item.DCInfo,
-            nodeIndex: -1
+            nodeIndex: -1,
+            mapCenter: null
         });
     }
     showDetail = (item, index) => {
@@ -221,13 +264,15 @@ class Dashboard extends Component {
         if (this.state.nodeIndex !== index) {
             this.setState({
                 isNodeDetailHidden: isHidden,
-                nodeIndex: index
+                nodeIndex: index,
+                mapCenter: null
             })
         }
         else {
             this.setState({
                 isNodeDetailHidden: !isHidden,
-                nodeIndex: -1
+                nodeIndex: -1,
+                mapCenter: null
             })
         }
     }
@@ -239,7 +284,8 @@ class Dashboard extends Component {
                 isNodeDetailHidden: true,
                 isSearchListHidden: true,
                 isSearched: false,
-                inputValue: inputValue
+                inputValue: inputValue,
+                mapCenter: null
             })
         } else {
             this.setState({
@@ -249,7 +295,8 @@ class Dashboard extends Component {
                 isSearchListHidden: false,
                 isSearched: true,
                 inputValue: inputValue,
-                nodeIndex: -1
+                nodeIndex: -1,
+                mapCenter: null
             })
         }
     }
@@ -353,7 +400,7 @@ class Dashboard extends Component {
         if (!this.state.isNodeListHidden) {
             radius = getRadius(DCInfo.range);
             center = getCenter(DCInfo.longitude, DCInfo.latitude);
-            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={center}>
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
                 <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
             </Map>;
         } else if (!this.state.isSearchListHidden) {
@@ -361,11 +408,11 @@ class Dashboard extends Component {
                 const node = searchList[this.state.nodeIndex];
                 center = getCenter(node.DCInfo.longitude, node.DCInfo.latitude);
                 radius = getRadius(node.DCInfo.range);
-                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={center}>
+                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
                     <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                 </Map>;
             } else {
-                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={searchListCenter}>
+                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || searchListCenter} events={this.mapEvents}>
                     {
                         searchList.map((item, index) => {
                             center = getCenter(item.DCInfo.longitude, item.DCInfo.latitude);
@@ -376,13 +423,19 @@ class Dashboard extends Component {
                 </Map>;
             }
         } else {
-            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={DCListCenter}>
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || DCListCenter} events={this.mapEvents}>
                 {
                     list.map((item, index) => {
                         const DCInfo = DCInfoMap[item.region][item.Datacenter];
                         center = getCenter(DCInfo.longitude, DCInfo.latitude);
                         radius = getRadius(DCInfo.range);
-                        return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                        const screenRadius=this.state.mapScale?radius/this.state.mapScale:1;
+                        if(screenRadius<0.01){
+                            return <Marker key={item.Datacenter} position={center}/>
+                        }else{
+                            return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                        }
+                        // return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                     })
                 }
             </Map>;
