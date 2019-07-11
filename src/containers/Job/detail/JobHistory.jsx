@@ -38,6 +38,15 @@ const styles = theme => ({
         paddingLeft: '24px',
         color: 'rgb(208, 2, 27)'
     },
+    schedule: {
+        paddingLeft: '24px',
+        marginBottom: '30px',
+        lineHeight: '40px',
+        fontSize: '30px',
+        fontWeight: "400",
+        whiteSpace: 'pre-line',
+        wordBreak: 'break-all'
+    },
     versionList: {
         backgroundColor: 'rgba(68,105,128,0.02)',
         flex: 'auto',
@@ -108,7 +117,7 @@ const kvMap = {
     dead: '已停止'
 }
 
-function HandleDifference(props) {
+function HandleDiff(props) {
     const style = {
         keyName: {
             fontSize: '14',
@@ -133,13 +142,6 @@ function HandleDifference(props) {
     }
 }
 
-const textWrapper = (arr = []) => {
-    if (arr instanceof Array) {
-        return arr.join('\n');
-    } else {
-        return '';
-    }
-}
 
 class JobHistory extends Component {
     constructor(props) {
@@ -168,6 +170,44 @@ class JobHistory extends Component {
         this.setState({
             selectedVersionIndex: index
         })
+    }
+
+    arrToString = (arr) => {
+        if (arr instanceof Array) {
+            return arr.join('\n');
+        } else {
+            return arr;
+        }
+    }
+
+    showConstraint = (constraints) => {
+        //把constraint字段进行显示
+        //如果一个job有多个约束，那么是放到一个constraint下，还是有多个constraint
+        //constraint好像是一个存放对象的数组
+        //cli和api拿到的数据的字段是一样的吗，是attribute、value、operator还是ltarget、rtarget和operand
+
+        if (constraints instanceof Array) {
+            let strArr = [];
+            constraints.forEach(constraint => {
+                // if(constraint.distinct_host)
+                strArr.push(`${constraint.LTarget}${constraint.Operand}${constraint.RTarget}`);
+            })
+            return strArr.join('\n');
+        } else {
+            return constraints;
+        }
+    }
+
+    objToString = (obj) => {
+        if (obj instanceof Object) {
+            let strArr = [];
+            for (let key in obj) {
+                strArr.push(`${key}=${obj[key]}`);
+            }
+            return strArr.join('\n');
+        } else {
+            return obj;
+        }
     }
 
     render() {
@@ -248,31 +288,22 @@ class JobHistory extends Component {
                     <div>
                         <div className={classes.subTitle}>基本信息</div>
                         <div className={classes.kvContent}>
-                            {/* <KvItem keyName="类型" className={classes.kvItem} value={kvMap[currentVersion.Type] || currentVersion.Type} style={style} />
+                            <HandleDiff classes={classes} keyName="类型" value={kvMap[currentVersion.Type] || currentVersion.Type} prevValue={kvMap[prevVersion.Type] || prevVersion.Type} />
+                            {/* <HandleDiff classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} prevValue={formatTime(prevVersion.SubmitTime)} /> */}
                             <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(currentVersion.SubmitTime)} style={style} />
-                            <KvItem keyName="Region" className={classes.kvItem} value={currentVersion.Region} style={style} />
-                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(currentVersion.Datacenters)} style={style} />
+                            <HandleDiff classes={classes} keyName="Region" value={currentVersion.Region} prevValue={prevVersion.Region} />
+                            <HandleDiff classes={classes} keyName="数据中心" value={this.showDatacenter(currentVersion.Datacenters)} prevValue={this.showDatacenter(prevVersion.Datacenters)} />
+                            {/* <HandleDiff classes={classes} keyName="当前版本" value={currentVersion.Version} prevValue={prevVersion.Version} /> */}
                             <KvItem keyName="当前版本" className={classes.kvItem} value={currentVersion.Version} style={style} />
-                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[currentVersion.Status] || currentVersion.Status} style={style} /> */}
-                            <HandleDifference classes={classes} keyName="类型" value={kvMap[currentVersion.Type] || currentVersion.Type} prevValue={kvMap[prevVersion.Type] || prevVersion.Type} />
-                            {/* <HandleDifference classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} prevValue={formatTime(prevVersion.SubmitTime)} /> */}
-                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(currentVersion.SubmitTime)} style={style} />
-                            <HandleDifference classes={classes} keyName="Region" value={currentVersion.Region} prevValue={prevVersion.Region} />
-                            <HandleDifference classes={classes} keyName="数据中心" value={this.showDatacenter(currentVersion.Datacenters)} prevValue={this.showDatacenter(prevVersion.Datacenters)} />
-                            {/* <HandleDifference classes={classes} keyName="当前版本" value={currentVersion.Version} prevValue={prevVersion.Version} /> */}
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={currentVersion.Version} style={style} />
-                            <HandleDifference classes={classes} keyName="状态" value={kvMap[currentVersion.Status] || currentVersion.Status} prevValue={kvMap[prevVersion.Status] || prevVersion.Status} />
+                            <HandleDiff classes={classes} keyName="状态" value={kvMap[currentVersion.Status] || currentVersion.Status} prevValue={kvMap[prevVersion.Status] || prevVersion.Status} />
                         </div>
                     </div>
                     <div>
                         <div className={classes.subTitle}>调度策略</div>
                         <div className={classes.kvContent}>
-                            <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
-                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
-                            <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
-                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} style={style} />
-                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
+                            <div className={classes.schedule}>
+                                {`aaa=aaa\nbbb=bbb`}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -284,26 +315,15 @@ class JobHistory extends Component {
                     </div>
                     {/* <div className={classes.subTitle}>应用信息</div> */}
                     <div className={classes.kvContent}>
-                        <HandleDifference classes={classes} keyName="运行时类型" value={taskInfo.Driver} prevValue={prevTaskInfo.Driver} />
-                        <HandleDifference classes={classes} keyName="容器镜像" value={taskInfo.Config.image} prevValue={prevTaskInfo.Config.image} />
-                        <HandleDifference classes={classes} keyName="CPU" value={taskInfo.Resources.CPU} prevValue={prevTaskInfo.Resources.CPU} />
-                        <HandleDifference classes={classes} keyName="内存" value={taskInfo.Resources.MemoryMB} prevValue={prevTaskInfo.Resources.MemoryMB} />
-                        <HandleDifference classes={classes} keyName="实例数" value={taskGroup.Count} prevValue={prevTaskGroup.Count} />
-                        <HandleDifference classes={classes} keyName="启动命令" value={taskInfo.Config.command} prevValue={prevTaskInfo.Config.command} />
-                        <HandleDifference classes={classes} keyName="启动参数" value={textWrapper(taskInfo.Config.args)} prevValue={textWrapper(prevTaskInfo.Config.args)} />
-                        <HandleDifference classes={classes} keyName="环境变量" value={taskInfo.Env} prevValue={prevTaskInfo.Env} />
-                        <HandleDifference classes={classes} keyName="端口与服务" value={''} prevValue={''} />
-
-
-                        {/* <KvItem keyName="运行时类型" className={classes.kvItem} value={taskInfo.Driver} style={style} />
-                        <KvItem keyName="容器镜像" className={classes.kvItem} value={taskInfo.Config.image} style={style} />
-                        <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.Resources.CPU} style={style} />
-                        <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.Resources.MemoryMB} style={style} />
-                        <KvItem keyName="实例数" className={classes.kvItem} value={taskGroup.Count} style={style} />
-                        <KvItem keyName="启动命令" className={classes.kvItem} value={taskInfo.Config.command} style={style} />
-                        <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} sign={'++'} style={style} />
-                        <KvItem keyName="环境变量" className={classes.kvItem} value={taskInfo.Env} style={style} />
-                        <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} /> */}
+                        <HandleDiff classes={classes} keyName="运行时类型" value={taskInfo.Driver} prevValue={prevTaskInfo.Driver} />
+                        <HandleDiff classes={classes} keyName="容器镜像" value={taskInfo.Config.image} prevValue={prevTaskInfo.Config.image} />
+                        <HandleDiff classes={classes} keyName="CPU" value={taskInfo.Resources.CPU} prevValue={prevTaskInfo.Resources.CPU} />
+                        <HandleDiff classes={classes} keyName="内存" value={taskInfo.Resources.MemoryMB} prevValue={prevTaskInfo.Resources.MemoryMB} />
+                        <HandleDiff classes={classes} keyName="实例数" value={taskGroup.Count} prevValue={prevTaskGroup.Count} />
+                        <HandleDiff classes={classes} keyName="启动命令" value={taskInfo.Config.command} prevValue={prevTaskInfo.Config.command} />
+                        <HandleDiff classes={classes} keyName="启动参数" value={this.arrToString(taskInfo.Config.args)} prevValue={this.arrToString(prevTaskInfo.Config.args)} />
+                        <HandleDiff classes={classes} keyName="环境变量" value={this.objToString(taskInfo.Env)} prevValue={this.objToString(prevTaskInfo.Env)} />
+                        <HandleDiff classes={classes} keyName="端口与服务" value={''} prevValue={''} />
                         {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>
                 </div>

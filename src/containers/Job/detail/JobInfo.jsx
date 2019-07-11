@@ -34,11 +34,14 @@ const styles = theme => ({
         width: '27%',
         marginRight: '35px'
     },
-    aboveContent: {
-
-    },
-    belowContent: {
-
+    schedule: {
+        paddingLeft: '24px',
+        marginBottom: '30px',
+        lineHeight: '40px',
+        fontSize: '30px',
+        fontWeight: "400",
+        whiteSpace: 'pre-line',
+        wordBreak: 'break-all'
     },
     subTitle: {
         display: 'flex',
@@ -87,6 +90,39 @@ class JobInfo extends Component {
         })
     ]
 
+    showConstraint = (constraints) => {
+        //把constraint字段进行显示
+        //如果一个job有多个约束，那么是放到一个constraint下，还是有多个constraint
+        //constraint好像是一个存放对象的数组
+        //cli和api拿到的数据的字段是一样的吗，是attribute、value、operator还是ltarget、rtarget和operand
+
+        if (constraints instanceof Array) {
+            let strArr = [];
+            constraints.forEach(constraint => {
+                if (constraint.Operand === 'distinct_hosts' && constraint.RTarget == 'true') {
+                    strArr.push(`不同主机`)
+                } else {
+                    strArr.push(`${constraint.LTarget}${constraint.Operand}${constraint.RTarget}`);
+                }
+            })
+            return strArr.join('\n');
+        } else {
+            return constraints;
+        }
+    }
+
+    objToString = (obj) => {
+        if (obj instanceof Object) {
+            let strArr = [];
+            for (let key in obj) {
+                strArr.push(`${key}=${obj[key]}`);
+            }
+            return strArr.join('\n');
+        } else {
+            return obj;
+        }
+    }
+
     render() {
         const { classes, className, data: jobDetail } = this.props;
         const { detail, status } = jobDetail;
@@ -130,12 +166,10 @@ class JobInfo extends Component {
                     <div className={classes.belowContent}>
                         <div className={classes.subTitle}>调度策略</div>
                         <div className={classes.kvContent}>
-                            <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
-                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
-                            <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
-                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} style={style} />
-                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
+                            {/* <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} /> */}
+                            <div className={classes.schedule}>
+                                {`abc=ced\nabc=ced`}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -154,7 +188,7 @@ class JobInfo extends Component {
                         <KvItem keyName="实例数" className={classes.kvItem} value={detail.TaskGroups ? detail.TaskGroups[0].Count : ''} style={style} />
                         <KvItem keyName="启动命令" className={classes.kvItem} value={taskInfo.Config.command} style={style} />
                         <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} style={style} />
-                        <KvItem keyName="环境变量" className={classes.kvItem} value={''} style={style} />
+                        <KvItem keyName="环境变量" className={classes.kvItem} value={this.objToString(taskInfo.Env)} style={style} />
                         <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} />
                         {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>

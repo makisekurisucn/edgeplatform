@@ -29,7 +29,7 @@ const styles = theme => ({
         fontSize: 14,
         boxSizing: 'border-box',
         textAlign: 'center',
-        maxWidth: 119,
+        maxWidth: 112,
         height: 20,
         padding: '0px 9px',
         textOverflow: 'ellipsis',
