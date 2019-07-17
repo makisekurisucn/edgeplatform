@@ -29,7 +29,7 @@ const styles = theme => ({
         fontSize: 14,
         boxSizing: 'border-box',
         textAlign: 'center',
-        maxWidth: 112,
+        maxWidth: 105,
         height: 20,
         padding: '0px 9px',
         textOverflow: 'ellipsis',
@@ -41,7 +41,8 @@ const styles = theme => ({
     date: {
         fontWeight: 300,
         color: 'rgb(181,181,181)',
-        margin: '3px 15px'
+        margin: '3px 15px',
+        whiteSpace: 'nowrap'
     },
     middleContent: {
         height: 26

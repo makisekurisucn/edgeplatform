@@ -20,7 +20,7 @@ function* getTaskLogs(action) {
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: logs,
+            logs: logs.error === true ? logs.data : logs,
             logType: action.params.type || 'stdout'
         }
     })
@@ -35,14 +35,14 @@ function* getBothTaskLogs(action) {
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: stdoutLogs,
+            logs: stdoutLogs.error === true ? stdoutLogs.data : stdoutLogs,
             logType: 'stdout'
         }
     })
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: stderrLogs,
+            logs: stderrLogs.error === true ? stderrLogs.data : stderrLogs,
             logType: 'stderr'
         }
     })

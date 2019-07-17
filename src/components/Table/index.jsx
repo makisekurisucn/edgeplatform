@@ -53,7 +53,9 @@ const kvMap = {
     service: '服务',
     pending: '启动中',
     running: '运行中',
-    dead:'已停止'
+    dead: '已停止',
+    ready: '就绪',
+    down: '已停止'
 }
 
 class SimpleTable extends Component {
@@ -86,6 +88,7 @@ class SimpleTable extends Component {
     render() {
         const { classes, header, list, className } = this.props;
         console.log(header)
+        console.log(list);
         let tableBodyWrap = classes.tableBody;
         if (className) {
             tableBodyWrap = classes.tableBody + ' ' + className

@@ -84,12 +84,12 @@ module.exports = function(proxy, allowedHost) {
         proxy: {
             '/v1': {
                 // target: 'http://134.209.9.106:5656'
-                target: 'http://10.10.101.130:4646' 
+                target: 'http://10.10.101.130:4646'
                 // target: 'http://10.10.101.117:4646' 多region,无meta
             },
             '/api': {
                 // target: 'http://134.209.9.106:9999'
-                target: 'http://10.10.101.135:9090'
+                target: 'http://10.10.101.135:9998'
             }
         },
         before(app, server) {

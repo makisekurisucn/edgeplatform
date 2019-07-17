@@ -10,7 +10,7 @@ const initialState = {
     }
 };
 
-const nodeMetricProcess = (state, data, type) => {
+const nodeMetricProcess = (state, data = [], type) => {
     switch (type) {
         case 'cpu':
             return Object.assign({}, state.nodeMetric, { CPUData: data });
@@ -23,7 +23,7 @@ const nodeMetricProcess = (state, data, type) => {
     }
 }
 
-const taskMetricProcess = (state, data, type) => {
+const taskMetricProcess = (state, data = [], type) => {
     switch (type) {
         case 'cpu':
             return Object.assign({}, state.taskMetric, { CPUData: data });

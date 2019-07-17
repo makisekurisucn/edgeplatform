@@ -35,8 +35,8 @@ const styles = theme => ({
         bottom: 3 * theme.spacing.unit,
 
     },
-    tableBody:{
-        cursor:'pointer'
+    tableBody: {
+        cursor: 'pointer'
     }
 });
 const header = [{ name: "名称", key: "Name" }, { name: "类型", key: "Type" }, { name: "状态", key: "Status" }, { name: "创建时间", key: "SubmitTime", type: "time" }];
@@ -64,12 +64,13 @@ class SimpleTable extends Component {
     }
     render() {
         const { classes, list, loading } = this.props;
+        console.log(list);
         return (
             <div className={classes.root}>
                 <Paper>
                     <Loading loading={loading}>
                         <AppMainUpper type='job_list' />
-                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody}/>
+                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody} />
                     </Loading>
                 </Paper>
 

@@ -51,7 +51,7 @@ const styles = theme => ({
     actionArea: {
         // padding: "0px 10px"
     },
-    buttonRoot:{
+    buttonRoot: {
         height: 60,
         width: 180,
         // boxSizing: 'border-box',
@@ -59,7 +59,7 @@ const styles = theme => ({
         textAlign: 'center',
         padding: '0px 4px',
         fontSize: 18
-        
+
     },
     selected: {
         height: 4,
@@ -88,8 +88,8 @@ class TopBar extends Component {
             this.setState({
                 currentRegion: nextProp.regionList[0]
             });
+            setRegion(nextProp.regionList[0]);
         }
-        setRegion(this.state.currentRegion);
     }
     selectRegion = region => {
         this.setState({
@@ -111,8 +111,8 @@ class TopBar extends Component {
                     </Typography>
 
                     <div className={classes.menuList}>
-                        <TopButton content="看板" link="/dashboard" className={{buttonRoot:classes.buttonRoot,selected:classes.selected}}></TopButton>
-                        <TopButton content="控制台" link="/console" className={{buttonRoot:classes.buttonRoot,selected:classes.selected}}></TopButton>
+                        <TopButton content="看板" link="/dashboard" className={{ buttonRoot: classes.buttonRoot, selected: classes.selected }}></TopButton>
+                        <TopButton content="控制台" link="/console" className={{ buttonRoot: classes.buttonRoot, selected: classes.selected }}></TopButton>
                     </div>
                 </div>
                 <div className={classes.actionArea}>

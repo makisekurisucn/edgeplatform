@@ -1,3 +1,7 @@
+import { reject } from "q";
+import { resolve } from "path";
+import err from "react-json-editor-ajrm/err";
+
 // import { message } from 'antd';
 //生产环境还是开发环境
 const getApi = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
@@ -7,9 +11,10 @@ function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
     } else {
-        var error = new Error(response.statusText);
-        error.response = response;
-        throw error;
+        const promise = new Promise((resolve, reject) => {
+            resolve(response.text());
+        })
+        return promise.then((err) => { return Promise.reject(err) });
     }
 }
 
@@ -30,12 +35,12 @@ function request({ url, options, callback }) {
     return fetch(getApi + url, options)
         .then(checkStatus)
         // .then(parseJSON)
-        .then((response)=>{
-            if(options.expectedDataType==='json'){
+        .then((response) => {
+            if (options.expectedDataType === 'json') {
                 return response.json();
-            }else if(options.expectedDataType==='plain'){
+            } else if (options.expectedDataType === 'plain') {
                 return response.text();
-            }else{
+            } else {
                 return response.json();
             }
         })
