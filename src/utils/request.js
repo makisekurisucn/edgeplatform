@@ -14,7 +14,9 @@ function checkStatus(response) {
         const promise = new Promise((resolve, reject) => {
             resolve(response.text());
         })
-        return promise.then((err) => { return Promise.reject(err) });
+        return promise.then((text) => {
+            return Promise.reject({ msg: text, response });
+        });
     }
 }
 
@@ -47,7 +49,7 @@ function request({ url, options, callback }) {
         .then((data) => {
             return data;
         }).catch((err) => {
-            alert('发送fetch失败' + JSON.stringify(err) + ',方法名：' + url); //需要后续改进
+            alert('发送fetch失败' + JSON.stringify(err.msg) + ',方法名：' + url); //需要后续改进
             return { error: true, data: err };
 
         });

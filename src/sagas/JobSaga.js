@@ -13,7 +13,7 @@ function* getJoblist(action) {
     yield put({
         type: "JOB_UPDATE_JOBLIST",
         data: {
-            list: joblist || []
+            list: joblist.error ? [] : joblist || []
         }
     });
 }

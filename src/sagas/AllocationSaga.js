@@ -6,12 +6,14 @@ import { setRegion } from '../utils/handleRequest';
 function* getAllocationlist(action) {
     let allocationlist = yield call(list);
 
-    yield put({
-        type: "ALLOCATION_UPDATE_ALLOCATIONLIST",
-        data: {
-            list: allocationlist || []
-        }
-    });
+    if (!allocationlist.error) {
+        yield put({
+            type: "ALLOCATION_UPDATE_ALLOCATIONLIST",
+            data: {
+                list: allocationlist || []
+            }
+        });
+    }
 
 }
 
@@ -20,7 +22,7 @@ function* getTaskLogs(action) {
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: logs.error === true ? logs.data : logs,
+            logs: logs.error ? logs.data.msg : logs,
             logType: action.params.type || 'stdout'
         }
     })
@@ -35,14 +37,14 @@ function* getBothTaskLogs(action) {
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: stdoutLogs.error === true ? stdoutLogs.data : stdoutLogs,
+            logs: stdoutLogs.error ? stdoutLogs.data.msg : stdoutLogs,
             logType: 'stdout'
         }
     })
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: stderrLogs.error === true ? stderrLogs.data : stderrLogs,
+            logs: stderrLogs.error ? stderrLogs.data.msg : stderrLogs,
             logType: 'stderr'
         }
     })

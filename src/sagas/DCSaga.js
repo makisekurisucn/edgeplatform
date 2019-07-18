@@ -60,18 +60,20 @@ function* getNodelist(action) {
 
     setRegion(action.region);
     let workerList = yield call(getWorkerList);
-    for (let i = 0; i < workerList.length; i++) {
-        if (workerList[i].Datacenter === action.Datacenter) {
-            nodelist.push({ name: workerList[i].Name, ID: workerList[i].ID });
+    if (!workerList.error) {
+        for (let i = 0; i < workerList.length; i++) {
+            if (workerList[i].Datacenter === action.Datacenter) {
+                nodelist.push({ name: workerList[i].Name, ID: workerList[i].ID });
+            }
         }
-    }
 
-    yield put({
-        type: "DC_UPDATE_NODELIST",
-        data: {
-            list: nodelist || []
-        }
-    });
+        yield put({
+            type: "DC_UPDATE_NODELIST",
+            data: {
+                list: nodelist || []
+            }
+        });
+    }
 }
 
 

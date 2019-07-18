@@ -6,46 +6,56 @@ import { getTaskCPUUtilization as getTaskCPUData, getTaskMemoryUtilization as ge
 function* getNodeCPUUtilization(action) {
     let CPUData = yield call(getNodeCPUData, action.nodeID, action.DC, action.duration);
 
-    yield put({
-        type: "PROMETHEUS_UPDATE_NODECPUUTILIZATION",
-        data: CPUData || {}
-    });
+    if (!CPUData.error) {
+        yield put({
+            type: "PROMETHEUS_UPDATE_NODECPUUTILIZATION",
+            data: CPUData || {}
+        });
+    }
 }
 
 function* getNodeDiskUtilization(action) {
     let DiskData = yield call(getNodeDiskData, action.nodeID, action.DC, action.duration);
 
-    yield put({
-        type: "PROMETHEUS_UPDATE_NODEDISKUTILIZATION",
-        data: DiskData || {}
-    });
+    if (!DiskData.error) {
+        yield put({
+            type: "PROMETHEUS_UPDATE_NODEDISKUTILIZATION",
+            data: DiskData || {}
+        });
+    }
 }
 
 function* getNodeMemoryUtilization(action) {
     let MemoryData = yield call(getNodeMemoryData, action.nodeID, action.DC, action.duration);
 
-    yield put({
-        type: "PROMETHEUS_UPDATE_NODEMEMORYUTILIZATION",
-        data: MemoryData || {}
-    });
+    if (!MemoryData.error) {
+        yield put({
+            type: "PROMETHEUS_UPDATE_NODEMEMORYUTILIZATION",
+            data: MemoryData || {}
+        });
+    }
 }
 
 function* getTaskCPUUtilization(action) {
     let CPUData = yield call(getTaskCPUData, action.allocID, action.taskName, action.duration);
 
-    yield put({
-        type: "PROMETHEUS_UPDATE_TASKCPUUTILIZATION",
-        data: CPUData || {}
-    });
+    if (!CPUData.error) {
+        yield put({
+            type: "PROMETHEUS_UPDATE_TASKCPUUTILIZATION",
+            data: CPUData || {}
+        });
+    }
 }
 
 function* getTaskMemoryUtilization(action) {
     let MemoryData = yield call(getTaskMemoryData, action.allocID, action.taskName, action.duration);
 
-    yield put({
-        type: "PROMETHEUS_UPDATE_TASKMEMORYUTILIZATION",
-        data: MemoryData || {}
-    });
+    if (!MemoryData.error) {
+        yield put({
+            type: "PROMETHEUS_UPDATE_TASKMEMORYUTILIZATION",
+            data: MemoryData || {}
+        });
+    }
 }
 
 
