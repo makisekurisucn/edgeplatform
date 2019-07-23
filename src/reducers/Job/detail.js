@@ -128,7 +128,12 @@ const jobStatusProcess = (allocInfo) => {
         taskGroup[tgname].forEach((instance, index) => {
             let tasks = instance.TaskStates;
             for (let taskName in tasks) {
-                if (index === 0) {
+                // if (index === 0) {
+                //     newTG[taskName] = [];
+                //     statusIndex[tgname][taskName] = 0;
+                // }
+                //  上述条件判断，在当为0的index代表的tg下缺少某个taskname而其他index包含该task的时候，newTG[taskName]为undefined，导致155行出错
+                if (!newTG[taskName]) {
                     newTG[taskName] = [];
                     statusIndex[tgname][taskName] = 0;
                 }
