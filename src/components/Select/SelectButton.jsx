@@ -36,6 +36,7 @@ const styles = theme => ({
     selectListWrap: {
         backgroundColor: 'rgba(97,139,162,0.8)',
         position: "absolute",
+        zIndex: 10,
         padding: 0,
         margin: 0,
         height: 0,

@@ -47,7 +47,7 @@ const styles = theme => ({
         },
         backgroundColor: '#4BAF7E',
         textAlign: 'center',
-        zIndex: 1
+        zIndex: 100
     }
 });
 

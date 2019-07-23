@@ -116,14 +116,16 @@ const mapCircleStyle = {
 
 }
 const getRadius = (str) => {
-    if (str === '未知') {
-        return 0;
-    } else if (str.indexOf('km') > -1) {
-        return parseInt(str) * 1000;
-    } else if (str.indexOf('m') > -1) {
-        return parseInt(str);
-    } else {
-        return 0;
+    if (str) {
+        if (str === '未知') {
+            return 0;
+        } else if (str.indexOf('km') > -1) {
+            return parseInt(str) * 1000;
+        } else if (str.indexOf('m') > -1) {
+            return parseInt(str);
+        } else {
+            return 0;
+        }
     }
 }
 const getCenter = (longitude, latitude) => {
@@ -401,15 +403,15 @@ class Dashboard extends Component {
             radius = getRadius(DCInfo.range);
             center = getCenter(DCInfo.longitude, DCInfo.latitude);
             // 
-            const screenRadius=this.state.mapScale?(radius/this.state.mapScale):1;
-            if(screenRadius<0.01){
+            const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
+            if (screenRadius < 0.01) {
                 MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
-                <Marker position={center}/>
-            </Map>;
-            }else{
+                    <Marker position={center} />
+                </Map>;
+            } else {
                 MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
-                <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
-            </Map>;
+                    <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                </Map>;
             }
             // 
             // MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
@@ -421,15 +423,15 @@ class Dashboard extends Component {
                 center = getCenter(node.DCInfo.longitude, node.DCInfo.latitude);
                 radius = getRadius(node.DCInfo.range);
                 // 
-                const screenRadius=this.state.mapScale?(radius/this.state.mapScale):1;
-                if(screenRadius<0.01){
+                const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
+                if (screenRadius < 0.01) {
                     MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
-                    <Marker position={center}/>
-                </Map>;
-                }else{
+                        <Marker position={center} />
+                    </Map>;
+                } else {
                     MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
-                    <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
-                </Map>;
+                        <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                    </Map>;
                 }
                 // 
                 // MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
@@ -442,10 +444,10 @@ class Dashboard extends Component {
                             center = getCenter(item.DCInfo.longitude, item.DCInfo.latitude);
                             radius = getRadius(item.DCInfo.range);
                             // 
-                            const screenRadius=this.state.mapScale?(radius/this.state.mapScale):1;
-                            if(screenRadius<0.01){
-                                return <Marker key={index} position={center}/>
-                            }else{
+                            const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
+                            if (screenRadius < 0.01) {
+                                return <Marker key={index} position={center} />
+                            } else {
                                 return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                             }
                             // 
@@ -461,10 +463,10 @@ class Dashboard extends Component {
                         const DCInfo = DCInfoMap[item.region][item.Datacenter];
                         center = getCenter(DCInfo.longitude, DCInfo.latitude);
                         radius = getRadius(DCInfo.range);
-                        const screenRadius=this.state.mapScale?(radius/this.state.mapScale):1;
-                        if(screenRadius<0.01){
-                            return <Marker key={item.Datacenter} position={center}/>
-                        }else{
+                        const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
+                        if (screenRadius < 0.01) {
+                            return <Marker key={item.Datacenter} position={center} />
+                        } else {
                             return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                         }
                         // return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />

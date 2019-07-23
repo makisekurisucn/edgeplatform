@@ -116,9 +116,21 @@ class AllocationDistribution extends Component {
             currentNodeID: '',
             isTaskDetailHidden: true,
             inputValue: '',
-            isSearched: false
+            isSearched: false,
+            mapZoom: '',
+            mapScale: '',
+            mapCenter: null
         };
         this.mapDiv = {};
+        this.timeID = null;
+        this.delay = 200;
+        this.prevScroll = 0;
+        this.mapEvents = {
+            created: (map) => {
+                this.mapInstance = map;
+                this.mapInstance.on('mousewheel', this.scrollListener);
+            },
+        };
     }
 
     componentDidMount() {
@@ -147,6 +159,39 @@ class AllocationDistribution extends Component {
         }
     }
 
+    componentWillUnmount() {
+        if (this.mapInstance) {
+            this.mapInstance.destroy();
+        }
+    }
+
+    scrollListener = () => {
+        const current = Date.now();
+        if ((current - this.prevScroll) >= this.delay) {
+            this.redrawMap();
+            this.prevScroll = current;
+        } else {
+            clearTimeout(this.timeID);
+            this.timeID = setTimeout(() => {
+                this.prevScroll = current;
+                this.redrawMap();
+            }, this.delay);
+        }
+    }
+
+    redrawMap = () => {
+        console.log('ddd')
+        console.log(this.mapInstance.getZoom())
+        console.log(this.mapInstance.getScale())
+        if (this.mapInstance) {
+            this.setState({
+                mapZoom: this.mapInstance.getZoom(),
+                mapScale: this.mapInstance.getScale(),
+                mapCenter: this.mapInstance.getCenter()
+            })
+        }
+    }
+
     showAlloc = (item, index) => {
         let isHidden = false;
         const { dispatch } = this.props;
@@ -154,14 +199,16 @@ class AllocationDistribution extends Component {
             this.setState({
                 isTaskDetailHidden: isHidden,
                 allocIndex: index,
-                currentNodeID: item.id
+                currentNodeID: item.id,
+                mapCenter: null
             })
         }
         else {
             this.setState({
                 isTaskDetailHidden: !isHidden,
                 allocIndex: -1,
-                currentNodeID: ''
+                currentNodeID: '',
+                mapCenter: null
             })
         }
     }
@@ -172,14 +219,16 @@ class AllocationDistribution extends Component {
                 isTaskDetailHidden: true,
                 inputValue: '',
                 isSearched: false,
-                allocIndex: -1
+                allocIndex: -1,
+                mapCenter: null
             })
         } else {
             this.setState({
                 isTaskDetailHidden: true,
                 inputValue: inputValue,
                 isSearched: true,
-                allocIndex: -1
+                allocIndex: -1,
+                mapCenter: null
             })
         }
     }
@@ -285,21 +334,33 @@ class AllocationDistribution extends Component {
 
         let MyMap = null;
         if (this.state.isTaskDetailHidden) {
-            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={searchListCenter} >
+            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || searchListCenter} events={this.mapEvents}>
                 {
                     searchList.map((item, index) => {
                         const center = getCenter(item.DCInfo.longitude, item.DCInfo.latitude);
                         const radius = getRadius(item.DCInfo.range);
-                        return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                        const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
+                        if (screenRadius < 0.01) {
+                            return <Marker key={index} position={center} />
+                        } else {
+                            return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                        }
                     })
                 }
             </Map>
         } else {
             const radius = getRadius(DCInfo.range);
             const center = getCenter(DCInfo.longitude, DCInfo.latitude);
-            MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={center} >
-                <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
-            </Map>
+            const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
+            if (screenRadius < 0.01) {
+                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
+                    <Marker center={center} />
+                </Map>
+            } else {
+                MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
+                    <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
+                </Map>
+            }
         }
 
 

@@ -52,6 +52,9 @@ const styles = theme => ({
         display: 'flex',
         justifyContent: 'space-between'
     },
+    taskStatus: {
+        display: 'flex'
+    },
     itemCount: {
         fontSize: 16,
         fontWeight: 500,
@@ -133,7 +136,7 @@ class AllocationListItem extends Component {
                     <ArrowForwardIos className={arrowWrap} />
                 </div>
                 <div className={classes.bottomContent}>
-                    <div>
+                    <div className={classes.taskStatus}>
                         {
                             itemData.runningTasksNumber > 0 ?
                                 <div>

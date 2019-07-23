@@ -46,7 +46,7 @@ const styles = theme => ({
     subTitle: {
         display: 'flex',
         height: 42,
-        fontSize: 30,
+        fontSize: 24,
         fontWeight: 300,
         lineHeight: '42px',
         backgroundColor: 'rgba(97, 139, 162, 0.1)',

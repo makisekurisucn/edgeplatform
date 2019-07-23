@@ -94,7 +94,7 @@ const styles = theme => ({
     subTitle: {
         display: 'flex',
         height: 42,
-        fontSize: 30,
+        fontSize: 24,
         fontWeight: 300,
         lineHeight: '42px',
         backgroundColor: 'rgba(97, 139, 162, 0.1)',
@@ -135,9 +135,14 @@ function HandleDiff(props) {
         return <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} />;
     } else {
         return <div>
-            <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} />
-            <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} />
-            {/* <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} sign={'--'} style={style} /> */}
+            {
+                props.value ? <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} /> : null
+            }
+            {
+                props.prevValue ? <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> : null
+            }
+            {/* <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} />
+            <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> */}
         </div>
     }
 }
@@ -168,7 +173,8 @@ class JobHistory extends Component {
 
     selectVersion = (index) => (event) => {
         this.setState({
-            selectedVersionIndex: index
+            selectedVersionIndex: index,
+            selectedTaskIndex: 0
         })
     }
 
@@ -242,9 +248,17 @@ class JobHistory extends Component {
 
         const taskGroup = currentVersion.TaskGroups ? currentVersion.TaskGroups[0] : {};
         const taskInfo = taskGroup.Tasks ? taskGroup.Tasks[this.state.selectedTaskIndex] : { Config: {}, Resources: {} };
+        const currentTaskName = taskInfo.Name;
 
         const prevTaskGroup = prevVersion.TaskGroups ? prevVersion.TaskGroups[0] : {};
-        const prevTaskInfo = taskGroup.Tasks ? taskGroup.Tasks[this.state.selectedTaskIndex] : { Config: {}, Resources: {} };
+        const prevTasks = prevTaskGroup.Tasks || [];
+        let prevTaskInfo = { Config: {}, Resources: {} };
+        prevTasks.forEach((task) => {
+            if (task.Name === currentTaskName) {
+                prevTaskInfo = task;
+            }
+        })
+        // const prevTaskInfo = prevTaskGroup.Tasks ? (prevTaskGroup.Tasks[this.state.selectedTaskIndex] || { Config: {}, Resources: {} }) : { Config: {}, Resources: {} };
 
 
         const style = {

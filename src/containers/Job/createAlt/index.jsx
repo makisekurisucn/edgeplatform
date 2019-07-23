@@ -2,132 +2,203 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-import green from '@material-ui/core/colors/green';
-import CheckIcon from '@material-ui/icons/Check';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import { createJob, initCreateJob } from '../../../actions/Job';
-import code from '../../../assets/img/code.jpg'
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/zh-cn';
-import { NavLink } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
+import Paper from '@material-ui/core/Paper';
+import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
+import ProcessManage from '../../../components/ProcessManage';
+import FixedHeight from '../../../components/FixedHeight';
+
+
 const styles = theme => ({
-    card: {
-        maxWidth: 1000,
-        margin: 'auto'
+    root: {
+        width: '100%',
+        overflowX: 'auto',
+        borderRadius: 0
     },
-    media: {
-        //  object-fit is not supported by IE 11.
-        objectFit: 'cover',
-    },
-    actionArea: {
-        // float: 'right'
-        paddingLeft: theme.spacing.unit * 3,
-        paddingRight: theme.spacing.unit * 3,
+    titleContent: {
+        height: 50,
+        boxSizing: 'border-box',
+        lineHeight: '50px',
+        // textAlign: 'center',
+        fontSize: 20,
+        fontWeight: 'normal',
+        // borderBottom: '1px solid rgb(149,163,170)',
+        color: 'rgb(76,92,102)',
+        // position: 'relative',
+        backgroundColor: 'rgb(231,231,231)',
         display: 'flex',
-        flexDirection: 'row-reverse'
+        justifyContent: 'space-between'
     },
-    wrapper: {
-        margin: theme.spacing.unit,
-        position: 'relative',
+    mainTitle: {
+        width: '140px'
     },
-    buttonProgress: {
-        // color: green[500],
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
+    processArea: {
+        width: '40%',
+        minWidth: '300px',
+        maxWidth: '480px',
+        margin: '0px 14px',
+        display: 'flex',
+        justifyContent: 'space-between'
     },
-    green: {
-        background: 'green'
+    step: {
+        fontSize: '16px',
+        fontWeight: '300',
+        color: 'rgb(38, 46, 47)'
+    },
+    currentStep: {
+        fontSize: '20px',
+        fontWeight: '400',
+        color: 'rgb(75, 139, 175)'
+    },
+    arrowBack: {
+        color: 'rgb(151, 151, 151)',
+        fontSize: 29,
+        verticalAlign: 'middle',
+        padding: '0px 2px 0px 19px',
+        cursor: 'pointer'
+        // height: 49
+        // lineHeight: '60px'
+    },
+    arrowForward: {
+        height: '50px',
+        color: 'rgb(151, 151, 151)',
+        fontSize: 15,
+        verticalAlign: 'middle',
+        // padding: '0px 2px 0px 19px',
+        // cursor: 'pointer'
+        // height: 49
+        // lineHeight: '60px'
+    },
+    createButton: {
+        float: 'right',
+        // backgroundColor: 'rgb(75,139,175)',
+        backgroundColor: 'rgb(183,183,183)',
+        width: 128,
+        height: 50,
+        fontWeight: 300,
+        textAlign: 'center',
+        color: 'rgb(255, 255, 255)',
+        cursor: 'pointer'
+    },
+    main: {
+        padding: '19px 52px',
     }
 });
+
+const titleList = [
+    {
+        name: '基本信息',
+        type: 'step'
+    },
+    {
+        type: 'arrow'
+    },
+    {
+        name: '应用信息',
+        type: 'step'
+    },
+    {
+        type: 'arrow'
+    },
+    {
+        name: '调度策略',
+        type: 'step'
+    }
+];
+
+const stepList = [
+    {
+        name: '基本信息',
+        component: null
+    },
+    {
+        name: '应用信息',
+        component: null
+    },
+    {
+        name: '调度策略',
+        component: null
+    }
+];
+
 class JobCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            currentStep: 0
         };
     }
 
-    componentDidMount() {
-
-        const { dispatch } = this.props;
-        initCreateJob(dispatch);
+    createJob = () => {
+        // console.log(link);
+        // this.props.history.push(link);
+        // window.history.go(-1);
     }
-    handleChange = () => p => {
-        console.log(p);
-        if (p.jsObject) {
-            this.setState({
-                json: p.jsObject
-            });
-        }
-
+    goBack = () => {
+        window.history.go(-1);
+        // this.props.history.goBack();
     }
-    handleCreate = e => {
-        createJob(this.props.dispatch, this.state.json);
+    changeStep = (newStepName) => {
+        titleList.forEach((step, index) => {
+            if (step.name === newStepName) {
+                this.setState({
+                    currentStep: index
+                })
+            }
+        })
     }
-
-
     render() {
-        const { classes, json, loading, success } = this.props;
-        // const { json, loading } = this.state;
+        const { classes, className } = this.props;
+
+
 
         return (
-            <Card className={classes.card}>
-                <CardMedia
-                    component="img"
-                    alt="Contemplative Reptile"
-                    className={classes.media}
-                    height="140"
-                    image={code}
-                    title="Contemplative Reptile"
-                />
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        新建应用
-          </Typography>
-                    <JSONInput
-                        width="100%"
-                        placeholder={json}
-                        locale={locale}
-                        onChange={this.handleChange()}
-                    ></JSONInput>
-                </CardContent>
-                <CardActions className={classes.actionArea}>
-                    <div className={classes.wrapper}>
-
-                        {!success ? <Button size="medium" color="primary" variant="contained" onClick={this.handleCreate} disabled={loading || success} >
-                            新建
-            </Button> : null}
-                        {success ? <Button size="medium" color="primary" className={classes.green} variant="contained">
-                            <CheckIcon />
-                        </Button> : null}
-                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
-
+            <Paper className={classes.root}>
+                <div className={classes.titleContent}>
+                    <div className={classes.mainTitle}>
+                        <ArrowBackIos className={classes.arrowBack} onClick={this.goBack} />
+                        <span>新建应用</span>
                     </div>
-                    <Button size="medium" color="primary">
-                        <NavLink to="/console/jobs">
-                            取消
-            </NavLink>
-                    </Button>
-                </CardActions>
-            </Card>
+                    <div className={classes.processArea}>
+                        {
+                            titleList.map((step, index) => {
+                                switch (step.type) {
+                                    case 'step':
+                                        if (index === this.state.currentStep) {
+                                            return <div className={classes.currentStep} key={step.name}>{step.name}</div>;
+                                        } else {
+                                            return <div className={classes.step} key={step.name}>{step.name}</div>;
+                                        }
+                                    case 'arrow':
+                                        return <ArrowForwardIos className={classes.arrowForward} key={index} />;
+                                    default:
+                                        return <div className={classes.step} key={step.name}>{step.name}</div>;
+                                }
+                            })
+                        }
+                    </div>
+                    <span className={classes.createButton} onClick={this.createJob}>新建</span>
+                </div>
+                <FixedHeight reducedHeight={110}>
+                    <div className={classes.main}>
+                            <ProcessManage stepList={stepList} switchStep={this.changeStep} />
+                        {/* <ProcessManage stepList={stepList} switchStep={this.changeStep} /> */}
+                    </div>
+                </FixedHeight>
+            </Paper>
+            // <div className={classes.root}>
+            //     <div>
+            //         <ArrowBackIos className={classes.arrow1} onClick={this.goBack} />
+            //         <span>应用列表</span>
+            //     </div>
+            //     <span className={classes.createJob} onClick={this.goTo('/console/jobs/create')}>新建应用</span>
+            // </div>
+
         );
     }
 }
 JobCreate.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-function mapStateToProps(state, ownProps) {
-    console.log(state)
-    return state.jobcreate;
-}
-
-export default connect(mapStateToProps)(withStyles(styles)(JobCreate));
+export default withStyles(styles)(JobCreate);
