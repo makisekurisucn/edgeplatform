@@ -61,5 +61,6 @@ li {
 }
 
 .App-main {
+    overflow-x: auto;
     flex: auto;
 }

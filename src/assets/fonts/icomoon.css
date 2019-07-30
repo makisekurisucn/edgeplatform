@@ -1,0 +1,47 @@
+@font-face {
+    font-family: 'arrow-up-sm';
+    src: url('arrow-up-sm/arrow-up-sm.eot?vadx0h');
+    src: url('arrow-up-sm/arrow-up-sm.eot?vadx0h#iefix') format('embedded-opentype'),
+        url('arrow-up-sm/arrow-up-sm.ttf?vadx0h') format('truetype'),
+        url('arrow-up-sm/arrow-up-sm.woff?vadx0h') format('woff'),
+        url('arrow-up-sm/arrow-up-sm.svg?vadx0h#arrow-up-sm') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon-arrow-up-sm:before {
+    content: "\e901";
+    color: #d8d8d8;
+}
+
+@font-face {
+    font-family: 'arrow-down-sm';
+    src: url('arrow-down-sm/arrow-down-sm.eot?ux4v7e');
+    src: url('arrow-down-sm/arrow-down-sm.eot?ux4v7e#iefix') format('embedded-opentype'),
+        url('arrow-down-sm/arrow-down-sm.ttf?ux4v7e') format('truetype'),
+        url('arrow-down-sm/arrow-down-sm.woff?ux4v7e') format('woff'),
+        url('arrow-down-sm/arrow-down-sm.svg?ux4v7e#arrow-down-sm') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon-arrow-down-sm:before {
+    content: "\e900";
+    color: #d8d8d8;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    /* font-family: 'arrow-down-sm' !important; */
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

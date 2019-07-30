@@ -8,6 +8,11 @@ import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 import ProcessManage from '../../../components/ProcessManage';
 import FixedHeight from '../../../components/FixedHeight';
+import NormalInput from '../../../components/FormController/NormalInput';
+import NormalSelect from '../../../components/FormController/NormalSelect';
+import BasicInfo from './BasicInfoCreate';
+import JobInfo from './JobInfoCreate';
+import ScheduleStrategy from './ScheduleStrategyCreate';
 
 
 const styles = theme => ({
@@ -83,6 +88,9 @@ const styles = theme => ({
     },
     main: {
         padding: '19px 52px',
+    },
+    fixedHeight: {
+        overflowX: 'auto'
     }
 });
 
@@ -110,15 +118,18 @@ const titleList = [
 const stepList = [
     {
         name: '基本信息',
-        component: null
+        dataName: 'basicInfoData',
+        component: BasicInfo
     },
     {
         name: '应用信息',
-        component: null
+        dataName: 'jobInfoData',
+        component: JobInfo
     },
     {
         name: '调度策略',
-        component: null
+        dataName: 'scheduleStrategyData',
+        component: ScheduleStrategy
     }
 ];
 
@@ -126,7 +137,10 @@ class JobCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentStep: 0
+            currentStep: 0,
+            basicInfoData: {},
+            jobInfoData: {},
+            scheduleStrategyData: {}
         };
     }
 
@@ -148,9 +162,15 @@ class JobCreate extends Component {
             }
         })
     }
+    handleUpload = (dataName, dataSet) => {
+        console.log(dataName + ' :isCompleted')
+        this.setState({
+            [dataName]: dataSet
+        })
+    }
     render() {
         const { classes, className } = this.props;
-
+        const { basicInfoData, jobInfoData, scheduleStrategyData } = this.state;
 
 
         return (
@@ -180,20 +200,13 @@ class JobCreate extends Component {
                     </div>
                     <span className={classes.createButton} onClick={this.createJob}>新建</span>
                 </div>
-                <FixedHeight reducedHeight={110}>
+                <FixedHeight reducedHeight={110} className={classes.fixedHeight}>
                     <div className={classes.main}>
-                            <ProcessManage stepList={stepList} switchStep={this.changeStep} />
+                        <ProcessManage stepList={stepList} switchStep={this.changeStep} data={{ basicInfoData, jobInfoData, scheduleStrategyData }} uploadData={this.handleUpload} />
                         {/* <ProcessManage stepList={stepList} switchStep={this.changeStep} /> */}
                     </div>
                 </FixedHeight>
             </Paper>
-            // <div className={classes.root}>
-            //     <div>
-            //         <ArrowBackIos className={classes.arrow1} onClick={this.goBack} />
-            //         <span>应用列表</span>
-            //     </div>
-            //     <span className={classes.createJob} onClick={this.goTo('/console/jobs/create')}>新建应用</span>
-            // </div>
 
         );
     }

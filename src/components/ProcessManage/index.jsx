@@ -17,11 +17,15 @@ const styles = theme => ({
     },
     currentStepItem: {
         flex: '2 1 auto',
-        marginRight: '20px'
+        marginRight: '20px',
+        maxWidth: '900px',
+        minWidth: '600px'
     },
     otherStepItem: {
         flex: '1 2 auto',
-        marginRight: '20px'
+        marginRight: '20px',
+        maxWidth: '500px',
+        minWidth: '400px'
     },
     stepTitleContent: {
         height: '40px',
@@ -38,8 +42,7 @@ const styles = theme => ({
     stepMainContent: {
         backgroundColor: 'rgba(68, 105, 128, 0.02)',
         height: '100%',
-        overflowY: 'auto',
-        padding: '36px 120px'
+        overflowY: 'auto'
     },
     arrowBack: {
         cursor: 'pointer',
@@ -81,40 +84,6 @@ class ProcessManage extends Component {
         };
     }
 
-    componentWillMount() {
-        let currentIndex = this.props.index === undefined ? 0 : this.props.index;
-        this.setState({
-            index: currentIndex
-        });
-
-    }
-    componentWillReceiveProps(nextProp) {
-        let currentIndex = nextProp.index === undefined ? 0 : nextProp.index;
-        this.setState({
-            index: currentIndex
-        });
-    }
-    switchTab = (index) => (event) => {
-        if (index !== this.state.index) {
-            this.setState({
-                index: index,
-                prevIndex: this.state.index
-            });
-        }
-    }
-    componentDidUpdate() {
-
-    }
-    prevStep = () => {
-        this.setState({
-            currentStep: this.state.currentStep - 1
-        })
-    }
-    nextStep = () => {
-        this.setState({
-            currentStep: this.state.currentStep + 1
-        })
-    }
     changeStep = (num) => (event) => {
         const newStep = this.state.currentStep + num;
         const newStepName = this.props.stepList[newStep].name;
@@ -127,7 +96,7 @@ class ProcessManage extends Component {
     }
 
     render() {
-        const { classes, className, stepList = [], currentStep, viewProps, reducedHeight, tabWrapColor } = this.props;
+        const { classes, className, stepList = [], currentStep, reducedHeight, tabWrapColor, data, uploadData } = this.props;
 
         let classNameWrap = classes.root;
         if (className) {
@@ -156,15 +125,15 @@ class ProcessManage extends Component {
                                     </div>
                                     <FixedHeight className={classes.fixedHeight} reducedHeight={200}>
                                         <div className={classes.stepMainContent}>
-                                            {
+                                            {/* {
                                                 `s\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\n
                                                 
                                                 s
                                                 
                                                 ss
                                                 `
-                                            }
-                                            {/* {step.component} */}
+                                            } */}
+                                            <step.component data={data[step.dataName]} dataName={step.dataName} uploadData={uploadData} />
                                         </div>
                                     </FixedHeight>
                                 </div>
@@ -177,7 +146,7 @@ class ProcessManage extends Component {
                                     </div>
                                     <FixedHeight className={classes.fixedHeight} reducedHeight={270}>
                                         <div className={classes.stepMainContent}>
-                                            {step.component}
+                                            <step.component data={data[step.dataName]} />
                                         </div>
                                     </FixedHeight>
                                 </div>
