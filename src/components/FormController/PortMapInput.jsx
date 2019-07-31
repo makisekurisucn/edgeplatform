@@ -165,7 +165,7 @@ const options = [
 ]
 
 function PortMapInput(props) {
-    const { classes, className, title, LHint = '', RHint = '', required, rules } = props;
+    const { classes, className, title, LHint = '', RHint = '', required, rules, data, name, saveData } = props;
 
     const [numList, setNumList] = useState([{ LValue: '', RValue: '', mapping: options[0] }]);
     const [plusTimes, setPlusTimes] = useState(0);
@@ -185,6 +185,12 @@ function PortMapInput(props) {
             }
         })
         newNumList.push({ LValue: '', RValue: '' });
+
+        let newData = newNumList.slice(0, newNumList.length - 1);
+        if (saveData) {
+            saveData(name, { isValid: true, data: newData })
+        }
+
         setNumList(newNumList);
         setPlusTimes(plusTimes + 1);
         // }
@@ -204,6 +210,12 @@ function PortMapInput(props) {
                 newNumList.push(item);
             }
         })
+
+        let newData = newNumList.slice(0, newNumList.length - 1);
+        if (saveData) {
+            saveData(name, { isValid: true, data: newData })
+        }
+
         setNumList(newNumList);
     }
 
@@ -242,6 +254,17 @@ function PortMapInput(props) {
     const handleInputBlur = (event) => {
         newItem.style.borderBottom = '1px solid #EDEDED';
     }
+
+    useEffect(() => {
+        let newData = numList.slice(0, numList.length - 1);
+        if (saveData) {
+            if (required) {
+                saveData(name, { isValid: newData.length < 1 ? false : true, data: newData })
+            } else {
+                saveData(name, { isValid: true, data: newData })
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (plusTimes == 0) {

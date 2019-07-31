@@ -77,60 +77,64 @@ class BasicInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSet: {
-                [TASKS_DRIVER]: {
-                    isValid: false,
-                    data: null
-                },
-                [TASKS_CONFIG_IMAGE]: {
-                    isValid: false,
-                    data: null
-                },
-                [TASKS_RESOURCES_CPU]: {
-                    isValid: false,
-                    data: null
-                },
-                [TASKS_RESOURCES_MEMORYMB]: {
-                    isValid: false,
-                    data: null
-                },
-                [PORTMAPPING]: {
-                    isValid: false,
-                    data: null
-                },
-                [TASKS_CONFIG_COMMAND]: {
-                    isValid: false,
-                    data: null
-                },
-                [TASKS_CONFIG_ARGS]: {
-                    isValid: false,
-                    data: null
-                },
-                [TASKS_ENV]: {
-                    isValid: false,
-                    data: null
-                }
+            isAllValid: false,
+            [TASKS_DRIVER]: {
+                isValid: false,
+                data: null
+            },
+            [TASKS_CONFIG_IMAGE]: {
+                isValid: false,
+                data: null
+            },
+            [TASKS_RESOURCES_CPU]: {
+                isValid: false,
+                data: null
+            },
+            [TASKS_RESOURCES_MEMORYMB]: {
+                isValid: false,
+                data: null
+            },
+            [PORTMAPPING]: {
+                isValid: false,
+                data: null
+            },
+            [TASKS_CONFIG_COMMAND]: {
+                isValid: false,
+                data: null
+            },
+            [TASKS_CONFIG_ARGS]: {
+                isValid: false,
+                data: null
+            },
+            [TASKS_ENV]: {
+                isValid: false,
+                data: null
             }
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isCurrentStep == 0 && this.props.isCurrentStep !== 0) {
+            this.props.updataStatus(this.state.isAllValid)
+        }
+    }
+
     saveData = (name, result) => {
-        let newDataSet = Object.assign({}, this.state.dataSet, { [name]: result });
+        let newDataSet = Object.assign({}, this.state, { [name]: result });
+        delete newDataSet.isAllValid;
+
+        let newIsAllValid = true;
+        for (let key in newDataSet) {
+            if (newDataSet[key].isValid == false) {
+                newIsAllValid = false;
+            }
+        }
         this.setState({
-            dataSet: newDataSet
+            isAllValid: newIsAllValid,
+            [name]: result
         })
-        if(result.isValid == true){
-            let isAllValid = true;
-            for (let key in newDataSet) {
-                if (newDataSet[key].isValid == false) {
-                    isAllValid = false;
-                }
-            }
-            if (isAllValid == true) {
-                if (this.props.uploadData && this.props.dataName) {
-                    this.props.uploadData(this.props.dataName, newDataSet)
-                }
-            }
+        if (this.props.updataStatus && this.props.dataName) {
+            this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
         }
     }
 
@@ -138,18 +142,16 @@ class BasicInfo extends Component {
     render() {
         const { classes, className } = this.props;
 
-
-
         return (
             <div className={classes.root}>
-                <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultIndex={0} required />
-                <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required />
-                <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} rules={{ step: 128, maxValue: 512, minValue: 0, defaultValue: 128 }} />
-                <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} rules={{ step: 128, maxValue: 1280, minValue: 0, defaultValue: 256 }} />
-                <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} />
-                <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} />
-                <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} hint={'请输入参数'} />
-                <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} />
+                <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultIndex={0} required saveData={this.saveData} />
+                <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required saveData={this.saveData} />
+                <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} rules={{ step: 128, maxValue: 512, minValue: 0, defaultValue: 128 }} saveData={this.saveData} />
+                <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} rules={{ step: 128, maxValue: 1280, minValue: 0, defaultValue: 256 }} saveData={this.saveData} />
+                <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} saveData={this.saveData} />
+                <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} saveData={this.saveData} />
+                <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} hint={'请输入参数'} saveData={this.saveData} />
+                <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} saveData={this.saveData} />
             </div>
         );
     }

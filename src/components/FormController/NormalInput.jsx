@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -40,8 +40,6 @@ const styles = theme => ({
 
 function NormalInput(props) {
     const { classes, className, title, hint, defaultValue = '', required, rules, data, name, saveData } = props;
-    console.log('-------------------')
-    console.log(props)
     let inputArea = null, input = null;
 
     const handleFocus = (event) => {
@@ -54,15 +52,24 @@ function NormalInput(props) {
 
     const handleChange = () => {
         //if数据验证有效
-        if (required) {
-            if (input.value == '') {
-                saveData(name, { isValid: false, data: input.value })
+        if (saveData) {
+            if (required) {
+                if (input.value == '') {
+                    saveData(name, { isValid: false, data: input.value })
+                } else {
+                    saveData(name, { isValid: true, data: input.value })
+                }
             } else {
                 saveData(name, { isValid: true, data: input.value })
             }
         }
+
         // saveData(name, { isValid: true, data: input.value })
     }
+
+    useEffect(() => {
+        handleChange()
+    }, [])
 
     let classNameWrap = classes.root;
     if (className) {

@@ -47,50 +47,46 @@ class BasicInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSet: {
-                [JOB_NAME]: {
-                    isValid: false,
-                    data: null
-                },
+            isAllValid: false,
+            [JOB_NAME]: {
+                isValid: false,
+                data: null
+            },
             [JOB_TYPE]: {
-                    isValid: false,
-                    data: 'service'
-                }
+                isValid: false,
+                data: 'service'
             }
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isCurrentStep == 0 && this.props.isCurrentStep !== 0) {
+            this.props.updataStatus(this.state.isAllValid)
+        }
+    }
+
     saveData = (name, result) => {
-        let newDataSet = Object.assign({}, this.state.dataSet, { [name]: result });
-        this.setState({
-            dataSet: newDataSet
-        })
-        if(result.isValid == true){
-            let isAllValid = true;
-            for (let key in newDataSet) {
-                if (newDataSet[key].isValid == false) {
-                    console.log(key +' isInvalid')
-                    console.log(newDataSet[key])
-                    isAllValid = false;
-                }
-            }
-            if (isAllValid == true) {
-                console.log('can upload')
-                if (this.props.uploadData && this.props.dataName) {
-                    this.props.uploadData(this.props.dataName, newDataSet)
-                }
+        let newDataSet = Object.assign({}, this.state, { [name]: result });
+        delete newDataSet.isAllValid;
+
+        let newIsAllValid = true;
+        for (let key in newDataSet) {
+            if (newDataSet[key].isValid == false) {
+                newIsAllValid = false;
             }
         }
-        // let newDataSet = Object.assign({}, this.state.dataSet, { [name]: result });
-        // this.setState({
-        //     dataSet: newDataSet
-        // })
-        console.log(this.state)
+        this.setState({
+            isAllValid: newIsAllValid,
+            [name]: result
+        })
+        if (this.props.updataStatus && this.props.dataName) {
+            this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
+        }
     }
 
 
     render() {
-        const { classes, className, uploadData } = this.props;
+        const { classes, className } = this.props;
 
         return (
             <div className={classes.root}>

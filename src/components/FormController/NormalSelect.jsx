@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
@@ -83,8 +83,6 @@ const styles = theme => ({
 
 function NormalSelect(props) {
     const { classes, className, title, defaultIndex, required, rules, options = [], data, name, saveData } = props;
-    console.log('-------------------')
-    console.log(props)
 
     let isOptionListDisplay = false;
     const [optIndex, setOptIndex] = useState(defaultIndex || 0);
@@ -106,23 +104,29 @@ function NormalSelect(props) {
 
     const handleClick = (index) => (event) => {
         //if数据验证有效
-        saveData(name, { isValid: true, data: options[index].value })
         setOptIndex(index);
+        if (saveData) {
+            saveData(name, { isValid: true, data: options[index].value })
+        }
     }
 
     const handleFocus = () => {
-        console.log('focus');
         // arrow.style.transform = 'rotate(180deg)';
         // optionList.style.height = 'auto';
 
     }
 
     const handleBlur = () => {
-        console.log('blur');
         arrow.style.transform = 'rotate(0deg)';
         optionList.style.height = '0';
         isOptionListDisplay = false;
     }
+
+    useEffect(() => {
+        if (saveData) {
+            saveData(name, { isValid: true, data: options[optIndex].value })
+        }
+    }, [])
 
     let classNameWrap = classes.root;
     if (className) {

@@ -11,7 +11,7 @@
 
 .icon-arrow-up-sm:before {
     content: "\e901";
-    color: #d8d8d8;
+    font-family: 'arrow-up-sm';
 }
 
 @font-face {
@@ -27,7 +27,7 @@
 
 .icon-arrow-down-sm:before {
     content: "\e900";
-    color: #d8d8d8;
+    font-family: 'arrow-down-sm';
 }
 
 [class^="icon-"],

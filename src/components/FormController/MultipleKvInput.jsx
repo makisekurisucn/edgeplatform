@@ -93,7 +93,7 @@ const styles = theme => ({
 
 
 function MultipleKvInput(props) {
-    const { classes, className, title, keyHint = 'Key', valueHint = 'Value', required, rules } = props;
+    const { classes, className, title, keyHint = 'Key', valueHint = 'Value', required, rules, data, name, saveData } = props;
 
     const [kvlist, setKvlist] = useState([{ key: '', value: '' }]);
     const [plusTimes, setPlusTimes] = useState(0);
@@ -114,6 +114,10 @@ function MultipleKvInput(props) {
         newKvlist.push({ key: '', value: '' });
         setKvlist(newKvlist);
         setPlusTimes(plusTimes + 1);
+        let newData = newKvlist.slice(0, newKvlist.length - 1);
+        if (saveData) {
+            saveData(name, { isValid: true, data: newData })
+        }
         // }
         // else {
         //     alert('invalid');
@@ -131,6 +135,12 @@ function MultipleKvInput(props) {
                 newKvlist.push(kvItem);
             }
         })
+
+        let newData = newKvlist.slice(0, newKvlist.length - 1);
+        if (saveData) {
+            saveData(name, { isValid: true, data: newData })
+        }
+
         setKvlist(newKvlist);
     }
 
@@ -141,15 +151,23 @@ function MultipleKvInput(props) {
     }
 
     const handleFocus = (event) => {
-        console.log(newKvItem)
-        console.log(newKvItem.style)
-        console.log(newKvItem.style.borderBottom)
         newKvItem.style.borderBottom = '1px solid #4B8BAF';
     }
 
     const handleBlur = (event) => {
         newKvItem.style.borderBottom = '1px solid #EDEDED';
     }
+
+    useEffect(() => {
+        let newData = kvlist.slice(0, kvlist.length - 1);
+        if (saveData) {
+            if (required) {
+                saveData(name, { isValid: newData.length < 1 ? false : true, data: newData })
+            } else {
+                saveData(name, { isValid: true, data: newData })
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (plusTimes == 0) {

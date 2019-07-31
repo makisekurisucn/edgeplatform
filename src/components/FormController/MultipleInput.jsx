@@ -83,9 +83,7 @@ const styles = theme => ({
 
 
 function MultipleInput(props) {
-    const { classes, className, title, hint = '请输入文本', required, rules,data, name, saveData } = props;
-    console.log('-------------------')
-    console.log('re render')
+    const { classes, className, title, hint = '请输入文本', required, rules, data, name, saveData } = props;
 
     const [inputList, setInputList] = useState([{ value: '' }]);
     const [plusTimes, setPlusTimes] = useState(0);
@@ -108,6 +106,10 @@ function MultipleInput(props) {
         console.log(newInputList)
         setInputList(newInputList);
         setPlusTimes(plusTimes + 1);
+        let newData = newInputList.slice(0, newInputList.length - 1);
+        if (saveData) {
+            saveData(name, { isValid: true, data: newData })
+        }
         // } else {
         //     alert('invalid');
         // }
@@ -124,6 +126,10 @@ function MultipleInput(props) {
                 newInputList.push(inputItem);
             }
         })
+        let newData = newInputList.slice(0, newInputList.length - 1);
+        if (saveData) {
+            saveData(name, { isValid: true, data: newData })
+        }
         setInputList(newInputList);
     }
 
@@ -140,6 +146,17 @@ function MultipleInput(props) {
     const handleBlur = (event) => {
         newInputItem.style.borderBottom = '1px solid #EDEDED';
     }
+
+    useEffect(() => {
+        let newData = inputList.slice(0, inputList.length - 1);
+        if (saveData) {
+            if (required) {
+                saveData(name, { isValid: newData.length < 1 ? false : true, data: newData })
+            } else {
+                saveData(name, { isValid: true, data: newData })
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (plusTimes == 0) {
