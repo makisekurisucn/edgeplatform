@@ -9,10 +9,14 @@ import './index.css';
 import App from './containers/App/App';
 import rootSagas from './sagas';
 import * as serviceWorker from './serviceWorker';
+import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction';
 
 
 const sagaMiddleware = createSagaMiddleware();
-const store = createStore(reducer, applyMiddleware(sagaMiddleware));
+const composeEnhancers = composeWithDevTools({
+    // options like actionSanitizer, stateSanitizer
+  });
+const store = createStore(reducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
 sagaMiddleware.run(rootSagas);
 ReactDOM.render(
     <Provider store={store}>
@@ -26,3 +30,12 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+
+
+// const composeEnhancers = composeWithDevTools({
+//    // options like actionSanitizer, stateSanitizer
+//  });
+// const store = createStore(reducer, composeEnhancers(
+//    applyMiddleware(...middleware)
+//  ));

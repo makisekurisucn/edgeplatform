@@ -165,9 +165,9 @@ const options = [
 ]
 
 function PortMapInput(props) {
-    const { classes, className, title, LHint = '', RHint = '', required, rules, data, name, saveData } = props;
+    const { classes, className, title, LHint = '', RHint = '', required, rules, defaultValue, data, name, saveData } = props;
 
-    const [numList, setNumList] = useState([{ LValue: '', RValue: '', mapping: options[0] }]);
+    const [numList, setNumList] = useState(defaultValue || []);
     const [plusTimes, setPlusTimes] = useState(0);
     const [optIndex, setOptIndex] = useState(0);
 
@@ -178,18 +178,15 @@ function PortMapInput(props) {
         // if (LInput.value !== '' && RInput.value !== '') {
         let newNumList = [];
         numList.forEach((item, index) => {
-            if (index === (numList.length - 1)) {
-                newNumList.push({ LValue: LInput.value, RValue: RInput.value, mapping: options[optIndex] });
-            } else {
-                newNumList.push(item);
-            }
+            newNumList.push(item);
         })
-        newNumList.push({ LValue: '', RValue: '' });
+        newNumList.push({ LValue: LInput.value, RValue: RInput.value, mapping: options[optIndex] });
 
-        let newData = newNumList.slice(0, newNumList.length - 1);
         if (saveData) {
-            saveData(name, { isValid: true, data: newData })
+            saveData(name, { isValid: true, data: newNumList })
         }
+        LInput.value = '';
+        RInput.value = '';
 
         setNumList(newNumList);
         setPlusTimes(plusTimes + 1);
@@ -204,16 +201,13 @@ function PortMapInput(props) {
         numList.forEach((item, index) => {
             if (index === removeIndex) {
 
-            } else if (index === (numList.length - 1)) {
-                newNumList.push({ LValue: LInput.value, RValue: RInput.value, mapping: options[optIndex] })
             } else {
                 newNumList.push(item);
             }
         })
 
-        let newData = newNumList.slice(0, newNumList.length - 1);
         if (saveData) {
-            saveData(name, { isValid: true, data: newData })
+            saveData(name, { isValid: true, data: newNumList })
         }
 
         setNumList(newNumList);
@@ -256,12 +250,11 @@ function PortMapInput(props) {
     }
 
     useEffect(() => {
-        let newData = numList.slice(0, numList.length - 1);
         if (saveData) {
             if (required) {
-                saveData(name, { isValid: newData.length < 1 ? false : true, data: newData })
+                saveData(name, { isValid: numList.length < 1 ? false : true, data: numList })
             } else {
-                saveData(name, { isValid: true, data: newData })
+                saveData(name, { isValid: true, data: numList })
             }
         }
     }, [])
@@ -296,74 +289,65 @@ function PortMapInput(props) {
             <div className={classes.inputArea}>
                 {
                     numList.map((item, index) => {
-                        if (index !== (numList.length - 1)) {
-                            return (
-                                <div className={classes.oldItem} key={`${item.LValue}=${item.RValue},${index}`}>
-                                    <div className={classes.readonly}>{item.LValue}</div>
-                                    <div className={classes.middleComponent}>
-                                        <ArrowForward className={classes.arrow} />
-                                        <div className={classes.selectArea}>
-                                            <div className={classes.displayArea} >
-                                                <div className={classes.displayText}>{item.mapping.display}</div>
+                        return (
+                            <div className={classes.oldItem} key={`${item.LValue}=${item.RValue},${index}`}>
+                                <div className={classes.readonly}>{item.LValue}</div>
+                                <div className={classes.middleComponent}>
+                                    <ArrowForward className={classes.arrow} />
+                                    <div className={classes.selectArea}>
+                                        <div className={classes.displayArea} >
+                                            <div className={classes.displayText}>{item.mapping.display}</div>
 
-                                            </div>
                                         </div>
                                     </div>
-                                    <div className={classes.readonly}>{item.RValue}</div>
-                                    <div className={classes.minus} onClick={removeItem(index)}>-</div>
                                 </div>
-                            );
-                        } else {
-                            return (
-                                <div className={classes.newItem} ref={(ele) => { newItem = ele; }} key={`${item.LValue}=${item.RValue},${index}`}>
-                                    <input
-                                        className={classes.input}
-                                        type={'number'}
-                                        ref={(ele) => { LInput = ele; }}
-                                        defaultValue={item.LValue}
-                                        placeholder={LHint}
-                                        onKeyDown={handleKeyDown}
-                                        onFocus={handleInputFocus}
-                                        onBlur={handleInputBlur} />
-                                    <div className={classes.middleComponent}>
-                                        <ArrowForward className={classes.arrow} />
-                                        <div className={classes.selectArea} onFocus={handleSelectFocus} onBlur={handleSelectBlur} tabIndex={0} onClick={showOptions}>
-                                            <div className={classes.displayArea} >
-                                                <div className={classes.displayText}>{options[optIndex].display}</div>
-                                                <div className={classes.arrowWrap} ref={(ele) => { arrow = ele; }}>
-                                                    <ExpandMore className={classes.textArrow} />
-                                                </div>
-                                            </div>
-                                            <ul className={classes.optionList} ref={ele => { optionList = ele; }}>
-                                                {
-                                                    options.map((option, index) => {
-                                                        if (index === optIndex) {
-                                                            // return <li className={classes.selectedOption} key={option.value} >{option.display}</li>
-                                                        } else {
-                                                            return <li className={classes.option} key={option.value} onClick={() => { setOptIndex(index) }} >{option.display}</li>
-                                                        }
-                                                    })
-                                                }
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <input
-                                        className={classes.input}
-                                        type={'number'}
-                                        ref={(ele) => { RInput = ele; }}
-                                        defaultValue={item.RValue}
-                                        placeholder={RHint}
-                                        onKeyDown={handleKeyDown}
-                                        onFocus={handleInputFocus}
-                                        onBlur={handleInputBlur} />
-                                    <div className={classes.plus} onClick={addItem}>+</div>
-                                </div>
-                            );
-
-                        }
+                                <div className={classes.readonly}>{item.RValue}</div>
+                                <div className={classes.minus} onClick={removeItem(index)}>-</div>
+                            </div>
+                        );
                     })
                 }
+                <div className={classes.newItem} ref={(ele) => { newItem = ele; }} >
+                    <input
+                        className={classes.input}
+                        type={'number'}
+                        ref={(ele) => { LInput = ele; }}
+                        placeholder={LHint}
+                        onKeyDown={handleKeyDown}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur} />
+                    <div className={classes.middleComponent}>
+                        <ArrowForward className={classes.arrow} />
+                        <div className={classes.selectArea} onFocus={handleSelectFocus} onBlur={handleSelectBlur} tabIndex={0} onClick={showOptions}>
+                            <div className={classes.displayArea} >
+                                <div className={classes.displayText}>{options[optIndex].display}</div>
+                                <div className={classes.arrowWrap} ref={(ele) => { arrow = ele; }}>
+                                    <ExpandMore className={classes.textArrow} />
+                                </div>
+                            </div>
+                            <ul className={classes.optionList} ref={ele => { optionList = ele; }}>
+                                {
+                                    options.map((option, index) => {
+                                        if (index === optIndex) {
+                                        } else {
+                                            return <li className={classes.option} key={option.value} onClick={() => { setOptIndex(index) }} >{option.display}</li>
+                                        }
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <input
+                        className={classes.input}
+                        type={'number'}
+                        ref={(ele) => { RInput = ele; }}
+                        placeholder={RHint}
+                        onKeyDown={handleKeyDown}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur} />
+                    <div className={classes.plus} onClick={addItem}>+</div>
+                </div>
             </div>
         </div>
     );

@@ -93,9 +93,9 @@ const styles = theme => ({
 
 
 function MultipleKvInput(props) {
-    const { classes, className, title, keyHint = 'Key', valueHint = 'Value', required, rules, data, name, saveData } = props;
+    const { classes, className, title, keyHint = 'Key', valueHint = 'Value', required, defaultValue, rules, data, name, saveData } = props;
 
-    const [kvlist, setKvlist] = useState([{ key: '', value: '' }]);
+    const [kvlist, setKvlist] = useState(defaultValue || []);
     const [plusTimes, setPlusTimes] = useState(0);
 
     let keyInput = null, valueInput = null;
@@ -105,19 +105,17 @@ function MultipleKvInput(props) {
         // if (keyInput.value !== '' && valueInput.value !== '') {
         let newKvlist = [];
         kvlist.forEach((kvItem, index) => {
-            if (index === (kvlist.length - 1)) {
-                newKvlist.push({ key: keyInput.value, value: valueInput.value });
-            } else {
-                newKvlist.push(kvItem);
-            }
+            newKvlist.push(kvItem);
         })
-        newKvlist.push({ key: '', value: '' });
+        newKvlist.push({ key: keyInput.value, value: valueInput.value });
+
         setKvlist(newKvlist);
         setPlusTimes(plusTimes + 1);
-        let newData = newKvlist.slice(0, newKvlist.length - 1);
         if (saveData) {
-            saveData(name, { isValid: true, data: newData })
+            saveData(name, { isValid: true, data: newKvlist })
         }
+        keyInput.value = '';
+        valueInput.value = '';
         // }
         // else {
         //     alert('invalid');
@@ -128,17 +126,13 @@ function MultipleKvInput(props) {
         let newKvlist = [];
         kvlist.forEach((kvItem, index) => {
             if (index === removeIndex) {
-
-            } else if (index === (kvlist.length - 1)) {
-                newKvlist.push({ key: keyInput.value, value: valueInput.value })
             } else {
                 newKvlist.push(kvItem);
             }
         })
 
-        let newData = newKvlist.slice(0, newKvlist.length - 1);
         if (saveData) {
-            saveData(name, { isValid: true, data: newData })
+            saveData(name, { isValid: true, data: newKvlist })
         }
 
         setKvlist(newKvlist);
@@ -159,12 +153,11 @@ function MultipleKvInput(props) {
     }
 
     useEffect(() => {
-        let newData = kvlist.slice(0, kvlist.length - 1);
         if (saveData) {
             if (required) {
-                saveData(name, { isValid: newData.length < 1 ? false : true, data: newData })
+                saveData(name, { isValid: kvlist.length < 1 ? false : true, data: kvlist })
             } else {
-                saveData(name, { isValid: true, data: newData })
+                saveData(name, { isValid: true, data: kvlist })
             }
         }
     }, [])
@@ -190,42 +183,34 @@ function MultipleKvInput(props) {
             <div className={classes.inputArea}>
                 {
                     kvlist.map((kvItem, index) => {
-                        if (index !== (kvlist.length - 1)) {
-                            return (
-                                <div className={classes.oldKvItem} key={`${kvItem.key}=${kvItem.value},${index}`}>
-                                    <div className={classes.readonly} title={kvItem.key}>{kvItem.key}</div>
-                                    <div className={classes.equalSign}>=</div>
-                                    <div className={classes.readonly} title={kvItem.value}>{kvItem.value}</div>
-                                    <div className={classes.minus} onClick={removeKvItem(index)}>-</div>
-                                </div>
-                            );
-                        } else {
-                            return (
-                                <div className={classes.newKvItem} ref={(ele) => { newKvItem = ele; }} key={`${kvItem.key}=${kvItem.value},${index}`}>
-                                    <input
-                                        className={classes.input}
-                                        ref={(ele) => { keyInput = ele; }}
-                                        defaultValue={kvItem.key}
-                                        placeholder={keyHint}
-                                        onKeyDown={handleKeyDown}
-                                        onFocus={handleFocus}
-                                        onBlur={handleBlur} />
-                                    <div className={classes.equalSign}>=</div>
-                                    <input
-                                        className={classes.input}
-                                        ref={(ele) => { valueInput = ele; }}
-                                        defaultValue={kvItem.value}
-                                        placeholder={valueHint}
-                                        onKeyDown={handleKeyDown}
-                                        onFocus={handleFocus}
-                                        onBlur={handleBlur} />
-                                    <div className={classes.plus} onClick={addKvItem}>+</div>
-                                </div>
-                            );
-
-                        }
+                        return (
+                            <div className={classes.oldKvItem} key={`${kvItem.key}=${kvItem.value},${index}`}>
+                                <div className={classes.readonly} title={kvItem.key}>{kvItem.key}</div>
+                                <div className={classes.equalSign}>=</div>
+                                <div className={classes.readonly} title={kvItem.value}>{kvItem.value}</div>
+                                <div className={classes.minus} onClick={removeKvItem(index)}>-</div>
+                            </div>
+                        );
                     })
                 }
+                <div className={classes.newKvItem} ref={(ele) => { newKvItem = ele; }} >
+                    <input
+                        className={classes.input}
+                        ref={(ele) => { keyInput = ele; }}
+                        placeholder={keyHint}
+                        onKeyDown={handleKeyDown}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur} />
+                    <div className={classes.equalSign}>=</div>
+                    <input
+                        className={classes.input}
+                        ref={(ele) => { valueInput = ele; }}
+                        placeholder={valueHint}
+                        onKeyDown={handleKeyDown}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur} />
+                    <div className={classes.plus} onClick={addKvItem}>+</div>
+                </div>
             </div>
         </div>
     );

@@ -83,9 +83,9 @@ const styles = theme => ({
 
 
 function MultipleInput(props) {
-    const { classes, className, title, hint = '请输入文本', required, rules, data, name, saveData } = props;
+    const { classes, className, title, hint = '请输入文本', required, defaultValue = [], rules, data, name, saveData } = props;
 
-    const [inputList, setInputList] = useState([{ value: '' }]);
+    const [inputList, setInputList] = useState(defaultValue || []);
     const [plusTimes, setPlusTimes] = useState(0);
 
     let valueInput = null, newInputItem = null;
@@ -96,39 +96,33 @@ function MultipleInput(props) {
         // if (valueInput.value !== '') {
         let newInputList = [];
         inputList.forEach((inputItem, index) => {
-            if (index === (inputList.length - 1)) {
-                newInputList.push({ value: valueInput.value });
-            } else {
-                newInputList.push(inputItem);
-            }
+            newInputList.push(inputItem);
         })
-        newInputList.push({ value: '' });
+        newInputList.push({ value: valueInput.value });
         console.log(newInputList)
         setInputList(newInputList);
         setPlusTimes(plusTimes + 1);
-        let newData = newInputList.slice(0, newInputList.length - 1);
+
         if (saveData) {
-            saveData(name, { isValid: true, data: newData })
+            saveData(name, { isValid: true, data: newInputList })
         }
+        valueInput.value = '';
         // } else {
         //     alert('invalid');
         // }
     }
 
     const removeInputItem = (removeIndex) => (event) => {
+        console.log('remove ')
         let newInputList = [];
         inputList.forEach((inputItem, index) => {
             if (index === removeIndex) {
-
-            } else if (index === (inputList.length - 1)) {
-                newInputList.push({ value: valueInput.value })
             } else {
                 newInputList.push(inputItem);
             }
         })
-        let newData = newInputList.slice(0, newInputList.length - 1);
         if (saveData) {
-            saveData(name, { isValid: true, data: newData })
+            saveData(name, { isValid: true, data: newInputList })
         }
         setInputList(newInputList);
     }
@@ -148,12 +142,11 @@ function MultipleInput(props) {
     }
 
     useEffect(() => {
-        let newData = inputList.slice(0, inputList.length - 1);
         if (saveData) {
             if (required) {
-                saveData(name, { isValid: newData.length < 1 ? false : true, data: newData })
+                saveData(name, { isValid: inputList.length < 1 ? false : true, data: inputList });
             } else {
-                saveData(name, { isValid: true, data: newData })
+                saveData(name, { isValid: true, data: inputList });
             }
         }
     }, [])
@@ -179,31 +172,24 @@ function MultipleInput(props) {
             <div className={classes.inputArea}>
                 {
                     inputList.map((inputItem, index) => {
-                        if (index !== (inputList.length - 1)) {
-                            return (
-                                <div className={classes.oldInputItem} key={`${inputItem.value},${index}`}>
-                                    <div className={classes.readonly} title={inputItem.value}>{inputItem.value}</div>
-                                    <div className={classes.minus} onClick={removeInputItem(index)}>-</div>
-                                </div>
-                            );
-                        } else {
-                            return (
-                                <div className={classes.newInputItem} ref={ele => { newInputItem = ele; }} key={`${inputItem.value},${index}`}>
-                                    <input
-                                        className={classes.input}
-                                        ref={(ele) => { valueInput = ele; }}
-                                        defaultValue={inputItem.value}
-                                        placeholder={hint}
-                                        onKeyDown={handleKeyDown}
-                                        onFocus={handleFocus}
-                                        onBlur={handleBlur} />
-                                    <div className={classes.plus} onClick={addInputItem}>+</div>
-                                </div>
-                            );
-
-                        }
+                        return (
+                            <div className={classes.oldInputItem} key={`${inputItem.value},${index}`}>
+                                <div className={classes.readonly} title={inputItem.value}>{inputItem.value}</div>
+                                <div className={classes.minus} onClick={removeInputItem(index)}>-</div>
+                            </div>
+                        );
                     })
                 }
+                <div className={classes.newInputItem} ref={ele => { newInputItem = ele; }} >
+                    <input
+                        className={classes.input}
+                        ref={(ele) => { valueInput = ele; }}
+                        placeholder={hint}
+                        onKeyDown={handleKeyDown}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur} />
+                    <div className={classes.plus} onClick={addInputItem}>+</div>
+                </div>
             </div>
         </div>
     );

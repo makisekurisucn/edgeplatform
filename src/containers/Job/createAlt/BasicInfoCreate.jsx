@@ -8,6 +8,7 @@ import KvInput from '../../../components/FormController/MultipleKvInput';
 import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
 import PortMapInput from '../../../components/FormController/PortMapInput';
+import KvItem from '../../../components/KvItem';
 
 
 const styles = theme => ({
@@ -18,8 +19,20 @@ const styles = theme => ({
         opacity: 1,
         padding: '27px 14%'
     },
+    prevRoot: {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        opacity: 1,
+        padding: '27px 35px'
+    },
     marginBottom: {
         marginBottom: '28px'
+    },
+    kvItem: {
+        marginBottom: 25,
+        color: 'rgb(68, 105, 128)'
+        // paddingLeft: '24px'
     }
 
 });
@@ -42,6 +55,12 @@ const jobTypes = [
 const JOB_NAME = "Job-Name",
     JOB_TYPE = "Job-Type";
 
+const kvMap = {
+    service: '服务',
+    batch: '批量',
+    system: '系统'
+}
+
 
 class BasicInfo extends Component {
     constructor(props) {
@@ -54,14 +73,21 @@ class BasicInfo extends Component {
             },
             [JOB_TYPE]: {
                 isValid: false,
-                data: 'service'
+                data: null
             }
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isCurrentStep == 0 && this.props.isCurrentStep !== 0) {
-            this.props.updataStatus(this.state.isAllValid)
+        if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
+            let newDataSet = Object.assign({}, this.state);
+            delete newDataSet.isAllValid;
+
+            if (this.props.updateData && this.props.dataName) {
+                console.log('will receive props, is valid: ' + this.state.isAllValid)
+                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+            }
+            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
@@ -79,27 +105,56 @@ class BasicInfo extends Component {
             isAllValid: newIsAllValid,
             [name]: result
         })
-        if (this.props.updataStatus && this.props.dataName) {
+        if (this.props.updateData && this.props.dataName) {
+            console.log('name: ' + name)
+            console.log('save data, is valid: ' + newIsAllValid)
             this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
         }
     }
 
 
     render() {
-        const { classes, className } = this.props;
+        const { classes, className, stepPosition } = this.props;
 
-        return (
-            <div className={classes.root}>
-                <NormalInput className={classes.marginBottom} name={JOB_NAME} title={'应用名称'} required saveData={this.saveData} />
-                <NormalSelect className={classes.marginBottom} name={JOB_TYPE} title={'应用类型'} options={jobTypes} defaultIndex={0} required saveData={this.saveData} />
-                {/* <KvInput className={classes.marginBottom} title={'环境变量'} />
-                <MultipleInput className={classes.marginBottom} title={'启动参数'} hint={'请输入参数'} />
-                <NumberInput className={classes.marginBottom} title={'CPU'} unit={'MHz'} rules={{ step: 128, maxValue: 512, minValue: 0, defaultValue: 128 }} />
-                <PortMapInput className={classes.marginBottom} title={'端口映射'} /> */}
+        const style = {
+            keyName: {
+                fontSize: '14px',
+                fontWeight: '300',
+                marginBottom: '3px'
+            },
+            value: {
+                paddingLeft: '9px',
+                fontSize: '16px',
+                fontWeight: '400',
+                whiteSpace: 'pre-line',
+                wordBreak: 'break-all'
+            }
+        }
+
+        let dataSet = Object.assign({}, this.state);
+        delete dataSet.isAllValid;
+
+        if (stepPosition < 0) {
+            return (
+                <div className={classes.prevRoot}>
+                    <KvItem keyName="应用名称" className={classes.kvItem} value={dataSet[JOB_NAME].data} style={style} />
+                    <KvItem keyName="应用类型" className={classes.kvItem} value={kvMap[dataSet[JOB_TYPE].data]} style={style} />
+                </div>
+            )
+        } else {
+            return (
+                <div className={classes.root}>
+                    <NormalInput className={classes.marginBottom} name={JOB_NAME} title={'应用名称'} required saveData={this.saveData} defaultValue={dataSet[JOB_NAME].data} />
+                    <NormalSelect className={classes.marginBottom} name={JOB_TYPE} title={'应用类型'} options={jobTypes} defaultValue={dataSet[JOB_TYPE].data} required saveData={this.saveData} />
+                    {/* <KvInput className={classes.marginBottom} title={'环境变量'} />
+                    <MultipleInput className={classes.marginBottom} title={'启动参数'} hint={'请输入参数'} />
+                    <NumberInput className={classes.marginBottom} title={'CPU'} unit={'MHz'} rules={{ step: 128, maxValue: 512, minValue: 0, defaultValue: 128 }} />
+                    <PortMapInput className={classes.marginBottom} title={'端口映射'} /> */}
 
 
-            </div>
-        );
+                </div>
+            );
+        }
     }
 }
 BasicInfo.propTypes = {

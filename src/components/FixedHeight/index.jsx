@@ -42,23 +42,29 @@ class FixedHeight extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.reducedHeight !== this.props.reducedHeight) {
+            this.changeHeight(nextProps.reducedHeight)
+        }
+    }
+
     resizeListener = () => {
         const current = Date.now();
         if ((current - this.prevResize) >= this.delay) {
-            this.changeHeight();
+            this.changeHeight(this.props.reducedHeight);
             this.prevResize = current;
         } else {
             clearTimeout(this.timeID);
             this.timeID = setTimeout(() => {
                 this.prevResize = current;
-                this.changeHeight();
+                this.changeHeight(this.props.reducedHeight);
             }, this.delay);
         }
     }
 
-    changeHeight = () => {
+    changeHeight = (reducedHeight) => {
         this.setState({
-            expectedHeight: window.innerHeight - this.props.reducedHeight
+            expectedHeight: window.innerHeight - reducedHeight
         });
 
     }

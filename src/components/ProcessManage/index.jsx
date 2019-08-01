@@ -19,13 +19,15 @@ const styles = theme => ({
         flex: '2 1 auto',
         marginRight: '20px',
         maxWidth: '900px',
-        minWidth: '600px'
+        minWidth: '600px',
+        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     otherStepItem: {
         flex: '1 2 auto',
         marginRight: '20px',
         maxWidth: '500px',
-        minWidth: '400px'
+        minWidth: '400px',
+        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     stepTitleContent: {
         height: '40px',
@@ -96,13 +98,6 @@ class ProcessManage extends Component {
         }
     }
 
-    updataStatus = (isStepValid) => {
-        console.log('updata status')
-        this.setState({
-            isCurrentStepValid: isStepValid
-        })
-    }
-
     updataData = (dataName, newDataSet, isStepValid) => {
         console.log('update data')
         console.log(isStepValid)
@@ -154,7 +149,7 @@ class ProcessManage extends Component {
                                                 ss
                                                 `
                                             } */}
-                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} updataStatus={this.updataStatus} isCurrentStep={0} />
+                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} stepPosition={0} />
                                         </div>
                                     </FixedHeight>
                                 </div>
@@ -167,7 +162,7 @@ class ProcessManage extends Component {
                                     </div>
                                     <FixedHeight className={classes.fixedHeight} reducedHeight={270}>
                                         <div className={classes.stepMainContent}>
-                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} updataStatus={this.updataStatus} isCurrentStep={index > this.state.currentStep ? 1 : -1} />
+                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} stepPosition={index > this.state.currentStep ? 1 : -1} />
                                         </div>
                                     </FixedHeight>
                                 </div>

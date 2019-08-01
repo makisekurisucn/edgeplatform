@@ -74,6 +74,11 @@ const styles = theme => ({
         borderBottom: '1px solid #EDEDED',
         paddingLeft: '11px',
         lineHeight: '35px'
+    },
+    noWrap: {
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden'
     }
 
 });
@@ -82,10 +87,17 @@ const styles = theme => ({
 
 
 function NormalSelect(props) {
-    const { classes, className, title, defaultIndex, required, rules, options = [], data, name, saveData } = props;
+    const { classes, className, title, defaultValue, required, rules, options = [], data, name, saveData } = props;
+
+    let defaultIndex = 0;
+    options.forEach((option, index) => {
+        if (option.value === defaultValue) {
+            defaultIndex = index;
+        }
+    })
 
     let isOptionListDisplay = false;
-    const [optIndex, setOptIndex] = useState(defaultIndex || 0);
+    const [optIndex, setOptIndex] = useState(defaultIndex);
 
     let arrow = null, optionList = null;
 
@@ -140,7 +152,7 @@ function NormalSelect(props) {
             </div>
             <div className={classes.selectArea} onFocus={handleFocus} onBlur={handleBlur} tabIndex={0} onClick={showOptions}>
                 <div className={classes.displayArea} >
-                    <div className={classes.displayText}>{options[optIndex].display}</div>
+                    <div className={classes.displayText + ' ' + classes.noWrap} title={options[optIndex].display}>{options[optIndex].display}</div>
                     <div className={classes.arrowWrap} ref={(ele) => { arrow = ele; }}>
                         <ExpandMore className={classes.textArrow} />
                     </div>
@@ -151,7 +163,7 @@ function NormalSelect(props) {
                             if (index === optIndex) {
                                 // return <li className={classes.selectedOption} key={option.value} >{option.display}</li>
                             } else {
-                                return <li className={classes.option} key={option.value} onClick={handleClick(index)} >{option.display}</li>
+                                return <li className={classes.option + ' ' + classes.noWrap} title={option.display} key={option.value} onClick={handleClick(index)} >{option.display}</li>
                             }
                         })
                     }

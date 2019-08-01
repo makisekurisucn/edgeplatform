@@ -36,7 +36,8 @@ const styles = theme => ({
         justifyContent: 'space-between'
     },
     mainTitle: {
-        width: '140px'
+        width: '140px',
+        whiteSpace: 'nowrap'
     },
     processArea: {
         width: '40%',
@@ -79,12 +80,16 @@ const styles = theme => ({
         float: 'right',
         // backgroundColor: 'rgb(75,139,175)',
         backgroundColor: 'rgb(183,183,183)',
-        width: 128,
+        width: '128px',
+        minWidth: '128px',
         height: 50,
         fontWeight: 300,
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         cursor: 'pointer'
+    },
+    validBkg: {
+        backgroundColor: 'rgb(75, 175, 126)'
     },
     main: {
         padding: '19px 52px',
@@ -137,10 +142,11 @@ class JobCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentStep: 0,
+            titleIndex: 0,
             basicInfoData: {},
             jobInfoData: {},
-            scheduleStrategyData: {}
+            scheduleStrategyData: {},
+            isAllCompleted: false
         };
     }
 
@@ -157,15 +163,18 @@ class JobCreate extends Component {
         titleList.forEach((step, index) => {
             if (step.name === newStepName) {
                 this.setState({
-                    currentStep: index
+                    titleIndex: index
                 })
             }
         })
     }
-    handleUpload = (dataName, dataSet) => {
+    handleUpload = (dataName, dataSet, isAllCompleted) => {
+        console.log(Object.assign({}, this.state, { [dataName]: dataSet, isAllCompleted }))
         console.log(dataName + ' :isCompleted')
+        console.log('isAllCompleted: ' + isAllCompleted)
         this.setState({
-            [dataName]: dataSet
+            [dataName]: dataSet,
+            isAllCompleted
         })
     }
     render() {
@@ -185,7 +194,7 @@ class JobCreate extends Component {
                             titleList.map((step, index) => {
                                 switch (step.type) {
                                     case 'step':
-                                        if (index === this.state.currentStep) {
+                                        if (index === this.state.titleIndex) {
                                             return <div className={classes.currentStep} key={step.name}>{step.name}</div>;
                                         } else {
                                             return <div className={classes.step} key={step.name}>{step.name}</div>;
@@ -198,7 +207,12 @@ class JobCreate extends Component {
                             })
                         }
                     </div>
-                    <span className={classes.createButton} onClick={this.createJob}>新建</span>
+                    {
+                        this.state.isAllCompleted == true ?
+                            <span className={classes.createButton + ' ' + classes.validBkg} onClick={this.createJob}>新建</span> :
+                            <span className={classes.createButton}>新建</span>
+                    }
+                    {/* <span className={classes.createButton} onClick={this.createJob}>新建</span> */}
                 </div>
                 <FixedHeight reducedHeight={110} className={classes.fixedHeight}>
                     <div className={classes.main}>

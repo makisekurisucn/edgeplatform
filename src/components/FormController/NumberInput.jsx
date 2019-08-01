@@ -52,10 +52,21 @@ const styles = theme => ({
 
 
 function NumberInput(props) {
-    const { classes, className, title, unit, required, rules = {}, data, name, saveData } = props;
-    const { defaultValue, step = 1, maxValue, minValue } = rules;
+    const { classes, className, title, unit, required, rules = {}, defaultValue, data, name, saveData } = props;
+    const { step = 1, maxValue, minValue } = rules;
+    let defaultValueWrap = defaultValue;
 
-    const [displayNum, setDisplayNum] = useState(defaultValue);
+    if (typeof defaultValueWrap !== 'number') {
+        if (typeof minValue === 'number') {
+            defaultValueWrap = minValue;
+        } else if (typeof maxValue === 'number') {
+            defaultValueWrap = maxValue;
+        } else {
+            defaultValueWrap = 0;
+        }
+    }
+
+    const [displayNum, setDisplayNum] = useState(defaultValueWrap);
 
     const handleClick = (stepValue) => (event) => {
         let newNum = displayNum + stepValue;
@@ -81,10 +92,10 @@ function NumberInput(props) {
         if (saveData) {
             if (typeof maxValue == 'number' && typeof minValue == 'number') {
                 if (displayNum > maxValue || displayNum < minValue) {
-                    console.log('false: '+name)
+                    console.log('false: ' + name)
                     saveData(name, { isValid: false, data: displayNum })
                 } else {
-                    console.log('true: '+name)
+                    console.log('true: ' + name)
                     saveData(name, { isValid: true, data: displayNum })
                 }
             } else {
