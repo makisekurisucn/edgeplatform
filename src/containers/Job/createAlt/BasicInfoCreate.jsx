@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
-import KvInput from '../../../components/FormController/MultipleKvInput';
-import MultipleInput from '../../../components/FormController/MultipleInput';
-import NumberInput from '../../../components/FormController/NumberInput';
-import PortMapInput from '../../../components/FormController/PortMapInput';
 import KvItem from '../../../components/KvItem';
+import CoveredKvItem from '../../../components/KvItem/CoveredKvItem';
+import FadeWrap from '../../../components/FadeWrap';
 
 
 const styles = theme => ({
@@ -33,8 +31,12 @@ const styles = theme => ({
         marginBottom: 25,
         color: 'rgb(68, 105, 128)'
         // paddingLeft: '24px'
+    },
+    hidden: {
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        height: '100%'
     }
-
 });
 
 const jobTypes = [
@@ -61,6 +63,38 @@ const kvMap = {
     system: '系统'
 }
 
+function processWrap(func, ...values) {
+    return function (data) {
+        return func(data, values);
+    }
+}
+
+function normalProcess(data) {
+    return data || kvMap[data];
+}
+
+const stanzaList = [
+    {
+        name: JOB_NAME,
+        title: '应用名称',
+        dataProcess: processWrap(normalProcess),
+        component: NormalInput,
+        rules: {
+            required: true
+        }
+    },
+    {
+        name: JOB_TYPE,
+        title: '应用类型',
+        options: jobTypes,
+        dataProcess: processWrap(normalProcess),
+        component: NormalSelect,
+        rules: {
+            required: true
+        }
+    }
+]
+
 
 class BasicInfo extends Component {
     constructor(props) {
@@ -69,11 +103,11 @@ class BasicInfo extends Component {
             isAllValid: false,
             [JOB_NAME]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [JOB_TYPE]: {
                 isValid: false,
-                data: null
+                data: undefined
             }
         };
     }
@@ -116,6 +150,11 @@ class BasicInfo extends Component {
     render() {
         const { classes, className, stepPosition } = this.props;
 
+        let rootWrap = classes.root;
+        if (stepPosition == 1) {
+            rootWrap += ' ' + classes.hidden;
+        }
+
         const style = {
             keyName: {
                 fontSize: '14px',
@@ -134,27 +173,54 @@ class BasicInfo extends Component {
         let dataSet = Object.assign({}, this.state);
         delete dataSet.isAllValid;
 
-        if (stepPosition < 0) {
-            return (
-                <div className={classes.prevRoot}>
-                    <KvItem keyName="应用名称" className={classes.kvItem} value={dataSet[JOB_NAME].data} style={style} />
-                    <KvItem keyName="应用类型" className={classes.kvItem} value={kvMap[dataSet[JOB_TYPE].data]} style={style} />
-                </div>
-            )
-        } else {
-            return (
-                <div className={classes.root}>
-                    <NormalInput className={classes.marginBottom} name={JOB_NAME} title={'应用名称'} required saveData={this.saveData} defaultValue={dataSet[JOB_NAME].data} />
-                    <NormalSelect className={classes.marginBottom} name={JOB_TYPE} title={'应用类型'} options={jobTypes} defaultValue={dataSet[JOB_TYPE].data} required saveData={this.saveData} />
-                    {/* <KvInput className={classes.marginBottom} title={'环境变量'} />
-                    <MultipleInput className={classes.marginBottom} title={'启动参数'} hint={'请输入参数'} />
-                    <NumberInput className={classes.marginBottom} title={'CPU'} unit={'MHz'} rules={{ step: 128, maxValue: 512, minValue: 0, defaultValue: 128 }} />
-                    <PortMapInput className={classes.marginBottom} title={'端口映射'} /> */}
 
+        return (
+            <div className={rootWrap}>
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={item.dataProcess(dataSet[item.name].data)} style={style} />
+                                )
+                            })
+                        }
 
+                    </FadeWrap>
                 </div>
-            );
-        }
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <item.component
+                                        key={item.name}
+                                        className={classes.marginBottom}
+                                        name={item.name}
+                                        title={item.title}
+                                        rules={item.rules}
+                                        options={item.options}
+                                        defaultValue={dataSet[item.name].data}
+                                        saveData={this.saveData}
+                                    />
+                                )
+                            })
+                        }
+                    </FadeWrap>
+                </div>
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <CoveredKvItem className={classes.kvItem} />
+                                )
+                            })
+                        }
+                    </FadeWrap>
+                </div>
+            </div>
+        )
     }
 }
 BasicInfo.propTypes = {

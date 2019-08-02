@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
@@ -9,6 +9,8 @@ import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
 import PortMapInput from '../../../components/FormController/PortMapInput';
 import KvItem from '../../../components/KvItem';
+import CoveredKvItem from '../../../components/KvItem/CoveredKvItem';
+import FadeWrap from '../../../components/FadeWrap';
 
 
 const styles = theme => ({
@@ -33,6 +35,11 @@ const styles = theme => ({
         marginBottom: 25,
         color: 'rgb(68, 105, 128)'
         // paddingLeft: '24px'
+    },
+    hidden: {
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        height: '100%'
     }
 });
 
@@ -96,7 +103,13 @@ const kvMap = {
     "jail-task-driver": 'Jailtask driver'
 }
 
-const multipleKVProcess = (kvData) => {
+function processWrap(func, ...values) {
+    return function (data) {
+        return func(data, values);
+    }
+}
+
+function multipleKVProcess(kvData = []) {
     let resArr = [];
     kvData.forEach((item) => {
         resArr.push(`${item.key}=${item.value}`);
@@ -104,7 +117,7 @@ const multipleKVProcess = (kvData) => {
     return resArr.join('\n');
 }
 
-const multipleValueProcess = (data) => {
+function multipleValueProcess(data = []) {
     let resArr = [];
     data.forEach((item) => {
         resArr.push(`${item.value}`);
@@ -112,7 +125,7 @@ const multipleValueProcess = (data) => {
     return resArr.join('\n');
 }
 
-const portMappingProcess = (data) => {
+function portMappingProcess(data = []) {
     let resArr = [];
     data.forEach((item) => {
         resArr.push(`${item.LValue} ->${item.mapping.display} ${item.RValue}`);
@@ -120,47 +133,125 @@ const portMappingProcess = (data) => {
     return resArr.join('\n');
 }
 
-const numberProcess = (data, unit) => {
+function numberProcess(data, unit) {
     return `${data}${unit}`;
 }
 
+function normalProcess(data) {
+    return data || kvMap[data];
+}
 
-class BasicInfo extends Component {
+const stanzaList = [
+    {
+        name: TASKS_DRIVER,
+        title: '运行时',
+        options: drives,
+        dataProcess: processWrap(normalProcess),
+        component: NormalSelect,
+        rules: {
+            required: true
+        }
+    },
+    {
+        name: TASKS_CONFIG_IMAGE,
+        title: '镜像',
+        dataProcess: processWrap(normalProcess),
+        component: NormalInput,
+        rules: {
+            required: true
+        }
+    },
+    {
+        name: TASKS_RESOURCES_CPU,
+        title: 'CPU',
+        dataProcess: processWrap(numberProcess, 'MHz'),
+        component: NumberInput,
+        rules: {
+            step: 128,
+            maxValue: 512,
+            minValue: 0,
+            unit: 'MHz'
+        }
+    },
+    {
+        name: TASKS_RESOURCES_MEMORYMB,
+        title: '内存',
+        dataProcess: processWrap(numberProcess, 'MB'),
+        component: NumberInput,
+        rules: {
+            step: 128,
+            maxValue: 1280,
+            minValue: 0,
+            unit: 'MB'
+        }
+    },
+    {
+        name: PORTMAPPING,
+        title: '端口映射',
+        dataProcess: processWrap(portMappingProcess),
+        component: PortMapInput,
+        rules: {}
+    },
+    {
+        name: TASKS_CONFIG_COMMAND,
+        title: '启动命令',
+        dataProcess: processWrap(normalProcess),
+        component: NormalInput,
+        rules: {}
+    },
+    {
+        name: TASKS_CONFIG_ARGS,
+        title: '启动参数',
+        hint: '请输入参数',
+        dataProcess: processWrap(multipleValueProcess),
+        component: MultipleInput,
+        rules: {}
+    },
+    {
+        name: TASKS_ENV,
+        title: '环境变量',
+        dataProcess: processWrap(multipleKVProcess),
+        component: KvInput,
+        rules: {}
+    }
+]
+
+class JobInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isAllValid: false,
             [TASKS_DRIVER]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_CONFIG_IMAGE]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_RESOURCES_CPU]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_RESOURCES_MEMORYMB]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [PORTMAPPING]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_CONFIG_COMMAND]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_CONFIG_ARGS]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_ENV]: {
                 isValid: false,
-                data: null
+                data: undefined
             }
         };
     }
@@ -196,9 +287,14 @@ class BasicInfo extends Component {
         }
     }
 
-
     render() {
         const { classes, className, stepPosition } = this.props;
+
+        let rootWrap = classes.root;
+        // if (stepPosition > 0) {
+        if (stepPosition == 1) {
+            rootWrap += ' ' + classes.hidden;
+        }
 
         const style = {
             keyName: {
@@ -218,36 +314,83 @@ class BasicInfo extends Component {
         let dataSet = Object.assign({}, this.state);
         delete dataSet.isAllValid;
 
-        if (stepPosition < 0) {
-            return (
-                <div className={classes.root}>
-                    <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
-                    <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} />
-                    <KvItem keyName="CPU" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_CPU].data, 'MHz')} style={style} />
-                    <KvItem keyName="内存" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_MEMORYMB].data, 'MB')} style={style} />
-                    <KvItem keyName="端口映射" className={classes.kvItem} value={portMappingProcess(dataSet[PORTMAPPING].data)} style={style} />
-                    <KvItem keyName="启动命令" className={classes.kvItem} value={dataSet[TASKS_CONFIG_COMMAND].data} style={style} />
-                    <KvItem keyName="启动参数" className={classes.kvItem} value={multipleValueProcess(dataSet[TASKS_CONFIG_ARGS].data)} style={style} />
-                    <KvItem keyName="环境变量" className={classes.kvItem} value={multipleKVProcess(dataSet[TASKS_ENV].data)} style={style} />
+        return (
+            <div className={rootWrap}>
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={item.dataProcess(dataSet[item.name].data)} style={style} />
+                                )
+                            })
+                        }
+                        {/* <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
+                        <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} />
+                        <KvItem keyName="CPU" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_CPU].data, 'MHz')} style={style} />
+                        <KvItem keyName="内存" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_MEMORYMB].data, 'MB')} style={style} />
+                        <KvItem keyName="端口映射" className={classes.kvItem} value={portMappingProcess(dataSet[PORTMAPPING].data)} style={style} />
+                        <KvItem keyName="启动命令" className={classes.kvItem} value={dataSet[TASKS_CONFIG_COMMAND].data} style={style} />
+                        <KvItem keyName="启动参数" className={classes.kvItem} value={multipleValueProcess(dataSet[TASKS_CONFIG_ARGS].data)} style={style} />
+                        <KvItem keyName="环境变量" className={classes.kvItem} value={multipleKVProcess(dataSet[TASKS_ENV].data)} style={style} /> */}
+
+                    </FadeWrap>
                 </div>
-            )
-        } else {
-            return (
-                <div className={classes.root}>
-                    <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultValue={dataSet[TASKS_DRIVER].data} required saveData={this.saveData} />
-                    <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required saveData={this.saveData} defaultValue={dataSet[TASKS_CONFIG_IMAGE].data} />
-                    <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} defaultValue={dataSet[TASKS_RESOURCES_CPU].data} rules={{ step: 128, maxValue: 512, minValue: 0 }} saveData={this.saveData} />
-                    <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} defaultValue={dataSet[TASKS_RESOURCES_MEMORYMB].data} rules={{ step: 128, maxValue: 1280, minValue: 0 }} saveData={this.saveData} />
-                    <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} defaultValue={dataSet[PORTMAPPING].data} saveData={this.saveData} />
-                    <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} defaultValue={dataSet[TASKS_CONFIG_COMMAND].data} saveData={this.saveData} />
-                    <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} defaultValue={dataSet[TASKS_CONFIG_ARGS].data} hint={'请输入参数'} saveData={this.saveData} />
-                    <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} defaultValue={dataSet[TASKS_ENV].data} saveData={this.saveData} />
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <item.component
+                                        key={item.name}
+                                        className={classes.marginBottom}
+                                        name={item.name}
+                                        title={item.title}
+                                        hint={item.hint}
+                                        rules={item.rules}
+                                        options={item.options}
+                                        defaultValue={dataSet[item.name].data}
+                                        saveData={this.saveData}
+                                    />
+                                )
+                            })
+                        }
+                        {/* <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultValue={dataSet[TASKS_DRIVER].data} required saveData={this.saveData} />
+                        <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required saveData={this.saveData} defaultValue={dataSet[TASKS_CONFIG_IMAGE].data} />
+                        <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} defaultValue={dataSet[TASKS_RESOURCES_CPU].data} rules={{ step: 128, maxValue: 512, minValue: 0 }} saveData={this.saveData} />
+                        <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} defaultValue={dataSet[TASKS_RESOURCES_MEMORYMB].data} rules={{ step: 128, maxValue: 1280, minValue: 0 }} saveData={this.saveData} />
+                        <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} defaultValue={dataSet[PORTMAPPING].data} saveData={this.saveData} />
+                        <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} defaultValue={dataSet[TASKS_CONFIG_COMMAND].data} saveData={this.saveData} />
+                        <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} defaultValue={dataSet[TASKS_CONFIG_ARGS].data} hint={'请输入参数'} saveData={this.saveData} />
+                        <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} defaultValue={dataSet[TASKS_ENV].data} saveData={this.saveData} /> */}
+                    </FadeWrap>
                 </div>
-            );
-        }
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                        {/* <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
+                        <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} /> */}
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <CoveredKvItem className={classes.kvItem} />
+                                )
+                            })
+                        }
+                        {/* <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} />
+                        <CoveredKvItem className={classes.kvItem} /> */}
+                    </FadeWrap>
+                </div>
+            </div>
+        )
     }
 }
-BasicInfo.propTypes = {
+JobInfo.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(BasicInfo);
+export default withStyles(styles)(JobInfo);

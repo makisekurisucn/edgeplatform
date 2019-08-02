@@ -4,8 +4,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
     root: {
-        width: '51%'
-        // width: '220px'
+        // width: '51%'
+        width: '300px'
     },
     label: {
         fontSize: '16px',
@@ -87,7 +87,8 @@ const styles = theme => ({
 
 
 function NormalSelect(props) {
-    const { classes, className, title, defaultValue, required, rules, options = [], data, name, saveData } = props;
+    const { classes, className, title, defaultValue, rules = {}, options = [], data, name, saveData } = props;
+    const { required } = rules;
 
     let defaultIndex = 0;
     options.forEach((option, index) => {

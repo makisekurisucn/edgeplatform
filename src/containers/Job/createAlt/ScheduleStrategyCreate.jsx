@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
@@ -8,6 +8,9 @@ import KvInput from '../../../components/FormController/MultipleKvInput';
 import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
 import PortMapInput from '../../../components/FormController/PortMapInput';
+import KvItem from '../../../components/KvItem';
+import CoveredKvItem from '../../../components/KvItem/CoveredKvItem';
+import FadeWrap from '../../../components/FadeWrap';
 
 
 const styles = theme => ({
@@ -18,10 +21,26 @@ const styles = theme => ({
         opacity: 1,
         padding: '27px 14%'
     },
+    prevRoot: {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        opacity: 1,
+        padding: '27px 35px'
+    },
     marginBottom: {
         marginBottom: '28px'
+    },
+    kvItem: {
+        marginBottom: 25,
+        color: 'rgb(68, 105, 128)'
+        // paddingLeft: '24px'
+    },
+    hidden: {
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        height: '100%'
     }
-
 });
 
 const drives = [
@@ -72,43 +91,167 @@ const TASKS_DRIVER = "Tasks-Driver",
     TASKS_CONFIG_ARGS = "Tasks-Config-args",
     TASKS_ENV = "Tasks-Env";
 
+const kvMap = {
+    docker: 'Docker',
+    exec: 'Isolated Fork/Exec',
+    java: 'Java',
+    qemu: 'Qemu',
+    raw_exec: 'Raw Fork/Exec',
+    rkt: 'Rkt',
+    lxc: 'Lxc',
+    Singularity: 'Singularity',
+    "jail-task-driver": 'Jailtask driver'
+}
 
-class BasicInfo extends Component {
+function processWrap(func, ...values) {
+    return function (data) {
+        return func(data, values);
+    }
+}
+
+function multipleKVProcess(kvData = []) {
+    let resArr = [];
+    kvData.forEach((item) => {
+        resArr.push(`${item.key}=${item.value}`);
+    })
+    return resArr.join('\n');
+}
+
+function multipleValueProcess(data = []) {
+    let resArr = [];
+    data.forEach((item) => {
+        resArr.push(`${item.value}`);
+    })
+    return resArr.join('\n');
+}
+
+function portMappingProcess(data = []) {
+    let resArr = [];
+    data.forEach((item) => {
+        resArr.push(`${item.LValue} ->${item.mapping.display} ${item.RValue}`);
+    })
+    return resArr.join('\n');
+}
+
+function numberProcess(data, unit) {
+    return `${data}${unit}`;
+}
+
+function normalProcess(data) {
+    return data || kvMap[data];
+}
+
+const stanzaList = [
+    {
+        name: TASKS_DRIVER,
+        title: '运行时',
+        options: drives,
+        dataProcess: processWrap(normalProcess),
+        component: NormalSelect,
+        rules: {
+            required: true
+        }
+    },
+    {
+        name: TASKS_CONFIG_IMAGE,
+        title: '镜像',
+        dataProcess: processWrap(normalProcess),
+        component: NormalInput,
+        rules: {
+            required: true
+        }
+    },
+    {
+        name: TASKS_RESOURCES_CPU,
+        title: 'CPU',
+        dataProcess: processWrap(numberProcess, 'MHz'),
+        component: NumberInput,
+        rules: {
+            step: 128,
+            maxValue: 512,
+            minValue: 0,
+            unit: 'MHz'
+        }
+    },
+    {
+        name: TASKS_RESOURCES_MEMORYMB,
+        title: '内存',
+        dataProcess: processWrap(numberProcess, 'MB'),
+        component: NumberInput,
+        rules: {
+            step: 128,
+            maxValue: 1280,
+            minValue: 0,
+            unit: 'MB'
+        }
+    },
+    {
+        name: PORTMAPPING,
+        title: '端口映射',
+        dataProcess: processWrap(portMappingProcess),
+        component: PortMapInput,
+        rules: {}
+    },
+    {
+        name: TASKS_CONFIG_COMMAND,
+        title: '启动命令',
+        dataProcess: processWrap(normalProcess),
+        component: NormalInput,
+        rules: {}
+    },
+    {
+        name: TASKS_CONFIG_ARGS,
+        title: '启动参数',
+        hint: '请输入参数',
+        dataProcess: processWrap(multipleValueProcess),
+        component: MultipleInput,
+        rules: {}
+    },
+    {
+        name: TASKS_ENV,
+        title: '环境变量',
+        dataProcess: processWrap(multipleKVProcess),
+        component: KvInput,
+        rules: {}
+    }
+]
+
+class JobInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isAllValid: false,
             [TASKS_DRIVER]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_CONFIG_IMAGE]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_RESOURCES_CPU]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_RESOURCES_MEMORYMB]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [PORTMAPPING]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_CONFIG_COMMAND]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_CONFIG_ARGS]: {
                 isValid: false,
-                data: null
+                data: undefined
             },
             [TASKS_ENV]: {
                 isValid: false,
-                data: null
+                data: undefined
             }
         };
     }
@@ -146,23 +289,83 @@ class BasicInfo extends Component {
 
 
     render() {
-        const { classes, className } = this.props;
+        const { classes, className, stepPosition } = this.props;
+
+        let rootWrap = classes.root;
+        // if (stepPosition > 0) {
+        if (stepPosition == 1) {
+            rootWrap += ' ' + classes.hidden;
+        }
+
+        const style = {
+            keyName: {
+                fontSize: '14px',
+                fontWeight: '300',
+                marginBottom: '3px'
+            },
+            value: {
+                paddingLeft: '9px',
+                fontSize: '16px',
+                fontWeight: '400',
+                whiteSpace: 'pre-line',
+                wordBreak: 'break-all'
+            }
+        }
+
+        let dataSet = Object.assign({}, this.state);
+        delete dataSet.isAllValid;
 
         return (
-            <div className={classes.root}>
-                <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultIndex={0} required saveData={this.saveData} />
-                <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required saveData={this.saveData} />
-                <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} rules={{ step: 128, maxValue: 512, minValue: 0, defaultValue: 128 }} saveData={this.saveData} />
-                <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} rules={{ step: 128, maxValue: 1280, minValue: 0, defaultValue: 256 }} saveData={this.saveData} />
-                <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} saveData={this.saveData} />
-                <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} saveData={this.saveData} />
-                <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} hint={'请输入参数'} saveData={this.saveData} />
-                <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} saveData={this.saveData} />
+            <div className={rootWrap}>
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={item.dataProcess(dataSet[item.name].data)} style={style} />
+                                )
+                            })
+                        }
+
+                    </FadeWrap>
+                </div>
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <item.component
+                                        key={item.name}
+                                        className={classes.marginBottom}
+                                        name={item.name}
+                                        title={item.title}
+                                        hint={item.hint}
+                                        rules={item.rules}
+                                        options={item.options}
+                                        defaultValue={dataSet[item.name].data}
+                                        saveData={this.saveData}
+                                    />
+                                )
+                            })
+                        }
+                    </FadeWrap>
+                </div>
+                <div style={{ height: 0 }}>
+                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                        {
+                            stanzaList.map((item, index) => {
+                                return (
+                                    <CoveredKvItem className={classes.kvItem} />
+                                )
+                            })
+                        }
+                    </FadeWrap>
+                </div>
             </div>
-        );
+        )
     }
 }
-BasicInfo.propTypes = {
+JobInfo.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(BasicInfo);
+export default withStyles(styles)(JobInfo);

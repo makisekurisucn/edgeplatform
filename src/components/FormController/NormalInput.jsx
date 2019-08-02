@@ -3,7 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-        width: '51%'
+        // width: '51%'
+        width: '300px'
     },
     label: {
         fontSize: '16px',
@@ -39,7 +40,8 @@ const styles = theme => ({
 
 
 function NormalInput(props) {
-    const { classes, className, title, hint, defaultValue = '', required, rules, data, name, saveData } = props;
+    const { classes, className, title, hint, defaultValue = '', rules = {}, data, name, saveData } = props;
+    const { required } = rules;
     let inputArea = null, input = null;
 
     const handleFocus = (event) => {

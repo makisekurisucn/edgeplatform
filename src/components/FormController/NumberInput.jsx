@@ -3,7 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-        width: '51%'
+        // width: '51%'
+        width: '135px'
     },
     label: {
         fontSize: '16px',
@@ -35,7 +36,7 @@ const styles = theme => ({
         height: '9px',
         lineHeight: '9px',
         textAlign: 'center',
-        margin: '5px 0px',
+        margin: '2px 0px',
         padding: '0px 3px',
         backgroundColor: 'rgb(75, 139, 175)',
         color: 'rgb(255, 255, 255)',
@@ -52,8 +53,8 @@ const styles = theme => ({
 
 
 function NumberInput(props) {
-    const { classes, className, title, unit, required, rules = {}, defaultValue, data, name, saveData } = props;
-    const { step = 1, maxValue, minValue } = rules;
+    const { classes, className, title, rules = {}, defaultValue, data, name, saveData } = props;
+    const { step = 1, maxValue, minValue, required, unit } = rules;
     let defaultValueWrap = defaultValue;
 
     if (typeof defaultValueWrap !== 'number') {

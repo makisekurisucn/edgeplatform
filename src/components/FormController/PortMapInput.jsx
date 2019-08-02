@@ -5,7 +5,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
     root: {
-        width: '51%'
+        // width: '51%'
+        width: '300px'
     },
     label: {
         fontSize: '16px',
@@ -165,7 +166,9 @@ const options = [
 ]
 
 function PortMapInput(props) {
-    const { classes, className, title, LHint = '', RHint = '', required, rules, defaultValue, data, name, saveData } = props;
+    const { classes, className, title, hint = {}, rules = {}, defaultValue, data, name, saveData } = props;
+    const { required } = rules;
+    const { LHint = '', RHint = '' } = hint;
 
     const [numList, setNumList] = useState(defaultValue || []);
     const [plusTimes, setPlusTimes] = useState(0);

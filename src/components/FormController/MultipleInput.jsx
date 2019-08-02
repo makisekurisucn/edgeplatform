@@ -3,7 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-        width: '51%'
+        // width: '51%'
+        width: '300px'
     },
     label: {
         fontSize: '16px',
@@ -83,7 +84,8 @@ const styles = theme => ({
 
 
 function MultipleInput(props) {
-    const { classes, className, title, hint = '请输入文本', required, defaultValue = [], rules, data, name, saveData } = props;
+    const { classes, className, title, hint = '请输入文本', defaultValue = [], rules = {}, data, name, saveData } = props;
+    const { required } = rules;
 
     const [inputList, setInputList] = useState(defaultValue || []);
     const [plusTimes, setPlusTimes] = useState(0);

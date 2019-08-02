@@ -19,14 +19,15 @@ const styles = theme => ({
         flex: '2 1 auto',
         marginRight: '20px',
         maxWidth: '900px',
-        minWidth: '600px',
+        minWidth: '700px',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     otherStepItem: {
-        flex: '1 2 auto',
+        // flex: '1 2 auto',
+        width: '320px',
         marginRight: '20px',
-        maxWidth: '500px',
-        minWidth: '400px',
+        // maxWidth: '500px',
+        // minWidth: '400px',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     stepTitleContent: {
@@ -44,7 +45,8 @@ const styles = theme => ({
     stepMainContent: {
         backgroundColor: 'rgba(68, 105, 128, 0.02)',
         height: '100%',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        overflowX: 'hidden'
     },
     arrowBack: {
         cursor: 'pointer',

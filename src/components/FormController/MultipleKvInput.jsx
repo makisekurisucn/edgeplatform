@@ -3,7 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-        width: '51%'
+        // width: '51%'
+        width: '300px'
     },
     label: {
         fontSize: '16px',
@@ -93,7 +94,9 @@ const styles = theme => ({
 
 
 function MultipleKvInput(props) {
-    const { classes, className, title, keyHint = 'Key', valueHint = 'Value', required, defaultValue, rules, data, name, saveData } = props;
+    const { classes, className, title, hint = {}, defaultValue, rules = {}, data, name, saveData } = props;
+    const { required } = rules;
+    const { keyHint = 'Key', valueHint = 'Value' } = hint;
 
     const [kvlist, setKvlist] = useState(defaultValue || []);
     const [plusTimes, setPlusTimes] = useState(0);
