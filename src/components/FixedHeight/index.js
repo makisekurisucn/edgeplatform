@@ -42,7 +42,7 @@ class FixedHeight extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.reducedHeight !== this.props.reducedHeight) {
             this.changeHeight(nextProps.reducedHeight)
         }

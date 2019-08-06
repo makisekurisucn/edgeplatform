@@ -66,7 +66,7 @@ class JobDetail extends Component {
         getDCList(dispatch);
         setRegion(currentRegion);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.statusIndex) {
             this.setState({
                 statusIndex: nextProps.statusIndex

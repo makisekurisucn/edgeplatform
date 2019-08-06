@@ -70,13 +70,13 @@ class Button extends Component {
         })
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({
             selected: hasRouter(this.props.location.pathname, this.props.link)
         });
     }
 
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
         if (nextProp.location.pathname && nextProp.link) {
             this.setState({
                 selected: hasRouter(nextProp.location.pathname, nextProp.link)

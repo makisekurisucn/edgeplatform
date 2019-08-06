@@ -89,10 +89,10 @@ class Button extends Component {
             selected: false
         };
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.list = [];
     }
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
         const { list, valueKey, displayKey } = nextProp;
         this.list = [];
 

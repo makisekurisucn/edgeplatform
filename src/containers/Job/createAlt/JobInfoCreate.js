@@ -256,7 +256,7 @@ class JobInfo extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
             let newDataSet = Object.assign({}, this.state);
             delete newDataSet.isAllValid;

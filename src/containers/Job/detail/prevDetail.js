@@ -168,7 +168,7 @@ class JobDetail extends Component {
         let id = this.props.match.params.id;
         getJobDetail(dispatch, id);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.statusIndex) {
             this.setState({
                 statusIndex: nextProps.statusIndex

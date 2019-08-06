@@ -57,7 +57,7 @@ class WrappedGraph extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.dataSource !== this.props.dataSource) {
             this.selectData(0);
         }

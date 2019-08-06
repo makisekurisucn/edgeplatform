@@ -103,7 +103,7 @@ class ListItem extends Component {
     //     const { dispatch } = this.props;
     //     getRegionList(dispatch);
     //   }
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
         if (nextProp.regionList.length && !this.state.currentRegion) {
             this.setState({
                 currentRegion: nextProp.regionList[0]

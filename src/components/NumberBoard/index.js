@@ -40,7 +40,7 @@ class NumberBoard extends Component {
             selected: false
         };
     }
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
        
     }
     render() {

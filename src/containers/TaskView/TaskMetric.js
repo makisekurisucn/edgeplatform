@@ -104,7 +104,7 @@ class TaskMetric extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         const prevAlloc = this.props.data.alloc || {};
         const nextAlloc = nextProps.data.alloc || {};
         console.log('-----------------')

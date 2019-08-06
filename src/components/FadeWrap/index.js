@@ -45,7 +45,7 @@ class FadeWrap extends Component {
             stage: 'finished'
         };
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
 
         this.setState({
             isHidden: this.props.isHidden,
@@ -55,7 +55,7 @@ class FadeWrap extends Component {
         // console.log(this.props);
 
     }
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
         if (!this.initialized) {
             this.setState({
                 isHidden: nextProp.isHidden,

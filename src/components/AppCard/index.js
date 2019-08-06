@@ -92,7 +92,7 @@ class AppCard extends Component {
     //     const { dispatch } = this.props;
     //     getRegionList(dispatch);
     //   }
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
 
     }
 

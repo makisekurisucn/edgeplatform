@@ -65,14 +65,14 @@ class Tabs extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         let currentIndex = this.props.index === undefined ? 0 : this.props.index;
         this.setState({
             index: currentIndex
         });
 
     }
-    componentWillReceiveProps(nextProp) {
+    UNSAFE_componentWillReceiveProps(nextProp) {
         let currentIndex = nextProp.index === undefined ? 0 : nextProp.index;
         this.setState({
             index: currentIndex

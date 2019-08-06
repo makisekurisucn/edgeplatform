@@ -103,7 +103,7 @@ class TaskLog extends Component {
         this.stderrLog.removeEventListener('scroll', this.scrollListener);
     }
 
-    componentWillUpdate() {
+    UNSAFE_componentWillUpdate() {
         if (this.state.isStdoutHidden === false && this.state.isStderrHidden === true) {
             this.stdoutScrollBottom = this.stdoutLog.scrollHeight - this.stdoutLog.scrollTop;
         } else if (this.state.isStdoutHidden === true && this.state.isStderrHidden === false) {
@@ -135,7 +135,7 @@ class TaskLog extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         //需要修改，这里传进来的props为stdout和stderr，因此重复发一个相同请求后，判断前后props相同，不会更新，不会无限循环
         // console.log('prev')
         // console.log(this.props.taskLogs)
