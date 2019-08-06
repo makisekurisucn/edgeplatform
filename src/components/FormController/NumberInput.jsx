@@ -19,16 +19,17 @@ const styles = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         height: '35px',
+        paddingLeft: '11px',
         color: 'rgb(75, 139, 175)',
-        // lineHeight: '35px',
+        lineHeight: '35px',
         borderBottom: '1px solid #4B8BAF',
         backgroundColor: 'rgba(255, 255, 255, 1)'
     },
     displayNum: {
-        width: '60%',
+        width: '60px',
+        height: '35px',
         fontSize: '16px',
-        fontWeight: 400,
-        paddingLeft: '11px'
+        fontWeight: 400
     },
     arrow: {
         fontSize: '12px',
@@ -43,9 +44,11 @@ const styles = theme => ({
         // fontFamily: 'arrow-down-sm'
     },
     unit: {
+        width: '30px',
         fontSize: '14px',
         fontWeight: 300,
-        margin: '0px 10px'
+        margin: '0px 8px',
+        textAlign: 'center'
     }
 });
 

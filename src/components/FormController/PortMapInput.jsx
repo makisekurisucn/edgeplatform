@@ -22,13 +22,16 @@ const styles = theme => ({
     oldItem: {
         lineHeight: '35px',
         height: '35px',
+        paddingLeft: '11px',
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
         borderBottom: '1px solid #EDEDED'
     },
     newItem: {
         lineHeight: '35px',
         height: '35px',
+        paddingLeft: '11px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -40,7 +43,7 @@ const styles = theme => ({
         borderWidth: '0px',
         backgroundColor: 'inherit',
         textAlign: 'center',
-        width: '22%',
+        width: '66px',
         height: '35px',
         fontSize: '16px',
         fontWeight: '400',
@@ -51,13 +54,17 @@ const styles = theme => ({
         }
     },
     readonly: {
+        boxSizing: 'border-box',
         backgroundColor: 'inherit',
         textAlign: 'center',
-        width: '38%',
+        width: '66px',
         height: '35px',
         fontSize: '16px',
         fontWeight: '400',
         color: 'rgb(75, 139, 175)',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
     },
     minus: {
         width: '14px',
@@ -108,7 +115,8 @@ const styles = theme => ({
     },
     middleComponent: {
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        margin: '0px 9px'
     },
     arrowWrap: {
         height: '20px',
@@ -294,7 +302,7 @@ function PortMapInput(props) {
                     numList.map((item, index) => {
                         return (
                             <div className={classes.oldItem} key={`${item.LValue}=${item.RValue},${index}`}>
-                                <div className={classes.readonly}>{item.LValue}</div>
+                                <div className={classes.readonly} title={item.LValue}>{item.LValue}</div>
                                 <div className={classes.middleComponent}>
                                     <ArrowForward className={classes.arrow} />
                                     <div className={classes.selectArea}>
@@ -304,7 +312,7 @@ function PortMapInput(props) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={classes.readonly}>{item.RValue}</div>
+                                <div className={classes.readonly} title={item.RValue}>{item.RValue}</div>
                                 <div className={classes.minus} onClick={removeItem(index)}>-</div>
                             </div>
                         );

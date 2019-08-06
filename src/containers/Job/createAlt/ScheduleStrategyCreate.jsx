@@ -138,7 +138,7 @@ function numberProcess(data, unit) {
 }
 
 function normalProcess(data) {
-    return data || kvMap[data];
+    return kvMap[data] || data;
 }
 
 const stanzaList = [
@@ -321,9 +321,13 @@ class JobInfo extends Component {
                     <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
-                                return (
-                                    <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={item.dataProcess(dataSet[item.name].data)} style={style} />
-                                )
+                                let value = item.dataProcess(dataSet[item.name].data);
+                                if (value == '' || value == undefined) {
+                                } else {
+                                    return (
+                                        <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />
+                                    )
+                                }
                             })
                         }
 

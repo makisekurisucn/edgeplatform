@@ -40,7 +40,7 @@ const styles = theme => ({
         // borderBottom: '1px solid rgba(178, 178, 178, 0.3)',
         backgroundColor: 'inherit',
         textAlign: 'center',
-        width: '38%',
+        width: '110px',
         height: '35px',
         // paddingLeft: '11px',
         fontSize: '16px',
@@ -55,7 +55,7 @@ const styles = theme => ({
     readonly: {
         backgroundColor: 'inherit',
         textAlign: 'center',
-        width: '38%',
+        width: '110px',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
