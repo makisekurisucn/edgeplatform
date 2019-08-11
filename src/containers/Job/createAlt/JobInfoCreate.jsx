@@ -376,7 +376,7 @@ class JobInfo extends Component {
                         {
                             stanzaList.map((item, index) => {
                                 return (
-                                    <CoveredKvItem className={classes.kvItem} />
+                                    <CoveredKvItem key={index} className={classes.kvItem} />
                                 )
                             })
                         }
