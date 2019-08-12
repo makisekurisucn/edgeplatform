@@ -26,10 +26,10 @@ const styles = theme => ({
         lineHeight: '64px',
         // textAlign: 'center',
         fontSize: 32,
-        color: '#EEF9FF',
+        color: '#0C567F',//'#EEF9FF',
         display: 'flex',
         justifyContent: 'space-between',
-        backgroundColor: 'rgb(96,139,162)'
+        backgroundColor: '#F5F6F6'//'rgb(96,139,162)'
     },
     title: {
         display: 'flex'
@@ -44,7 +44,7 @@ const styles = theme => ({
         // lineHeight: '60px'
     },
     arrow2: {
-        color: '#EEF9FF',
+        color: '#4B8BAF',//'#EEF9FF',
         fontSize: 37,
         paddingLeft: '19px',
         cursor: 'pointer',

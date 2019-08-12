@@ -124,7 +124,7 @@ class JobDetail extends Component {
         return (
             <Paper className={classes.root}>
                 <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} data={{ defaultCommand, commandList, name: detail.Name }} />
-                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, history }} reducedHeight={163} tabWrapColor='rgb(96,139,162)' />
+                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, history }} reducedHeight={163} tabWrapColor='#F5F6F6' />       {/* tabWrapColor='rgb(96,139,162)'  */}
             </Paper>
         );
     }

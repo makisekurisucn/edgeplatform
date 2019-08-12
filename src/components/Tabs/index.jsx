@@ -15,11 +15,13 @@ const styles = theme => ({
     },
     tabWrap: {
         backgroundColor: 'rgba(75,139,175,0.7)',
-        color: '#EEF9FF',
-        fontSize: '14px',
+        color: '#4B8BAF',//'#EEF9FF',
+        fontSize: '18px',
         height: 32,
         lineHeight: '32px',
         display: 'flex',
+        //下边框阴影
+        boxShadow: '0px 0px 0px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)'
         // disp
     },
     tabItem: {
@@ -29,14 +31,14 @@ const styles = theme => ({
         cursor: 'pointer'
     },
     tabSelected: {
-        color: '#fff',
+        color: '#416E87',//'#fff',
         position: 'relative',
         '&:before': {
             display: 'block',
             content: '""',
             width: 26,
             height: 4,
-            backgroundColor: '#fff',
+            backgroundColor: '#416E87',//'#fff',
             position: 'absolute',
             bottom: '0px',
             margin: 'auto',
@@ -104,7 +106,7 @@ class Tabs extends Component {
                 <ul className={classes.tabWrap} style={tabWrapColor ? { backgroundColor: tabWrapColor } : {}}>
                     {
                         tabList.map((item, index) => {
-                            let cls = classes.tabItem;
+                            let cls = classes.tabItem;///
                             if (index === currentIndex) {
                                 cls += ' ' + classes.tabSelected;
                             }
