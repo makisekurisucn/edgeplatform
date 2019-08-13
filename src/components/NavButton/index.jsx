@@ -17,9 +17,11 @@ const styles = theme => ({
         cursor: 'pointer',
         position: 'relative',
         backgroundColor: 'rgb(51,66,69)'
+
+        
     },
     selectedWrap: {
-        backgroundColor: "#262E2F"
+        backgroundColor: "#262E2F" 
     },
     // selected: {
     //     height: 4,
@@ -94,7 +96,7 @@ class Button extends Component {
         const { selected } = this.state;
         let classNameWrap = '';
         if (selected) {
-            classNameWrap = classes.root + ' ' + classes.selectedWrap + ' ' + (className.buttonRoot || '')
+            classNameWrap = classes.root + ' ' + classes.selectedWrap + ' ' + (className.buttonRoot || '')+' ' + (className.selectedBgc || '')
         }
         else {
             classNameWrap = classes.root + ' ' + (className.buttonRoot || '');
