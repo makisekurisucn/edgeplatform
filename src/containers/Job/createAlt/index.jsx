@@ -7,6 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 import ProcessManage from '../../../components/ProcessManage';
+import HorizontalStepper from '../../../components/ProcessManage/HorizontalStepper';
 import FixedHeight from '../../../components/FixedHeight';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
@@ -41,11 +42,11 @@ const styles = theme => ({
     },
     processArea: {
         width: '40%',
-        minWidth: '300px',
-        maxWidth: '480px',
+        minWidth: '320px',
+        // maxWidth: '480px',
         margin: '0px 14px',
-        display: 'flex',
-        justifyContent: 'space-between'
+        // display: 'flex',
+        // justifyContent: 'space-between'
     },
     step: {
         fontSize: '16px',
@@ -99,27 +100,6 @@ const styles = theme => ({
     }
 });
 
-const titleList = [
-    {
-        name: '基本信息',
-        type: 'step'
-    },
-    {
-        type: 'arrow'
-    },
-    {
-        name: '应用信息',
-        type: 'step'
-    },
-    {
-        type: 'arrow'
-    },
-    {
-        name: '调度策略',
-        type: 'step'
-    }
-];
-
 const stepList = [
     {
         name: '基本信息',
@@ -142,7 +122,8 @@ class JobCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            titleIndex: 0,
+            // titleIndex: 0,
+            stepIndex: 0,
             basicInfoData: {},
             jobInfoData: {},
             scheduleStrategyData: {},
@@ -151,6 +132,11 @@ class JobCreate extends Component {
     }
 
     createJob = () => {
+        let data = {};
+        stepList.forEach(item => {
+            data = Object.assign({}, data, this.state[item.dataName])
+        })
+        console.log(data)
         // console.log(link);
         // this.props.history.push(link);
         // window.history.go(-1);
@@ -159,18 +145,14 @@ class JobCreate extends Component {
         window.history.go(-1);
         // this.props.history.goBack();
     }
-    changeStep = (newStepName) => {
-        titleList.forEach((step, index) => {
-            if (step.name === newStepName) {
-                this.setState({
-                    titleIndex: index
-                })
-            }
+    changeStep = (newIndex) => {
+        this.setState({
+            stepIndex: newIndex
         })
     }
     handleUpload = (dataName, dataSet, isAllCompleted) => {
-        console.log(Object.assign({}, this.state, { [dataName]: dataSet, isAllCompleted }))
-        console.log(dataName + ' :isCompleted')
+        // console.log(Object.assign({}, this.state, { [dataName]: dataSet, isAllCompleted }))
+        // console.log(dataName + ' :isCompleted')
         console.log('isAllCompleted: ' + isAllCompleted)
         this.setState({
             [dataName]: dataSet,
@@ -190,7 +172,8 @@ class JobCreate extends Component {
                         <span>新建应用</span>
                     </div>
                     <div className={classes.processArea}>
-                        {
+                        <HorizontalStepper steps={stepList} stepIndex={this.state.stepIndex}></HorizontalStepper>
+                        {/* {
                             titleList.map((step, index) => {
                                 switch (step.type) {
                                     case 'step':
@@ -205,7 +188,7 @@ class JobCreate extends Component {
                                         return <div className={classes.step} key={step.name}>{step.name}</div>;
                                 }
                             })
-                        }
+                        } */}
                     </div>
                     {
                         this.state.isAllCompleted == true ?

@@ -18,7 +18,8 @@ const styles = theme => ({
         // position: 'relative',
         backgroundColor: 'rgb(231,231,231)',
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     root2: {
         height: 71,
@@ -31,16 +32,21 @@ const styles = theme => ({
         justifyContent: 'space-between',
         backgroundColor: '#F5F6F6'//'rgb(96,139,162)'
     },
+    leftContent: {
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center'
+    },
     title: {
         display: 'flex'
     },
     arrow1: {
         color: '#979797',
         fontSize: 29,
-        verticalAlign: 'middle',
+        // verticalAlign: 'middle',
         padding: '0px 2px 0px 19px',
         cursor: 'pointer',
-        height: 49
+        height: '50px'
         // lineHeight: '60px'
     },
     arrow2: {
@@ -155,7 +161,7 @@ class AppMainUpper extends Component {
         switch (type) {
             case 'job_list':
                 myAppMainUpper = <div className={classes.root}>
-                    <div>
+                    <div className={classes.leftContent}>
                         <ArrowBackIos className={classes.arrow1} onClick={this.goBack} />
                         <span>应用列表</span>
                     </div>
@@ -183,6 +189,29 @@ class AppMainUpper extends Component {
                     </div>
                 </div>;
                 break;
+            case 'work_node_detail':
+                myAppMainUpper = <div className={classes.root2}>
+                    <div className={classes.title}>
+                        <ArrowBackIos className={classes.arrow2} onClick={this.goBack} />
+                        <div className={classes.jobApp}>{data.name}</div>
+                        <div className={classes.status}>{status}</div>
+                    </div>
+                    <div className={classes.select}>
+                        <CommandSet defaultCommand={data.defaultCommand} commandList={data.commandList} />
+
+                        {/* <span className={classes.command}>{defaultCommandName}</span>
+                        <div className={classes.expandMore}>
+                            <ExpandMore className={classes.expandMoreArrow} ></ExpandMore>
+                            <ul className={classes.selectList}>
+                                <li>编辑</li>
+                                <li>删除</li>
+                            </ul>
+                        </div> */}
+                    </div>
+                </div>;
+                break;
+            default:
+                myAppMainUpper = null;
         }
 
         return (

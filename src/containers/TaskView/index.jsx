@@ -85,8 +85,12 @@ const styles = theme => ({
         textOverflow: 'ellipsis',
         height: '20px',
         lineHeight: '20px'
+    },
+    taskList: {
+        padding: '0px 6px',
+        width: '76px',
+        marginRight: '10px'
     }
-
 });
 const tabList = [
     {
@@ -165,7 +169,7 @@ class TaskView extends Component {
                     <div className={classes.headerTop}>
                         <div className={classes.headerName}>
                             <p className={classes.mainTitle} title={getAllocationName(alloc.Name)}>{getAllocationName(alloc.Name)}</p>
-                            <Select list={list} value={list[this.state.currentTaskIndex]} onSelected={this.selectTask} />
+                            <Select className={classes.taskList} list={list} value={list[this.state.currentTaskIndex]} onSelected={this.selectTask} />
                             <span className={classes.status}>{status}</span>
                         </div>
                         <div>

@@ -4,11 +4,11 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 const styles = theme => ({
     root: {
         height: 22,
-        // width: 92,
+        width: 85,
         boxSizing: 'border-box',
         lineHeight: '22px',
         textAlign: 'center',
-        padding: '0px 4px',
+        padding: '0px 6px',
         fontSize: 12,
         color: "#EEF9FF",
         '&:hover': {
@@ -25,9 +25,22 @@ const styles = theme => ({
 
     },
     display: {
-        margin: 0,
+        margin: 0
+    },
+    displayText: {
+        display: 'inline-block',
+        maxWidth: 'calc(100% - 15px)',
+        textAlign: 'center',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        verticalAlign: 'bottom',
+        marginRight: '-10px'
     },
     textArrow: {
+        height: '100%',
+        top: '0px',
+        left: '12px',
         fontSize: '12px',
         position: 'relative',
         verticalAlign: 'middle',
@@ -63,8 +76,15 @@ const styles = theme => ({
         //     left: 0,
         //     content: "''"
         // }
+    },
+    option: {
+        padding: '0px 6px',
+        maxWidth: '100%',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textAlign: 'center'
     }
-
 });
 
 class SelectButton extends Component {
@@ -123,16 +143,16 @@ class SelectButton extends Component {
         return (
             <div className={classNameWrap}>
                 <p className={classes.display}>
-                    <span className={classes.displayText}>{display}</span>
+                    <span className={classes.displayText} title={display}>{display}</span>
                     <ExpandMore className={classes.textArrow} />
                 </p>
                 <ul className={classes.selectListWrap}>
                     {internalList && internalList.map((item, index) => {
                         if (value === item.value) {
-                            return <li key={item.value} className={classes.selected}>{item.display}</li>;
+                            return <li key={item.value} className={classes.option + ' ' + classes.selected} title={item.display}>{item.display}</li>;
                         }
                         else {
-                            return <li key={item.value} onClick={this.clickHandler(index)} >{item.display}</li>;
+                            return <li key={item.value} className={classes.option} title={item.display} onClick={this.clickHandler(index)} >{item.display}</li>;
                         }
                     })
 
