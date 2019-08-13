@@ -93,16 +93,16 @@ const styles = theme => ({
     },
     subTitle: {
         display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         height: 42,
         fontSize: 24,
         fontWeight: 300,
-        lineHeight: '42px',
         backgroundColor: 'rgba(97, 139, 162, 0.1)',
-        paddingLeft: '24px'
+        padding: '0px 24px'
     },
     SelectButton: {
-        top: '12px',
-        position: 'relative',
+        width: '98px',
         fontSize: '14px',
         fontWeight: '400',
         verticalAlign: 'middle',
@@ -132,7 +132,7 @@ function HandleDiff(props) {
         }
     }
     if (props.value === props.prevValue) {
-        return <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} />;
+        return props.value ? <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} /> : null;
     } else {
         return <div>
             {

@@ -55,7 +55,8 @@ const kvMap = {
     running: '运行中',
     dead: '已停止',
     ready: '就绪',
-    down: '已停止'
+    down: '已停止',
+    alive: '运行中'
 }
 
 class SimpleTable extends Component {

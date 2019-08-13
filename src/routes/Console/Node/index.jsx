@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom'
 import ServerList from '../../../containers/Node/list/server'
 import NodeList from '../../../containers/Node/list/workNode'
-import WorkNodeDetail from '../../../containers/Node/detail/workNodeDetail'
+import WorkNodeDetail from '../../../containers/Node/detail'
 
 
 class JobRoute extends Component {

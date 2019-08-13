@@ -41,11 +41,11 @@ const styles = theme => ({
         margin: 0,
     },
     displayText: {
-        marginRight: -30
+        marginRight: '-25px'
     },
     textArrow: {
         position: 'relative',
-        left: 32,
+        left: '27px',
         verticalAlign: 'middle',
         transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },

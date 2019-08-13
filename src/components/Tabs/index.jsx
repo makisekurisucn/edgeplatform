@@ -45,6 +45,7 @@ const styles = theme => ({
     },
     tabSelected: {
         color: '#fff',//'#fff',
+<<<<<<< HEAD
         position: 'relative',
         '&:before': {
             display: 'block',
@@ -62,13 +63,19 @@ const styles = theme => ({
 
     tabSelected1: {
         color: '#416E87',//'#fff',
+=======
+>>>>>>> upstream/master
         position: 'relative',
         '&:before': {
             display: 'block',
             content: '""',
             width: 26,
             height: 4,
+<<<<<<< HEAD
             backgroundColor: '#416E87',//'#fff',
+=======
+            backgroundColor: '#fff',//'#fff',
+>>>>>>> upstream/master
             position: 'absolute',
             bottom: '0px',
             margin: 'auto',
@@ -123,7 +130,11 @@ class Tabs extends Component {
 
     }
     render() {
+<<<<<<< HEAD
         const { classes, className, contentList, index, viewProps, reducedHeight, tabWrapColor, className2={} } = this.props;
+=======
+        const { classes, className, contentList, index, viewProps, reducedHeight, tabWrapColor, className2 = {} } = this.props;
+>>>>>>> upstream/master
         const currentIndex = this.state.index;
         const prevIndex = this.state.prevIndex;
         let classNameWrap = classes.root;
@@ -132,9 +143,15 @@ class Tabs extends Component {
             classNameWrap += ' ' + className;
         }
         console.log(className2.bg);
+<<<<<<< HEAD
        let UlclassName=classes.tabWrap +' '+ (className2.bg|| '');
        console.log(UlclassName);
         
+=======
+        let UlclassName = classes.tabWrap + ' ' + (className2.bg || '');
+        console.log(UlclassName);
+
+>>>>>>> upstream/master
         return (
             <div className={classNameWrap}>
                 {/* <ul className={classes.tabWrap} style={tabWrapColor ? { backgroundColor: tabWrapColor} : {}}> */}
@@ -143,7 +160,11 @@ class Tabs extends Component {
                         tabList.map((item, index) => {
                             let cls = classes.tabItem;///
                             if (index === currentIndex) {
+<<<<<<< HEAD
                                 cls += ' ' + classes.tabSelected+ ' '+ (className2.selected|| '');
+=======
+                                cls += ' ' + classes.tabSelected + ' ' + (className2.selected || '');
+>>>>>>> upstream/master
                             }
                             return <li className={cls} key={item.name} onClick={this.switchTab(index)}>{item.name}</li>
                         })

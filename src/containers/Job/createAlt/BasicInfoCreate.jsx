@@ -118,7 +118,7 @@ class BasicInfo extends Component {
             delete newDataSet.isAllValid;
 
             if (this.props.updateData && this.props.dataName) {
-                console.log('will receive props, is valid: ' + this.state.isAllValid)
+                // console.log('will receive props, is valid: ' + this.state.isAllValid)
                 this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
             }
             // this.props.updataStatus(this.state.isAllValid)
@@ -140,8 +140,8 @@ class BasicInfo extends Component {
             [name]: result
         })
         if (this.props.updateData && this.props.dataName) {
-            console.log('name: ' + name)
-            console.log('save data, is valid: ' + newIsAllValid)
+            // console.log('name: ' + name)
+            // console.log('save data, is valid: ' + newIsAllValid)
             this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
         }
     }
@@ -217,7 +217,7 @@ class BasicInfo extends Component {
                         {
                             stanzaList.map((item, index) => {
                                 return (
-                                    <CoveredKvItem className={classes.kvItem} />
+                                    <CoveredKvItem key={index} className={classes.kvItem} />
                                 )
                             })
                         }

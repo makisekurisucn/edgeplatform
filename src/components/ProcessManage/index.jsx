@@ -62,6 +62,7 @@ const styles = theme => ({
         cursor: 'pointer',
         width: '61px',
         height: '19px',
+        lineHeight: '19px',
         textAlign: 'center'
     },
     validNextButton: {
@@ -72,6 +73,7 @@ const styles = theme => ({
         cursor: 'pointer',
         width: '61px',
         height: '19px',
+        lineHeight: '19px',
         textAlign: 'center'
     },
     fixedHeight: {
@@ -90,13 +92,12 @@ class ProcessManage extends Component {
 
     changeStep = (num) => (event) => {
         const newStep = this.state.currentStep + num;
-        const newStepName = this.props.stepList[newStep].name;
         this.setState({
             currentStep: newStep,
             isCurrentStepValid: false
         })
         if (this.props.switchStep) {
-            this.props.switchStep(newStepName);
+            this.props.switchStep(newStep);
         }
     }
 

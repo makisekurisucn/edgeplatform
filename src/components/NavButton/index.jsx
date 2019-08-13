@@ -18,7 +18,11 @@ const styles = theme => ({
         position: 'relative',
         backgroundColor: 'rgb(51,66,69)'
 
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> upstream/master
     },
     selectedWrap: {
         backgroundColor: "#262E2F" 
@@ -92,11 +96,15 @@ class Button extends Component {
         // }
     }
     render() {
-        const { classes, content, link, className } = this.props;
+        const { classes, content, link, className = {} } = this.props;
         const { selected } = this.state;
         let classNameWrap = '';
         if (selected) {
+<<<<<<< HEAD
             classNameWrap = classes.root + ' ' + classes.selectedWrap + ' ' + (className.buttonRoot || '')+' ' + (className.selectedBgc || '')
+=======
+            classNameWrap = classes.root + ' ' + classes.selectedWrap + ' ' + (className.buttonRoot || '') + ' ' + (className.selectedBgc || '')
+>>>>>>> upstream/master
         }
         else {
             classNameWrap = classes.root + ' ' + (className.buttonRoot || '');

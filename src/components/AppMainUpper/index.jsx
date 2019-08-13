@@ -13,12 +13,13 @@ const styles = theme => ({
         lineHeight: '50px',
         // textAlign: 'center',
         fontSize: 20,
-        borderBottom: '1px solid rgb(149,163,170)',
+        // borderBottom: '1px solid rgb(149,163,170)',
         color: 'rgb(76,92,102)',
         // position: 'relative',
         backgroundColor: 'rgb(231,231,231)',
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     root2: {
         height: 71,
@@ -30,6 +31,14 @@ const styles = theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         backgroundColor: '#F5F6F6'//'rgb(96,139,162)'
+<<<<<<< HEAD
+=======
+    },
+    leftContent: {
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center'
+>>>>>>> upstream/master
     },
     title: {
         display: 'flex'
@@ -37,10 +46,10 @@ const styles = theme => ({
     arrow1: {
         color: '#979797',
         fontSize: 29,
-        verticalAlign: 'middle',
+        // verticalAlign: 'middle',
         padding: '0px 2px 0px 19px',
         cursor: 'pointer',
-        height: 49
+        height: '50px'
         // lineHeight: '60px'
     },
     arrow2: {
@@ -79,6 +88,9 @@ const styles = theme => ({
         right: '10px',
         fontSize: 18,
         lineHeight: '35px'
+    },
+    commandSet: {
+        color: '#EEF9FF'
     }
 });
 const hasRouter = (current, link) => {
@@ -155,7 +167,7 @@ class AppMainUpper extends Component {
         switch (type) {
             case 'job_list':
                 myAppMainUpper = <div className={classes.root}>
-                    <div>
+                    <div className={classes.leftContent}>
                         <ArrowBackIos className={classes.arrow1} onClick={this.goBack} />
                         <span>应用列表</span>
                     </div>
@@ -170,7 +182,7 @@ class AppMainUpper extends Component {
                         <div className={classes.status}>{status}</div>
                     </div>
                     <div className={classes.select}>
-                        <CommandSet defaultCommand={data.defaultCommand} commandList={data.commandList} />
+                        <CommandSet className={classes.commandSet} defaultCommand={data.defaultCommand} commandList={data.commandList} />
 
                         {/* <span className={classes.command}>{defaultCommandName}</span>
                         <div className={classes.expandMore}>
@@ -183,6 +195,18 @@ class AppMainUpper extends Component {
                     </div>
                 </div>;
                 break;
+            case 'work_node_detail':
+                myAppMainUpper = <div className={classes.root2}>
+                    <div className={classes.title}>
+                        <ArrowBackIos className={classes.arrow2} onClick={this.goBack} />
+                        <div className={classes.jobApp}>{data.name}</div>
+                        <div className={classes.status}>{status}</div>
+                    </div>
+
+                </div>;
+                break;
+            default:
+                myAppMainUpper = null;
         }
 
         return (
