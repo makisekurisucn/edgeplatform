@@ -13,7 +13,6 @@ import { NavLink } from 'react-router-dom';
 import SideButton from '../NavButton';
 
 
-
 const drawerWidth = 260;
 
 const styles = theme => ({
@@ -23,8 +22,22 @@ const styles = theme => ({
         boxSizing: 'border-box',
         lineHeight: '50px',
         textAlign: 'center',
-        fontSize: 18
+        fontSize: 18,
+        color:'rgb(68, 105, 128)',
+        '&:hover': {
+            backgroundColor: "#CDCDCD"
+        },
+        //
+        backgroundColor: 'rgb(230,230,230)'
     },
+    placeholder :{
+        height:'49px', //临时占位符
+    },
+
+    selectedWrap: {
+        backgroundColor: '#CDCDCD'
+    },
+
     selected1: {
         height: '80%',
         backgroundColor: '#4B8BAF',
@@ -51,7 +64,7 @@ const styles = theme => ({
         'text-decoration': 'none'
     },
     divider: {
-        backgroundColor: 'rgb(96,104,109)'
+        //backgroundColor: 'rgb(96,104,109)'
     },
     drawer: {
         width: drawerWidth,
@@ -59,7 +72,7 @@ const styles = theme => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        backgroundColor: "rgba(33,54,66,0.82)"
+        backgroundColor: "rgb(241, 241, 241)"
     },
     toolbar: theme.mixins.toolbar
 });
@@ -105,14 +118,15 @@ class AppDrawer extends Component {
                     paper: classes.drawerPaper,
                 }}
             >
-                <div className={classes.toolbar} />
+                {/* <div className={classes.toolbar }/> */}
+                <div className={classes.placeholder}> </div>
                 <List>
                     {menuList.map((item, index) => {
                         if (item.type === "link") {
                             if (index === 1) {
-                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected1 }} key={item.text}></SideButton>
+                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected1 ,selectedBgc:classes.selectedWrap}} key={item.text}></SideButton>
                             } else {
-                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected2 }} key={item.text}></SideButton>
+                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected2 ,selectedBgc:classes.selectedWrap}} key={item.text}></SideButton>
                             }
                         }
                         if (item.type === "divider") {
