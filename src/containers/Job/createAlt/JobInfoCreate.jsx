@@ -48,38 +48,38 @@ const drives = [
         value: 'docker',
         display: 'Docker'
     },
-    {
-        value: 'exec',
-        display: 'Isolated Fork/Exec'
-    },
-    {
-        value: 'java',
-        display: 'Java'
-    },
+    // {
+    //     value: 'exec',
+    //     display: 'Isolated Fork/Exec'
+    // },
+    // {
+    //     value: 'java',
+    //     display: 'Java'
+    // },
     {
         value: 'qemu',
         display: 'Qemu'
     },
-    {
-        value: 'raw_exec',
-        display: 'Raw Fork/Exec'
-    },
-    {
-        value: 'rkt',
-        display: 'Rkt'
-    },
-    {
-        value: 'lxc',
-        display: 'Lxc'
-    },
-    {
-        value: 'Singularity',
-        display: 'Singularity'
-    },
-    {
-        value: 'jail-task-driver',
-        display: 'Jailtask driver'
-    }
+    // {
+    //     value: 'raw_exec',
+    //     display: 'Raw Fork/Exec'
+    // },
+    // {
+    //     value: 'rkt',
+    //     display: 'Rkt'
+    // },
+    // {
+    //     value: 'lxc',
+    //     display: 'Lxc'
+    // },
+    // {
+    //     value: 'Singularity',
+    //     display: 'Singularity'
+    // },
+    // {
+    //     value: 'jail-task-driver',
+    //     display: 'Jailtask driver'
+    // }
 ]
 
 const TASKS_DRIVER = "Tasks-Driver",

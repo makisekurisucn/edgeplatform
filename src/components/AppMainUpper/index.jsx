@@ -13,7 +13,7 @@ const styles = theme => ({
         lineHeight: '50px',
         // textAlign: 'center',
         fontSize: 20,
-        borderBottom: '1px solid rgb(149,163,170)',
+        // borderBottom: '1px solid rgb(149,163,170)',
         color: 'rgb(76,92,102)',
         // position: 'relative',
         backgroundColor: 'rgb(231,231,231)',
@@ -85,6 +85,9 @@ const styles = theme => ({
         right: '10px',
         fontSize: 18,
         lineHeight: '35px'
+    },
+    commandSet: {
+        color: '#EEF9FF'
     }
 });
 const hasRouter = (current, link) => {
@@ -176,7 +179,7 @@ class AppMainUpper extends Component {
                         <div className={classes.status}>{status}</div>
                     </div>
                     <div className={classes.select}>
-                        <CommandSet defaultCommand={data.defaultCommand} commandList={data.commandList} />
+                        <CommandSet className={classes.commandSet} defaultCommand={data.defaultCommand} commandList={data.commandList} />
 
                         {/* <span className={classes.command}>{defaultCommandName}</span>
                         <div className={classes.expandMore}>
@@ -196,18 +199,7 @@ class AppMainUpper extends Component {
                         <div className={classes.jobApp}>{data.name}</div>
                         <div className={classes.status}>{status}</div>
                     </div>
-                    <div className={classes.select}>
-                        <CommandSet defaultCommand={data.defaultCommand} commandList={data.commandList} />
 
-                        {/* <span className={classes.command}>{defaultCommandName}</span>
-                        <div className={classes.expandMore}>
-                            <ExpandMore className={classes.expandMoreArrow} ></ExpandMore>
-                            <ul className={classes.selectList}>
-                                <li>编辑</li>
-                                <li>删除</li>
-                            </ul>
-                        </div> */}
-                    </div>
                 </div>;
                 break;
             default:

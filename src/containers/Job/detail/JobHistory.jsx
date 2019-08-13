@@ -132,7 +132,7 @@ function HandleDiff(props) {
         }
     }
     if (props.value === props.prevValue) {
-        return <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} />;
+        return props.value ? <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} /> : null;
     } else {
         return <div>
             {

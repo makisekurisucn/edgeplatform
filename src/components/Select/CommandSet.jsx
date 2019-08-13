@@ -82,10 +82,13 @@ class CommandSet extends Component {
 
     render() {
         const { classes, className, defaultCommand, commandList } = this.props;
-        let classNameWrap = '';
+        let classNameWrap = classes.root;
+        if (className) {
+            classNameWrap += ' ' + className;
+        }
 
         return (
-            <div className={classes.root}>
+            <div className={classNameWrap}>
                 <div className={classes.displayText} onClick={defaultCommand.handleClick} title={defaultCommand.name}>{defaultCommand.name}</div>
                 <div className={classes.expandMore}>
                     <ExpandMore className={classes.expandMoreArrow} ></ExpandMore>
