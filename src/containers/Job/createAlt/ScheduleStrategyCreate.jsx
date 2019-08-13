@@ -43,65 +43,7 @@ const styles = theme => ({
     }
 });
 
-const drives = [
-    {
-        value: 'docker',
-        display: 'Docker'
-    },
-    {
-        value: 'exec',
-        display: 'Isolated Fork/Exec'
-    },
-    {
-        value: 'java',
-        display: 'Java'
-    },
-    {
-        value: 'qemu',
-        display: 'Qemu'
-    },
-    {
-        value: 'raw_exec',
-        display: 'Raw Fork/Exec'
-    },
-    {
-        value: 'rkt',
-        display: 'Rkt'
-    },
-    {
-        value: 'lxc',
-        display: 'Lxc'
-    },
-    {
-        value: 'Singularity',
-        display: 'Singularity'
-    },
-    {
-        value: 'jail-task-driver',
-        display: 'Jailtask driver'
-    }
-]
-
-const TASKS_DRIVER = "Tasks-Driver",
-    TASKS_CONFIG_IMAGE = "Tasks-Config-image",
-    TASKS_RESOURCES_CPU = "Tasks-Resouces-CPU",
-    TASKS_RESOURCES_MEMORYMB = "Tasks-Resources-MemoryMB",
-    PORTMAPPING = "PortMapping",
-    TASKS_CONFIG_COMMAND = "Tasks-Config-command",
-    TASKS_CONFIG_ARGS = "Tasks-Config-args",
-    TASKS_ENV = "Tasks-Env";
-
-const kvMap = {
-    docker: 'Docker',
-    exec: 'Isolated Fork/Exec',
-    java: 'Java',
-    qemu: 'Qemu',
-    raw_exec: 'Raw Fork/Exec',
-    rkt: 'Rkt',
-    lxc: 'Lxc',
-    Singularity: 'Singularity',
-    "jail-task-driver": 'Jailtask driver'
-}
+const kvMap = {};
 
 function processWrap(func, ...values) {
     return function (data) {
@@ -141,118 +83,14 @@ function normalProcess(data) {
     return kvMap[data] || data;
 }
 
-const stanzaList = [
-    {
-        name: TASKS_DRIVER,
-        title: '运行时',
-        options: drives,
-        dataProcess: processWrap(normalProcess),
-        component: NormalSelect,
-        rules: {
-            required: true
-        }
-    },
-    {
-        name: TASKS_CONFIG_IMAGE,
-        title: '镜像',
-        dataProcess: processWrap(normalProcess),
-        component: NormalInput,
-        rules: {
-            required: true
-        }
-    },
-    {
-        name: TASKS_RESOURCES_CPU,
-        title: 'CPU',
-        dataProcess: processWrap(numberProcess, 'MHz'),
-        component: NumberInput,
-        rules: {
-            step: 128,
-            maxValue: 512,
-            minValue: 0,
-            unit: 'MHz'
-        }
-    },
-    {
-        name: TASKS_RESOURCES_MEMORYMB,
-        title: '内存',
-        dataProcess: processWrap(numberProcess, 'MB'),
-        component: NumberInput,
-        rules: {
-            step: 128,
-            maxValue: 1280,
-            minValue: 0,
-            unit: 'MB'
-        }
-    },
-    {
-        name: PORTMAPPING,
-        title: '端口映射',
-        dataProcess: processWrap(portMappingProcess),
-        component: PortMapInput,
-        rules: {}
-    },
-    {
-        name: TASKS_CONFIG_COMMAND,
-        title: '启动命令',
-        dataProcess: processWrap(normalProcess),
-        component: NormalInput,
-        rules: {}
-    },
-    {
-        name: TASKS_CONFIG_ARGS,
-        title: '启动参数',
-        hint: '请输入参数',
-        dataProcess: processWrap(multipleValueProcess),
-        component: MultipleInput,
-        rules: {}
-    },
-    {
-        name: TASKS_ENV,
-        title: '环境变量',
-        dataProcess: processWrap(multipleKVProcess),
-        component: KvInput,
-        rules: {}
-    }
-]
+const stanzaList = [];
 
-class JobInfo extends Component {
+class ScheduleStrategy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isAllValid: false,
-            [TASKS_DRIVER]: {
-                isValid: false,
-                data: undefined
-            },
-            [TASKS_CONFIG_IMAGE]: {
-                isValid: false,
-                data: undefined
-            },
-            [TASKS_RESOURCES_CPU]: {
-                isValid: false,
-                data: undefined
-            },
-            [TASKS_RESOURCES_MEMORYMB]: {
-                isValid: false,
-                data: undefined
-            },
-            [PORTMAPPING]: {
-                isValid: false,
-                data: undefined
-            },
-            [TASKS_CONFIG_COMMAND]: {
-                isValid: false,
-                data: undefined
-            },
-            [TASKS_CONFIG_ARGS]: {
-                isValid: false,
-                data: undefined
-            },
-            [TASKS_ENV]: {
-                isValid: false,
-                data: undefined
-            }
+            isAllValid: true
+
         };
     }
 
@@ -369,7 +207,7 @@ class JobInfo extends Component {
         )
     }
 }
-JobInfo.propTypes = {
+ScheduleStrategy.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(JobInfo);
+export default withStyles(styles)(ScheduleStrategy);

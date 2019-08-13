@@ -29,7 +29,7 @@ const styles = theme => ({
     title: {
         fontSize: 18,
         fontWeight: 500,
-        color: 'rgba(136, 136, 136, 0.44)',
+        color: 'var(--metric-title-color,rgba(136, 136, 136, 0.44))',
         maxWidth: '20%',
         overflow: 'hidden',
         whiteSpace: 'nowrap',

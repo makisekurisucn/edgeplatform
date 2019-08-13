@@ -93,16 +93,16 @@ const styles = theme => ({
     },
     subTitle: {
         display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         height: 42,
         fontSize: 24,
         fontWeight: 300,
-        lineHeight: '42px',
         backgroundColor: 'rgba(97, 139, 162, 0.1)',
-        paddingLeft: '24px'
+        padding: '0px 24px'
     },
     SelectButton: {
-        top: '12px',
-        position: 'relative',
+        width: '98px',
         fontSize: '14px',
         fontWeight: '400',
         verticalAlign: 'middle',
