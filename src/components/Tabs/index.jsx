@@ -15,6 +15,16 @@ const styles = theme => ({
     },
     tabWrap: {
         backgroundColor: 'rgba(75,139,175,0.7)',
+        color: '#EEF9FF',//'#EEF9FF',
+        fontSize: '14px',
+        height: 32,
+        lineHeight: '32px',
+        display: 'flex',
+        // disp
+    },
+
+    tabWrap1: {
+        backgroundColor: 'rgba(75,139,175,0.7)',
         color: '#4B8BAF',//'#EEF9FF',
         fontSize: '18px',
         height: 32,
@@ -24,6 +34,9 @@ const styles = theme => ({
         boxShadow: '0px 0px 0px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)'
         // disp
     },
+
+
+
     tabItem: {
         width: 120,
         textAlign: 'center',
@@ -31,6 +44,23 @@ const styles = theme => ({
         cursor: 'pointer'
     },
     tabSelected: {
+        color: '#fff',//'#fff',
+        position: 'relative',
+        '&:before': {
+            display: 'block',
+            content: '""',
+            width: 26,
+            height: 4,
+            backgroundColor: '#fff',//'#fff',
+            position: 'absolute',
+            bottom: '0px',
+            margin: 'auto',
+            left: '0px',
+            right: '0px'
+        }
+    },
+
+    tabSelected1: {
         color: '#416E87',//'#fff',
         position: 'relative',
         '&:before': {
@@ -46,6 +76,7 @@ const styles = theme => ({
             right: '0px'
         }
     },
+
     tabContentWrap: {
         position: 'relative',
         // height: 600
@@ -92,7 +123,7 @@ class Tabs extends Component {
 
     }
     render() {
-        const { classes, className, contentList, index, viewProps, reducedHeight, tabWrapColor } = this.props;
+        const { classes, className, contentList, index, viewProps, reducedHeight, tabWrapColor, className2={} } = this.props;
         const currentIndex = this.state.index;
         const prevIndex = this.state.prevIndex;
         let classNameWrap = classes.root;
@@ -100,15 +131,19 @@ class Tabs extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
-
+        console.log(className2.bg);
+       let UlclassName=classes.tabWrap +' '+ (className2.bg|| '');
+       console.log(UlclassName);
+        
         return (
             <div className={classNameWrap}>
-                <ul className={classes.tabWrap} style={tabWrapColor ? { backgroundColor: tabWrapColor } : {}}>
+                {/* <ul className={classes.tabWrap} style={tabWrapColor ? { backgroundColor: tabWrapColor} : {}}> */}
+                <ul className={UlclassName}>
                     {
                         tabList.map((item, index) => {
                             let cls = classes.tabItem;///
                             if (index === currentIndex) {
-                                cls += ' ' + classes.tabSelected;
+                                cls += ' ' + classes.tabSelected+ ' '+ (className2.selected|| '');
                             }
                             return <li className={cls} key={item.name} onClick={this.switchTab(index)}>{item.name}</li>
                         })
