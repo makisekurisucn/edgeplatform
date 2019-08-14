@@ -31,14 +31,11 @@ const styles = theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         backgroundColor: '#F5F6F6'//'rgb(96,139,162)'
-<<<<<<< HEAD
-=======
     },
     leftContent: {
         height: '100%',
         display: 'flex',
         alignItems: 'center'
->>>>>>> upstream/master
     },
     title: {
         display: 'flex'
@@ -72,14 +69,15 @@ const styles = theme => ({
     status: {
         width: '106px',
         // height: '36px',
-        color: '#EEF9FF',
+        color: '#4BAF7E',//'#EEF9FF',
         lineHeight: '34px',
         textAlign: 'center',
         fontSize: '21px',
         fontWeight: 400,
-        backgroundColor: '#4BAF7E',
-        borderRadius: '11px',
-        margin: '18px 20px'
+        //backgroundColor: '#4BAF7E',
+        //borderRadius: '11px',
+        margin: '18px 20px',
+        border:'2px solid #4BAF7E',
     },
     select: {
         top: 18,

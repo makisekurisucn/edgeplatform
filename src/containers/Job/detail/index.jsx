@@ -26,16 +26,6 @@ const styles = theme => ({
         overflowX: 'auto',
         borderRadius: 0
     },
-<<<<<<< HEAD
-    bgcolor:{
-        backgroundColor:'#F5F6F6',
-        color: '#4B8BAF',//'#fff',
-        fontSize: '18px',
-         //下边框阴影
-         boxShadow: '0px 0px 0px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)'
-    },
-    selected:{
-=======
     bgcolor: {
         position: 'relative',
         zIndex: 100,
@@ -46,7 +36,6 @@ const styles = theme => ({
         boxShadow: '0px 0px 0px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)'
     },
     selected: {
->>>>>>> upstream/master
         color: '#416E87',//'#fff',
         '&:before': {
             backgroundColor: '#416E87',//'#fff',
@@ -151,11 +140,7 @@ class JobDetail extends Component {
         return (
             <Paper className={classes.root}>
                 <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} data={{ defaultCommand, commandList, name: detail.Name }} />
-<<<<<<< HEAD
-                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, history }} reducedHeight={163} className2={{bg:classes.bgcolor, selected:classes.selected }} />       {/* tabWrapColor='rgb(96,139,162)'  */}
-=======
                 <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, history }} reducedHeight={163} className2={{ bg: classes.bgcolor, selected: classes.selected }} />       {/* tabWrapColor='rgb(96,139,162)'  */}
->>>>>>> upstream/master
             </Paper>
         );
     }
