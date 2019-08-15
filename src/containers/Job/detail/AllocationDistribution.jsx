@@ -240,6 +240,8 @@ class AllocationDistribution extends Component {
         let DCInfo = {};
         let currentNode = {};
         let searchList = [];
+        let searchList_temp = [];//创建searchList副本用于job排序 20190813
+        let searchList_sort = [];
         let searchListLongitude = 0, searchListLatitude = 0, validSearchNumber = 0;
         let searchListCenter = {};
         nodelist.forEach(node => {
@@ -363,7 +365,23 @@ class AllocationDistribution extends Component {
             }
         }
 
-
+        //Date:2019-8-13
+        //Change:排序三种状态
+        //LiangShuang
+        searchList_temp = searchList;//备份对象
+        //提取数组中正在启动的对象
+        let result_pending = searchList_temp.filter(function (value, index, array) {
+            return (value.pendingTaskNumber > 0)
+        });
+        //提取数组中正在running的对象
+        let result_running = searchList_temp.filter(function (value, index, array) {
+            return ((value.pendingTaskNumber === 0) && (value.runningTasksNumber > 0))
+        });
+        //提取数组中剩余的对象
+        let result_dead = searchList_temp.filter(function (el) {
+            return [...result_pending, ...result_running].indexOf(el) < 0;
+        });
+        searchList_sort = [...result_pending, ...result_running, ...result_dead]
 
         return (
             <div className={classes.root}>
@@ -389,7 +407,8 @@ class AllocationDistribution extends Component {
                             {/* <EmptyListItem></EmptyListItem> */}
                             <FixedHeight reducedHeight={227}>
                                 {
-                                    searchList.map((item, index) => {
+
+searchList_sort.length < 1 ? <EmptyListItem></EmptyListItem> : searchList_sort.map((item, index) => {  //searchList.map((item, index) => {
                                         if (index === this.state.allocIndex) {
                                             return <ListItem onClick={this.showAlloc} index={index} itemData={item} key={item.title} selected></ListItem>;
                                         } else {
