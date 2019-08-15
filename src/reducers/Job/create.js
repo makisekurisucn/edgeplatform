@@ -6,7 +6,7 @@ const initialState = {
             "Type": "service",
             "Priority": 50,
             "Datacenters": [
-                "dc1"
+                "xidoumen"
             ],
             "TaskGroups": [{
                 "Name": "<请输入组名>",

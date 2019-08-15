@@ -186,22 +186,32 @@ class JobHistory extends Component {
         }
     }
 
-    showConstraint = (constraints) => {
-        //把constraint字段进行显示
-        //如果一个job有多个约束，那么是放到一个constraint下，还是有多个constraint
-        //constraint好像是一个存放对象的数组
-        //cli和api拿到的数据的字段是一样的吗，是attribute、value、operator还是ltarget、rtarget和operand
-
-        if (constraints instanceof Array) {
-            let strArr = [];
-            constraints.forEach(constraint => {
-                // if(constraint.distinct_host)
-                strArr.push(`${constraint.LTarget}${constraint.Operand}${constraint.RTarget}`);
-            })
-            return strArr.join('\n');
-        } else {
-            return constraints;
+    constraintProcess = (constraints = []) => {
+        if (constraints === null) {
+            return '';
         }
+        let resArr = [];
+        constraints.forEach(constraint => {
+            if (constraint.Operand === 'distinct_hosts') {
+                resArr.push(`不同主机`)
+            } else {
+                resArr.push(`${constraint.LTarget}${constraint.Operand}${constraint.RTarget}`);
+            }
+        })
+        return resArr.join('\n');
+
+    }
+
+    portDataProcess = (ports = []) => {
+        let resArr = [];
+        ports.forEach(port => {
+            if (port.DynamicPort) {
+                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> 动态映射`);
+            } else if (port.ReservedPort) {
+                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> ${port.ReservedPort}`);
+            }
+        })
+        return resArr.join('\n');
     }
 
     objToString = (obj) => {
@@ -316,7 +326,11 @@ class JobHistory extends Component {
                         <div className={classes.subTitle}>调度策略</div>
                         <div className={classes.kvContent}>
                             <div className={classes.schedule}>
-                                {`aaa=aaa\nbbb=bbb`}
+                                {/* {`aaa=aaa\nbbb=bbb`} */}
+                                {/* <KvItem keyName={null} value={this.constraintProcess(detail.Constraints)} style={style} /> */}
+                                {
+                                    this.constraintProcess(detail.Constraints)
+                                }
                             </div>
                         </div>
                     </div>
@@ -337,7 +351,7 @@ class JobHistory extends Component {
                         <HandleDiff classes={classes} keyName="启动命令" value={taskInfo.Config.command} prevValue={prevTaskInfo.Config.command} />
                         <HandleDiff classes={classes} keyName="启动参数" value={this.arrToString(taskInfo.Config.args)} prevValue={this.arrToString(prevTaskInfo.Config.args)} />
                         <HandleDiff classes={classes} keyName="环境变量" value={this.objToString(taskInfo.Env)} prevValue={this.objToString(prevTaskInfo.Env)} />
-                        <HandleDiff classes={classes} keyName="端口与服务" value={''} prevValue={''} />
+                        <HandleDiff classes={classes} keyName="端口与服务" value={this.portDataProcess(taskInfo.ports)} prevValue={this.portDataProcess(prevTaskInfo.ports)} />
                         {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>
                 </div>

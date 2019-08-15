@@ -14,13 +14,8 @@ import { setRegion, getRegion } from '../../../utils/handleRequest';
 import AppMainUpper from '../../../components/AppMainUpper';
 import WorkNodeInfo from './WorkNodeInfo';
 import EventInfo from './EventInfo';
-// import AllocationDistribution from './AllocationDistribution';
-// import JobHistory from './JobHistory';
+import MetricInfo from './MetricInfo';
 
-
-
-
-// import { isAbsolute } from 'path';
 
 const styles = theme => ({
     root: {
@@ -54,6 +49,10 @@ const tabList = [
     {
         name: '事件信息',
         component: EventInfo
+    },
+    {
+        name: '监控信息',
+        component: MetricInfo
     }
 ];
 

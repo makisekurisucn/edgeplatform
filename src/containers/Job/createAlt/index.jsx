@@ -11,6 +11,7 @@ import HorizontalStepper from '../../../components/ProcessManage/HorizontalStepp
 import FixedHeight from '../../../components/FixedHeight';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
+import { createJob, initCreateJob } from '../../../actions/Job';
 import BasicInfo from './BasicInfoCreate';
 import JobInfo from './JobInfoCreate';
 import ScheduleStrategy from './ScheduleStrategyCreate';
@@ -136,7 +137,17 @@ class JobCreate extends Component {
         stepList.forEach(item => {
             data = Object.assign({}, data, this.state[item.dataName])
         })
+        const jobName = data.Name;
+        data.TaskGroups.forEach((taskGroup, gIndex) => {
+            taskGroup.Name = `${jobName}-group${gIndex}`;
+            taskGroup.Tasks.forEach((task, tIndex) => {
+                task.Name = `${taskGroup.Name}-task${tIndex}`;
+            })
+        })
         console.log(data)
+        const { dispatch } = this.props;
+        data.Datacenters = ["xidoumen"];
+        createJob(dispatch, { Job: data })
         // console.log(link);
         // this.props.history.push(link);
         // window.history.go(-1);
@@ -211,4 +222,10 @@ class JobCreate extends Component {
 JobCreate.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(JobCreate);
+
+function mapStateToProps(state, ownProps) {
+    console.log(state)
+    return state.jobcreate;
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(JobCreate));

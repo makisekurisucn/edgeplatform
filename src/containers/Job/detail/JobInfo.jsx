@@ -65,6 +65,28 @@ const styles = theme => ({
     }
 });
 
+function KvItemFilter(props) {
+    const style = {
+        keyName: {
+            fontSize: '14',
+            fontWeight: '300',
+            marginBottom: '3px'
+        },
+        value: {
+            fontSize: '16',
+            fontWeight: '400',
+            whiteSpace: 'pre-line',
+            wordBreak: 'break-all'
+        }
+    }
+    if (props.value === undefined || props.value === '' || props.value === null) {
+        return null;
+    } else {
+        return <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} />;
+    }
+    // return props.value ? <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} /> : null;
+}
+
 const kvMap = {
     pending: '启动中',
     service: '服务',
@@ -93,25 +115,32 @@ class JobInfo extends Component {
         })
     ]
 
-    showConstraint = (constraints) => {
-        //把constraint字段进行显示
-        //如果一个job有多个约束，那么是放到一个constraint下，还是有多个constraint
-        //constraint好像是一个存放对象的数组
-        //cli和api拿到的数据的字段是一样的吗，是attribute、value、operator还是ltarget、rtarget和operand
-
-        if (constraints instanceof Array) {
-            let strArr = [];
-            constraints.forEach(constraint => {
-                if (constraint.Operand === 'distinct_hosts' && constraint.RTarget == 'true') {
-                    strArr.push(`不同主机`)
-                } else {
-                    strArr.push(`${constraint.LTarget}${constraint.Operand}${constraint.RTarget}`);
-                }
-            })
-            return strArr.join('\n');
-        } else {
-            return constraints;
+    constraintProcess = (constraints = []) => {
+        if (constraints === null) {
+            return '';
         }
+        let resArr = [];
+        constraints.forEach(constraint => {
+            if (constraint.Operand === 'distinct_hosts') {
+                resArr.push(`不同主机`)
+            } else {
+                resArr.push(`${constraint.LTarget}${constraint.Operand}${constraint.RTarget}`);
+            }
+        })
+        return resArr.join('\n');
+
+    }
+
+    portDataProcess = (ports = []) => {
+        let resArr = [];
+        ports.forEach(port => {
+            if (port.DynamicPort) {
+                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> 动态映射`);
+            } else if (port.ReservedPort) {
+                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> ${port.ReservedPort}`);
+            }
+        })
+        return resArr.join('\n');
     }
 
     objToString = (obj) => {
@@ -137,20 +166,6 @@ class JobInfo extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
-
-        const style = {
-            keyName: {
-                fontSize: '14',
-                fontWeight: '300',
-                marginBottom: '3px'
-            },
-            value: {
-                fontSize: '16',
-                fontWeight: '400',
-                whiteSpace: 'pre-line',
-                wordBreak: 'break-all'
-            }
-        }
         console.log(taskInfo)
         return (
             <div className={classNameWrap}>
@@ -158,12 +173,12 @@ class JobInfo extends Component {
                     <div className={classes.aboveContent}>
                         <div className={classes.subTitle}>基本信息</div>
                         <div className={classes.kvContent}>
-                            <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} />
-                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(detail.SubmitTime)} style={style} />
-                            <KvItem keyName="Region" className={classes.kvItem} value={detail.Region} style={style} />
-                            <KvItem keyName="数据中心" className={classes.kvItem} value={this.showDatacenter(detail.Datacenters)} style={style} />
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={detail.Version} style={style} />
-                            <KvItem keyName="状态" className={classes.kvItem} value={kvMap[detail.Status] || detail.Status} style={style} />
+                            <KvItemFilter classes={classes} keyName="类型" value={kvMap[detail.Type] || detail.Type} />
+                            <KvItemFilter classes={classes} keyName="更改时间" value={formatTime(detail.SubmitTime)} />
+                            <KvItemFilter classes={classes} keyName="Region" value={detail.Region} />
+                            <KvItemFilter classes={classes} keyName="数据中心" value={this.showDatacenter(detail.Datacenters)} />
+                            <KvItemFilter classes={classes} keyName="当前版本" value={detail.Version} />
+                            <KvItemFilter classes={classes} keyName="状态" value={kvMap[detail.Status] || detail.Status} />
                         </div>
                     </div>
                     <div className={classes.belowContent}>
@@ -171,7 +186,10 @@ class JobInfo extends Component {
                         <div className={classes.kvContent}>
                             {/* <KvItem keyName="类型" className={classes.kvItem} value={kvMap[detail.Type] || detail.Type} style={style} /> */}
                             <div className={classes.schedule}>
-                                {`abc=ced\nabc=ced`}
+                                {/* {`abc=ced\nabc=ced`} */}
+                                {
+                                    this.constraintProcess(detail.Constraints)
+                                }
                             </div>
                         </div>
                     </div>
@@ -184,15 +202,15 @@ class JobInfo extends Component {
                     </div>
                     {/* <div className={classes.subTitle}>应用信息</div> */}
                     <div className={classes.kvContent}>
-                        <KvItem keyName="运行时类型" className={classes.kvItem} value={taskInfo.Driver} style={style} />
-                        <KvItem keyName="容器镜像" className={classes.kvItem} value={taskInfo.Config.image} style={style} />
-                        <KvItem keyName="CPU" className={classes.kvItem} value={taskInfo.CPU} style={style} />
-                        <KvItem keyName="内存" className={classes.kvItem} value={taskInfo.MemoryMB} style={style} />
-                        <KvItem keyName="实例数" className={classes.kvItem} value={detail.TaskGroups ? detail.TaskGroups[0].Count : ''} style={style} />
-                        <KvItem keyName="启动命令" className={classes.kvItem} value={taskInfo.Config.command} style={style} />
-                        <KvItem keyName="启动参数" className={classes.kvItem} value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} style={style} />
-                        <KvItem keyName="环境变量" className={classes.kvItem} value={this.objToString(taskInfo.Env)} style={style} />
-                        <KvItem keyName="端口与服务" className={classes.kvItem} value={''} style={style} />
+                        <KvItemFilter classes={classes} keyName="运行时类型" value={taskInfo.Driver} />
+                        <KvItemFilter classes={classes} keyName="容器镜像" value={taskInfo.Config.image} />
+                        <KvItemFilter classes={classes} keyName="CPU" value={taskInfo.CPU} />
+                        <KvItemFilter classes={classes} keyName="内存" value={taskInfo.MemoryMB} />
+                        <KvItemFilter classes={classes} keyName="实例数" value={detail.TaskGroups ? detail.TaskGroups[0].Count : ''} />
+                        <KvItemFilter classes={classes} keyName="启动命令" value={taskInfo.Config.command} />
+                        <KvItemFilter classes={classes} keyName="启动参数" value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} />
+                        <KvItemFilter classes={classes} keyName="环境变量" value={this.objToString(taskInfo.Env)} />
+                        <KvItemFilter classes={classes} keyName="端口与服务" value={this.portDataProcess(taskInfo.ports)} />
                         {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>
                 </div>

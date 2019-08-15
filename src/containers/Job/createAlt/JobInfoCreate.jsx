@@ -91,6 +91,8 @@ const TASKS_DRIVER = "Tasks-Driver",
     TASKS_CONFIG_ARGS = "Tasks-Config-args",
     TASKS_ENV = "Tasks-Env";
 
+const DISPLAY = 'display', UPLOAD = 'upload', DynamicPorts = 'DynamicPorts', ReservedPorts = 'ReservedPorts';
+
 const kvMap = {
     docker: 'Docker',
     exec: 'Isolated Fork/Exec',
@@ -104,41 +106,87 @@ const kvMap = {
 }
 
 function processWrap(func, ...values) {
-    return function (data) {
-        return func(data, values);
+    return function (data, usingType) {
+        return func(data, usingType, values);
     }
 }
 
-function multipleKVProcess(kvData = []) {
-    let resArr = [];
-    kvData.forEach((item) => {
-        resArr.push(`${item.key}=${item.value}`);
-    })
-    return resArr.join('\n');
+function multipleKVProcess(kvData = [], usingType) {
+    if (usingType === DISPLAY) {
+        let resArr = [];
+        kvData.forEach((item) => {
+            resArr.push(`${item.key}=${item.value}`);
+        })
+        return resArr.join('\n');
+    } else if (usingType === UPLOAD) {
+        let resObj = {};
+        kvData.forEach((item) => {
+            resObj[item.key] = item.value;
+        })
+        return resObj;
+    }
 }
 
-function multipleValueProcess(data = []) {
+function multipleValueProcess(data = [], usingType) {
     let resArr = [];
     data.forEach((item) => {
         resArr.push(`${item.value}`);
     })
-    return resArr.join('\n');
+    if (usingType === DISPLAY) {
+        return resArr.join('\n');
+    } else if (usingType === UPLOAD) {
+        return resArr;
+    }
 }
 
-function portMappingProcess(data = []) {
-    let resArr = [];
-    data.forEach((item) => {
-        resArr.push(`${item.LValue} ->${item.mapping.display} ${item.RValue}`);
-    })
-    return resArr.join('\n');
+function portMappingProcess(data = [], usingType) {
+    if (usingType === DISPLAY) {
+        let resArr = [];
+        data.forEach((item) => {
+            resArr.push(`${item.LValue} ->${item.mapping.display} ${item.RValue}`);
+        })
+        return resArr.join('\n');
+    } else if (usingType === UPLOAD) {
+        let resObj = {
+            port_map: [],
+            Services: [],
+            Networks: [{
+                DynamicPorts: [],
+                ReservedPorts: []
+            }]
+        };
+        data.forEach((item, index) => {
+            const portLabel = `port${index}`;
+            if (item.mapping.value === DynamicPorts) {
+                resObj.port_map.push({ [portLabel]: item.LValue });
+                resObj.Services.push({ Name: portLabel, PortLabel: portLabel });
+                resObj.Networks[0].DynamicPorts.push({ Label: portLabel, Value: 0 });
+            } else if (item.mapping.value === ReservedPorts) {
+                resObj.port_map.push({ [portLabel]: item.LValue });
+                resObj.Services.push({ Name: portLabel, PortLabel: portLabel });
+                resObj.Networks[0].ReservedPorts.push({ Label: portLabel, Value: item.RValue });
+            }
+        })
+        return resObj;
+    }
+
 }
 
-function numberProcess(data, unit) {
-    return `${data}${unit}`;
+
+function numberProcess(data, usingType, unit) {
+    if (usingType === DISPLAY) {
+        return `${data}${unit}`;
+    } else if (usingType === UPLOAD) {
+        return data;
+    }
 }
 
-function normalProcess(data) {
-    return kvMap[data] || data;
+function normalProcess(data, usingType) {
+    if (usingType === DISPLAY) {
+        return kvMap[data] || data;
+    } else if (usingType === UPLOAD) {
+        return data;
+    }
 }
 
 const stanzaList = [
@@ -254,6 +302,42 @@ class JobInfo extends Component {
                 data: undefined
             }
         };
+        this.dataSet = {
+            TaskGroups: [{
+                Name: '',
+                Count: 1,
+                Tasks: [{
+                    Name: '',
+                    Driver: '',
+                    Config: {
+                        args: ['', ''],
+                        command: '',
+                        image: '',
+                        port_map: [{
+                            'db': '6379'
+                        }]
+                    },
+                    Env: {
+                        '': '',
+                        '': ''
+                    },
+                    Services: [{
+                        Name: '',
+                        PortLabel: ''
+                    }],
+                    Resources: {
+                        CPU: '',
+                        MemoryMB: '',
+                        Networks: [{
+                            DynamicPorts: [{
+                                Label: 'db',
+                                Value: 0
+                            }]
+                        }]
+                    }
+                }]
+            }]
+        }
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -269,12 +353,12 @@ class JobInfo extends Component {
     }
 
     saveData = (name, result) => {
-        let newDataSet = Object.assign({}, this.state, { [name]: result });
-        delete newDataSet.isAllValid;
+        let newOriginalData = Object.assign({}, this.state, { [name]: result });
+        delete newOriginalData.isAllValid;
 
         let newIsAllValid = true;
-        for (let key in newDataSet) {
-            if (newDataSet[key].isValid == false) {
+        for (let key in newOriginalData) {
+            if (newOriginalData[key].isValid == false) {
                 newIsAllValid = false;
             }
         }
@@ -282,8 +366,43 @@ class JobInfo extends Component {
             isAllValid: newIsAllValid,
             [name]: result
         })
+        switch (name) {
+            case TASKS_DRIVER:
+                this.dataSet.TaskGroups[0].Tasks[0].Driver = normalProcess(result.data, UPLOAD);
+                break;
+            case TASKS_CONFIG_IMAGE:
+                this.dataSet.TaskGroups[0].Tasks[0].Config.image = normalProcess(result.data, UPLOAD);
+                break;
+            case TASKS_RESOURCES_CPU:
+                this.dataSet.TaskGroups[0].Tasks[0].Resources.CPU = numberProcess(result.data, UPLOAD);
+                break;
+            case TASKS_RESOURCES_MEMORYMB:
+                this.dataSet.TaskGroups[0].Tasks[0].Resources.MemoryMB = numberProcess(result.data, UPLOAD);
+                break;
+            case PORTMAPPING:
+                const portMapData = portMappingProcess(result.data, UPLOAD);
+                this.dataSet.TaskGroups[0].Tasks[0].Config.port_map = portMapData.port_map;
+                this.dataSet.TaskGroups[0].Tasks[0].Resources.Networks = portMapData.Networks;
+                this.dataSet.TaskGroups[0].Tasks[0].Services = portMapData.Services;
+                break;
+            case TASKS_CONFIG_COMMAND:
+                this.dataSet.TaskGroups[0].Tasks[0].Config.command = normalProcess(result.data, UPLOAD);
+                break;
+            case TASKS_CONFIG_ARGS:
+                this.dataSet.TaskGroups[0].Tasks[0].Config.args = multipleValueProcess(result.data, UPLOAD);
+                break;
+            case TASKS_ENV:
+                this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
+                break;
+            default:;
+        }
+
+        if (newIsAllValid == true) {
+            console.log(this.dataSet)
+        }
+
         if (this.props.updateData && this.props.dataName) {
-            this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
+            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
         }
     }
 
@@ -320,7 +439,7 @@ class JobInfo extends Component {
                     <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
-                                let value = item.dataProcess(dataSet[item.name].data);
+                                let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
                                 if (value == '' || value == undefined) {
                                 } else {
                                     return (

@@ -38,6 +38,7 @@ const jobDetailProcess = (detail) => {
             //  提取port 信息
             if (task.Config && task.Config.port_map) {
                 // 提取驱动配置的所有端口
+                //port_map的形式可能为[{xxx:{http:8080}}],要对齐兼容的话需要改逻辑
                 task.Config.port_map.forEach(portItem => {
                     for (let key in portItem) {
                         port[key] = {

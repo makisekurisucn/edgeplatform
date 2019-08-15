@@ -54,6 +54,8 @@ const jobTypes = [
     }
 ]
 
+const DISPLAY = 'display', UPLOAD = 'upload';
+
 const JOB_NAME = "Job-Name",
     JOB_TYPE = "Job-Type";
 
@@ -64,13 +66,17 @@ const kvMap = {
 }
 
 function processWrap(func, ...values) {
-    return function (data) {
-        return func(data, values);
+    return function (data, usingType) {
+        return func(data, usingType, values);
     }
 }
 
-function normalProcess(data) {
-    return kvMap[data] || data;
+function normalProcess(data, usingType) {
+    if (usingType === DISPLAY) {
+        return kvMap[data] || data;
+    } else if (usingType === UPLOAD) {
+        return data;
+    }
 }
 
 const stanzaList = [
@@ -110,6 +116,11 @@ class BasicInfo extends Component {
                 data: undefined
             }
         };
+        this.dataSet = {
+            ID: '',
+            Name: '',
+            Type: ''
+        }
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -126,23 +137,36 @@ class BasicInfo extends Component {
     }
 
     saveData = (name, result) => {
-        let newDataSet = Object.assign({}, this.state, { [name]: result });
-        delete newDataSet.isAllValid;
+        let newOriginalData = Object.assign({}, this.state, { [name]: result });
+        delete newOriginalData.isAllValid;
 
         let newIsAllValid = true;
-        for (let key in newDataSet) {
-            if (newDataSet[key].isValid == false) {
+        for (let key in newOriginalData) {
+            if (newOriginalData[key].isValid == false) {
                 newIsAllValid = false;
             }
+        }
+        switch (name) {
+            case JOB_NAME:
+                this.dataSet.Name = normalProcess(result.data, UPLOAD);
+                this.dataSet.ID = normalProcess(result.data, UPLOAD);
+                break;
+            case JOB_TYPE:
+                this.dataSet.Type = normalProcess(result.data, UPLOAD);
+                break;
+            default: ;
         }
         this.setState({
             isAllValid: newIsAllValid,
             [name]: result
         })
+        if (newIsAllValid == true) {
+            console.log(this.dataSet)
+        }
         if (this.props.updateData && this.props.dataName) {
             // console.log('name: ' + name)
             // console.log('save data, is valid: ' + newIsAllValid)
-            this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
+            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
         }
     }
 
@@ -180,7 +204,7 @@ class BasicInfo extends Component {
                     <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
-                                let value = item.dataProcess(dataSet[item.name].data);
+                                let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
                                 if (value == '' || value == undefined) {
                                 } else {
                                     return (

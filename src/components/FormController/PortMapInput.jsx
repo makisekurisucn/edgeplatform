@@ -164,11 +164,11 @@ const styles = theme => ({
 
 const options = [
     {
-        value: 'staticMapping',
+        value: 'ReservedPorts',
         display: '静态映射'
     },
     {
-        value: 'randomMapping',
+        value: 'DynamicPorts',
         display: '随机映射'
     }
 ]
