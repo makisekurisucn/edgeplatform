@@ -46,12 +46,12 @@ const jobTypes = [
     },
     {
         value: 'batch',
-        display: '批量'
-    },
-    {
-        value: 'system',
-        display: '系统'
+        display: '任务'
     }
+    // {
+    //     value: 'system',
+    //     display: '系统'
+    // }
 ]
 
 const DISPLAY = 'display', UPLOAD = 'upload';
@@ -61,8 +61,8 @@ const JOB_NAME = "Job-Name",
 
 const kvMap = {
     service: '服务',
-    batch: '批量',
-    system: '系统'
+    batch: '任务'
+    // system: '系统'
 }
 
 function processWrap(func, ...values) {

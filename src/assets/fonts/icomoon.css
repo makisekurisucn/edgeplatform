@@ -1,4 +1,30 @@
 @font-face {
+    font-family: 'resources';
+    src: url('resources/resources.eot?js1w2r');
+    src: url('resources/resources.eot?js1w2r#iefix') format('embedded-opentype'),
+        url('resources/resources.ttf?js1w2r') format('truetype'),
+        url('resources/resources.woff?js1w2r') format('woff'),
+        url('resources/resources.svg?js1w2r#resources') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon-microchip:before {
+    content: "\e903";
+    font-family: 'resources';
+}
+
+.icon-hard-disk:before {
+    content: "\e904";
+    font-family: 'resources';
+}
+
+.icon-cpu:before {
+    content: "\e905";
+    font-family: 'resources';
+}
+
+@font-face {
     font-family: 'arrow-up-sm';
     src: url('arrow-up-sm/arrow-up-sm.eot?vadx0h');
     src: url('arrow-up-sm/arrow-up-sm.eot?vadx0h#iefix') format('embedded-opentype'),

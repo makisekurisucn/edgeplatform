@@ -51,6 +51,8 @@ const styles = theme => ({
 
 const kvMap = {
     service: '服务',
+    batch: '任务',
+    system: '系统服务',
     pending: '启动中',
     running: '运行中',
     dead: '已停止',

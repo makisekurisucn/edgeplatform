@@ -279,7 +279,7 @@ function PortMapInput(props) {
     }, [plusTimes])
 
     useEffect(() => {
-        if (options[optIndex].value === 'randomMapping') {
+        if (options[optIndex].value === 'DynamicPorts') {
             RInput.value = '';
             RInput.disabled = true;
         } else {

@@ -71,7 +71,7 @@ class WrappedGraph extends Component {
 
     render() {
         // const { classes, className, results, values, config } = this.props;
-        const { classes, className, results, config } = this.props;
+        const { classes, className, results, config, extendedCSS = {} } = this.props;
         let values = {
             data: [],
             date: []
@@ -82,7 +82,9 @@ class WrappedGraph extends Component {
         const data = values.data;
         const current = (data.length > 0) ? (data[data.length - 1]) + ' ' + config.unit : 'no data';
         // const { isHidden, stage} = this.state;
-        let classNameWrap = classes.root;
+        let classNameWrap = classes.root, titleStyleWrap = classes.title, currentStytleWrap = classes.current;
+        titleStyleWrap += ' ' + (extendedCSS.title || '');
+        currentStytleWrap += ' ' + (extendedCSS.current || '');
         if (className) {
             classNameWrap += ' ' + className;
         }
@@ -95,7 +97,7 @@ class WrappedGraph extends Component {
         return (
             <div className={classNameWrap}>
                 <div className={classes.textWrap}>
-                    <span className={classes.title}>{config.title}</span>
+                    <span className={titleStyleWrap}>{config.title}</span>
                     {
                         selectList.length > 1 ?
                             <div style={{ display: 'inline', width: '50%' }}>
@@ -103,7 +105,7 @@ class WrappedGraph extends Component {
                             </div> : null
                     }
 
-                    <span className={classes.current}>{current}</span>
+                    <span className={currentStytleWrap}>{current}</span>
 
                 </div>
                 <Graph className={classes.graph} config={config} values={values} />

@@ -18,6 +18,9 @@ const styles = theme => ({
         '& $current': {
             color: 'black'
         }
+    },
+    graphTitle: {
+        color: '#608ea7'
     }
 });
 const CPUConfig = {
@@ -167,9 +170,9 @@ class MetricInfo extends Component {
 
         return (
             <div className={classNameWrap}>
-                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={data.ID} />
-                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} dataSource={data.ID} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={data.ID} />
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
+                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
             </div>
         );
     }
