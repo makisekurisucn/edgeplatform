@@ -2,34 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-
+//import SelectNoResult from '@material-ui/icons/PriorityHigh';
+// import SelectNoResult from '@material-ui/icons/Error';
+import SelectNoResult from '@material-ui/icons/ErrorOutline';
 
 const styles = theme => ({
     root: {
-        position: 'relative',
+        //position: 'relative',
         height: 108,
         width: '100%',
         boxSizing: 'border-box',
         padding: '0px 9px',
-        cursor: 'pointer',
+        //cursor: 'pointer',
+        display:'flex',
         '&:hover': {
             backgroundColor: 'rgba(22,22,22,0.55)'
         }
     },
     innerWrap: {
         height: '100%',
-        borderBottom: '1px solid rgba(255,255,255,0.46)',
+        // borderBottom: '1px solid rgba(255,255,255,0.46)',
         boxSizing: 'border-box',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    main: {
-        height: '100%',
-        width: '80%'
-    },
-    mainUpper: {
-        height: '65%',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -37,6 +30,10 @@ const styles = theme => ({
     mainTitle: {
         color: '#EEF9FF',
         fontSize: 22,
+        alignItems: 'center',
+        display: 'flex',
+        height: '100%',
+        margin: '0px 12px',
         '&:before': {
             backgroundColor: "#4BAF7E",
             width: 12,
@@ -45,6 +42,13 @@ const styles = theme => ({
             borderRadius: '50%',
             marginRight: 4
         }
+    },
+    incons:{
+        alignItems: 'center',
+        color: '#EEF9FF',
+        height: '100%',
+        //width: 40,
+        fontSize:'30px',
     }
 });
 class EmptyListItem extends Component {
@@ -53,9 +57,9 @@ class EmptyListItem extends Component {
         this.state = {
         };
     }
-    
+
     render() {
-        const { classes, className} = this.props;
+        const { classes, className } = this.props;
         let classNameWrap;
         if (className) {
             classNameWrap = className + " " + classes.root;
@@ -65,16 +69,8 @@ class EmptyListItem extends Component {
         }
         return (
             <div className={classNameWrap} >
-                <div className={classes.innerWrap}>
-                    <div className={classes.main}>
-                        <div className={classes.mainUpper}>
-                            {/* {'aaaaaaaaaa'} */}
-                            <p className={classes.mainTitle}>{'没有匹配的结果'}</p>
-                            {/* <p className={classes.subTitle}>{itemData.region}</p> */}
-                        </div>
-                        {/* <div className={classes.mainLower} title={itemData.address}>{itemData.address}</div> */}
-                    </div>
-                </div>
+                <SelectNoResult className={classes.incons}/>
+                <p className={classes.mainTitle}>{'没有匹配的结果'}</p> 
             </div>
         );
     }

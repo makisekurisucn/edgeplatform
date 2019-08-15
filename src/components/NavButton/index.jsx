@@ -17,11 +17,9 @@ const styles = theme => ({
         cursor: 'pointer',
         position: 'relative',
         backgroundColor: 'rgb(51,66,69)'
-
-
     },
     selectedWrap: {
-        backgroundColor: "#262E2F"
+        backgroundColor: "#262E2F" 
     },
     // selected: {
     //     height: 4,
