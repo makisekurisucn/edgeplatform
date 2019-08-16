@@ -62,6 +62,9 @@ const styles = theme => ({
     notDetectedColor: {
         color: 'rgb(150, 150, 150)'
     },
+    notDetectedIconColor: {
+        filter: 'grayscale(100%)'
+    },
     resourcesArea: {
         backgroundColor: 'rgba(68,105,128,0.02)',
         padding: '14px',
@@ -300,7 +303,7 @@ class WorkNodeInfo extends Component {
                                             const isDetected = detail.Drivers[runtime.name] && detail.Drivers[runtime.name].Detected;
                                             return (
                                                 <div key={runtime.name}>
-                                                    <div className={classes.img}>
+                                                    <div className={isDetected ? classes.img : (classes.img + ' ' + classes.notDetectedIconColor)}>
                                                         <img src={runtime.src} width={runtime.width} height={runtime.height} />
                                                     </div>
                                                     <div className={isDetected ? classes.imgText : (classes.imgText + ' ' + classes.notDetectedColor)}>
@@ -429,12 +432,15 @@ class WorkNodeInfo extends Component {
                                 <div className={classes.execnamediv}>
                                     {
                                         runtimeList.map((runtime) => (
-                                            <div className={classes.execnamediv}>
-                                                <p className={detail.Drivers[runtime] && detail.Drivers[runtime].Detected ? (classes.execnames + ' ' + classes.execnamesOn) : classes.execnames}>
-                                                    {runtime}
-                                                    <br />
-                                                    {detail.Drivers[runtime] && detail.Drivers[runtime].Detected ? "可用" : "不可用"}
-                                                </p>
+                                            <div>
+                                                <div className={classes.icons}>
+                                                    <img src={runtime.icons} width={runtime.width} height={runtime.height} />
+                                                </div>
+                                                <div className={detail.Drivers[runtime.name] && detail.Drivers[runtime.name].Detected ? (classes.execnames + ' ' + classes.execnamesOn) : classes.execnames}>
+                                                        {
+                                                            `${runtime.display}\n${detail.Drivers[runtime.name] && detail.Drivers[runtime.name].Detected ? "可用" : "不可用"}`
+                                                        }
+                                                </div>
                                             </div>
                                         ))}
                                 </div>
