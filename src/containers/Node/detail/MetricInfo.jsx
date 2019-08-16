@@ -11,13 +11,7 @@ const styles = theme => ({
         padding: 10
     },
     graph: {
-        marginBottom: 10,
-        '& $title': {
-            color: 'black'
-        },
-        '& $current': {
-            color: 'black'
-        }
+        marginBottom: 10
     },
     graphTitle: {
         color: '#608ea7'

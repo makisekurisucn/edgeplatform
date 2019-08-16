@@ -15,7 +15,7 @@ const styles = theme => ({
         left: 0,
         opacity: 1,
         padding: '38px 34px',
-        color: 'rgb(97,139,162)',
+        color: 'rgb(116, 116, 116)',
         display: 'flex'
     },
     kvContent: {

@@ -7,6 +7,14 @@ const initialState = {
     taskMetric: {
         CPUData: [],
         memoryData: []
+    },
+    nodeResources: {
+        allocatedCPU: 0,
+        unallocatedCPU: 0,
+        allocatedDisk: 0,
+        unallocatedDisk: 0,
+        allocatedMemory: 0,
+        unallocatedMemory: 0
     }
 };
 
@@ -44,6 +52,10 @@ const PrometheusRedu = (state = initialState, action) => {
             return Object.assign({}, state, { nodeMetric: nodeMetricProcess(state, action.data.data.result, 'disk') });
         case 'PROMETHEUS_UPDATE_NODEMEMORYUTILIZATION':
             return Object.assign({}, state, { nodeMetric: nodeMetricProcess(state, action.data.data.result, 'memory') });
+        case 'PROMETHEUS_RESET_NODERESOURCES':
+            return Object.assign({}, state, { nodeResources: initialState.nodeResources });
+        case 'PROMETHEUS_UPDATE_NODERESOURCES':
+            return Object.assign({}, state, { nodeResources: action.data });
         case 'PROMETHEUS_UPDATE_TASKCPUUTILIZATION':
             return Object.assign({}, state, { taskMetric: taskMetricProcess(state, action.data.data.result, 'cpu') });
         case 'PROMETHEUS_UPDATE_TASKMEMORYUTILIZATION':
