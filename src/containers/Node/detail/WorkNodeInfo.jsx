@@ -180,6 +180,7 @@ class WorkNodeInfo extends Component {
         console.log('did mount')
         const { dispatch, data } = this.props;
         resetNodeResources(dispatch);
+        console.log(this.props.ID)
         if (data && data.ID) {
             const { dispatch, data } = this.props;
             const { ID, Datacenter } = data;
@@ -188,19 +189,13 @@ class WorkNodeInfo extends Component {
         }
     }
 
-    // componentDidUpdate() {
-    //     if (this.props.data && this.props.data.ID) {
-    //         const { dispatch, data } = this.props;
-    //         const { ID, Datacenter } = data;
-    //         console.log('update request')
-    //         getNodeResources(dispatch, ID, Datacenter)
-    //     }
-    // }
     UNSAFE_componentWillReceiveProps(nextProps) {
+        console.log('will receive props')
+        console.log(nextProps.data.ID)
         if (nextProps.data && nextProps.data.ID !== this.props.data.ID) {
-            const { dispatch, data } = this.props;
+            const { dispatch, data } = nextProps;
             const { ID, Datacenter } = data;
-            console.log('mount request')
+            console.log('willreceive request')
             getNodeResources(dispatch, ID, Datacenter)
         }
     }
@@ -231,6 +226,42 @@ class WorkNodeInfo extends Component {
                 fontWeight: '400',
                 whiteSpace: 'pre-line',
                 wordBreak: 'break-all'
+            }
+        }
+
+        const resourcesData = {
+            CPU: {
+                total: detail.Resources && detail.Resources.CPU,
+                reserved: detail.Reserved && detail.Reserved.CPU,
+                allocated: nodeResources.allocatedCPU,
+                unallocated: nodeResources.unallocatedCPU,
+            },
+            Disk: {
+                total: detail.Resources && detail.Resources.DiskMB,
+                reserved: detail.Reserved && detail.Reserved.DiskMB,
+                allocated: nodeResources.allocatedDisk,
+                unallocated: nodeResources.unallocatedDisk
+            },
+            Memory: {
+                total: detail.Resources && detail.Resources.MemoryMB,
+                reserved: detail.Reserved && detail.Reserved.MemoryMB,
+                allocated: nodeResources.allocatedMemory,
+                unallocated: nodeResources.unallocatedMemory
+            }
+        }
+
+        const barWidth = {
+            CPU: {
+                reserved: resourcesData.CPU.reserved / resourcesData.CPU.total,
+                allocated: resourcesData.CPU.allocated / resourcesData.CPU.total
+            },
+            Disk: {
+                reserved: resourcesData.Disk.reserved / resourcesData.Disk.total,
+                allocated: resourcesData.Disk.allocated / resourcesData.Disk.total
+            },
+            Memory: {
+                reserved: resourcesData.Memory.reserved / resourcesData.Memory.total,
+                allocated: resourcesData.Memory.allocated / resourcesData.Memory.total
             }
         }
 
@@ -296,24 +327,24 @@ class WorkNodeInfo extends Component {
                                             <div className={'icon-cpu ' + classes.icon}></div>
                                             <div className={classes.iconText}>
                                                 {
-                                                    `CPU\n2000MHz`
+                                                    `CPU\n${resourcesData.CPU.total}MHz`
                                                 }
                                             </div>
                                         </div>
                                         <div>
-                                            <div>1500 MB可用</div>
+                                            <div>{`${resourcesData.CPU.unallocated} MHz 可用`}</div>
                                             <div className={classes.totalBar}>
-                                                <div className={classes.reservedBar}></div>
-                                                <div className={classes.allocatedBar}></div>
+                                                <div className={classes.reservedBar} style={{ width: `calc(${barWidth.CPU.reserved}*100%)` }}></div>
+                                                <div className={classes.allocatedBar} style={{ width: `calc(${barWidth.CPU.allocated}*100%)` }}></div>
                                             </div>
                                             <div className={classes.legendsArea}>
                                                 <div className={classes.legend}>
                                                     <div className={classes.reservedSquare}></div>
-                                                    <div>{`系统保留 100MHz`}</div>
+                                                    <div>{`系统保留 ${resourcesData.CPU.reserved}MHz`}</div>
                                                 </div>
                                                 <div className={classes.legend}>
                                                     <div className={classes.allocatedSquare}></div>
-                                                    <div>{`已分配 1200MHz`}</div>
+                                                    <div>{`已分配 ${resourcesData.CPU.allocated}MHz`}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -323,24 +354,24 @@ class WorkNodeInfo extends Component {
                                             <div className={'icon-microchip ' + classes.icon}></div>
                                             <div className={classes.iconText}>
                                                 {
-                                                    `CPU\n2000MHz`
+                                                    `内存\n${detail.Resources && detail.Resources.MemoryMB}MB`
                                                 }
                                             </div>
                                         </div>
                                         <div>
-                                            <div>1500 MB可用</div>
+                                            <div>{`${nodeResources.unallocatedMemory} MB 可用`}</div>
                                             <div className={classes.totalBar}>
-                                                <div className={classes.reservedBar}></div>
-                                                <div className={classes.allocatedBar}></div>
+                                                <div className={classes.reservedBar} style={{ width: `calc(${barWidth.Memory.reserved}*100%)` }}></div>
+                                                <div className={classes.allocatedBar} style={{ width: `calc(${barWidth.Memory.allocated}*100%)` }}></div>
                                             </div>
                                             <div className={classes.legendsArea}>
                                                 <div className={classes.legend}>
                                                     <div className={classes.reservedSquare}></div>
-                                                    <div>{`系统保留 100MHz`}</div>
+                                                    <div>{`系统保留 ${detail.Reserved && detail.Reserved.MemoryMB}MB`}</div>
                                                 </div>
                                                 <div className={classes.legend}>
                                                     <div className={classes.allocatedSquare}></div>
-                                                    <div>{`已分配 1200MHz`}</div>
+                                                    <div>{`已分配 ${nodeResources.allocatedMemory}MB`}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -350,28 +381,29 @@ class WorkNodeInfo extends Component {
                                             <div className={'icon-hard-disk ' + classes.icon}></div>
                                             <div className={classes.iconText}>
                                                 {
-                                                    `CPU\n2000MHz`
+                                                    `磁盘\n${detail.Resources && detail.Resources.DiskMB}MB`
                                                 }
                                             </div>
                                         </div>
                                         <div>
-                                            <div>1500 MB可用</div>
+                                            <div>{`${nodeResources.unallocatedDisk} MB 可用`}</div>
                                             <div className={classes.totalBar}>
-                                                <div className={classes.reservedBar}></div>
-                                                <div className={classes.allocatedBar}></div>
+                                                <div className={classes.reservedBar} style={{ width: `calc(${barWidth.Disk.reserved}*100%)` }}></div>
+                                                <div className={classes.allocatedBar} style={{ width: `calc(${barWidth.Disk.allocated}*100%)` }}></div>
                                             </div>
                                             <div className={classes.legendsArea}>
                                                 <div className={classes.legend}>
                                                     <div className={classes.reservedSquare}></div>
-                                                    <div>{`系统保留 100MHz`}</div>
+                                                    <div>{`系统保留 ${detail.Reserved && detail.Reserved.DiskMB}MB`}</div>
                                                 </div>
                                                 <div className={classes.legend}>
                                                     <div className={classes.allocatedSquare}></div>
-                                                    <div>{`已分配 1200MHz`}</div>
+                                                    <div>{`已分配 ${nodeResources.allocatedDisk}MB`}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
