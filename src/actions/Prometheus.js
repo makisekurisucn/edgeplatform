@@ -54,6 +54,31 @@ const getTaskPrometheus = (dispatch, allocID, taskName, duration) => {
     getTaskMemoryUtilization(dispatch, allocID, taskName, duration);
 }
 
+const getNodeResources = (dispatch, nodeID, DC, duration) => {
+    dispatch({
+        type: 'PROMETHEUS_GETNODERESOURCES_SAGA',
+        nodeID,
+        DC,
+        duration
+    });
+}
+
+const resetNodeResources = (dispatch) => {
+    dispatch({
+        type: 'PROMETHEUS_RESET_NODERESOURCES'
+    });
+}
 
 
-export { getNodeCPUUtilization, getNodeDiskUtilization, getNodeMemoryUtilization, getNodePrometheus, getTaskCPUUtilization, getTaskMemoryUtilization, getTaskPrometheus };
+
+export {
+    getNodeCPUUtilization,
+    getNodeDiskUtilization,
+    getNodeMemoryUtilization,
+    getNodePrometheus,
+    getTaskCPUUtilization,
+    getTaskMemoryUtilization,
+    getTaskPrometheus,
+    getNodeResources,
+    resetNodeResources
+};

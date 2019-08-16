@@ -2,155 +2,165 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
+import KvItem from '../../../components/KvItem';
+import { getNodeResources, resetNodeResources } from '../../../actions/Prometheus';
 
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
-import Divider from '@material-ui/core/Divider';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/zh-cn';
+import java from '../../../assets/img/java.png'
+import docker from '../../../assets/img/docker-logo.png'
+import exec from '../../../assets/img/exec.png'
+import qemu from '../../../assets/img/qemu.png'
+import rkt from '../../../assets/img/rkt.png'
+import raw_exec from '../../../assets/img/raw-exec.png'
 
-import Typography from '@material-ui/core/Typography';
 
-function TabContainer(props) {
-    return (
-        <Typography component="div" style={{ padding: 8 * 3 }}>
-            {props.children}
-        </Typography>
-    );
-}
-
-TabContainer.propTypes = {
-    children: PropTypes.node.isRequired,
-};
-const runtimeList = ["docker", "exec", "java", "qemu", "raw_exec", "rkt"];
+const runtimeList = [
+    { name: "docker", display: 'Docker', src: docker, width: '81', height: '67' },
+    { name: "qemu", display: 'Qemu', src: qemu, width: '68', height: '68' },
+    { name: "exec", display: 'Exec', src: exec, width: '83', height: '83' },
+    { name: "raw_exec", display: 'Raw Exec', src: raw_exec, width: '79', height: '79' },
+    { name: "rkt", display: 'rkt', src: rkt, width: '81', height: '32' },
+    { name: "java", display: 'Java', src: java, width: '45', height: '65' },
+];
 
 const styles = theme => ({
     root: {
-        width: '100%',
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 700,
-    },
-    fab: {
-        margin: theme.spacing.unit,
-        position: "absolute",
-        right: 3 * theme.spacing.unit,
-        bottom: 3 * theme.spacing.unit,
-    },
-    headerContainer: {
-        padding: 16,
-
-    },
-    headerTtile: {
-        fontSize: 24,
-        height: 30,
-        lineHeight: "30px",
-        marginRight: 10
-    },
-    headerStatus: {
-        fontSize: 14,
-        color: blueGrey[50],
-        backgroundColor: blueGrey[200],
-        padding: "2px 10px",
-        borderRadius: 4
-    },
-    contentHeader: {
-        fontWeight: 'bold',
-        margin: 0
-    },
-    contentBody: {
-        textIndent: 50,
-    },
-    contentItem: {
-        marginBottom: 20,
-    },
-    bold: {
-        fontWeight: 'bold'
-    },
-    contentDivider: {
-        marginBottom: 20,
-        marginTop: 20
-    },
-    headerUnderline: {
-        marginTop: 10,
-        marginBottom: 10
-    },
-    taskItem: {
-        marginBottom: 20
-    },
-    taskItemName: {
-        textAlign: 'right'
-    },
-    large: {
-        fontSize: 20
-    },
-    groupName: {
-        color: lightBlue[800]
-    },
-    secondaryColor: {
-        color: theme.sec
-    },
-    historyHeader: {
-        marginRight: 20
-    },
-    statusList: {
-        fontSize: '1rem',
-        lineHeight: '1.75',
+        position: 'relative',
+        top: '0',
+        left: 0,
+        opacity: 1,
+        padding: '19px 52px',
+        color: 'rgb(116, 116, 116)',
         display: 'flex'
-
     },
-    statusItem: {
-        width: 28,
-        height: 28,
-        borderRadius: '50%',
+    kvContent: {
+        backgroundColor: 'rgba(68,105,128,0.02)',
+        paddingTop: '20px',
+        paddingBottom: '1px',
+        marginBottom: '35px'
+    },
+    runtimeArea: {
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        backgroundColor: 'rgba(68,105,128,0.02)',
+        padding: '32px 0px 35px',
+        marginBottom: '35px'
+    },
+    img: {
+        width: '85px',
+        height: '85px',
+        lineHeight: '85px',
+        // backgroundColor: 'burlywood',
+        textAlign: 'center'
+    },
+    imgText: {
+        fontSize: '14px',
+        fontWeight: 400,
+        color: 'rgb(1, 101, 61)',
         textAlign: 'center',
-        marginRight: 18,
-        cursor: 'pointer'
+        whiteSpace: 'pre-line'
     },
-    statusGrey: {
-        color: blueGrey[50],
-        backgroundColor: blueGrey[200],
+    notDetectedColor: {
+        color: 'rgb(150, 150, 150)'
     },
-    statusGreen: {
-        color: lightGreen[50],
-        backgroundColor: lightGreen[700],
+    resourcesArea: {
+        backgroundColor: 'rgba(68,105,128,0.02)',
+        padding: '14px',
+        marginBottom: '35px'
     },
-    statusYellow: {
-        color: amber[50],
-        backgroundColor: amber[800],
+    resource: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '26px',
+        marginBottom: '14px',
+        backgroundColor: 'rgb(255, 255, 255)'
     },
-    statusSelected: {
-        transform: 'scale(1.2)'
+    icon: {
+        fontSize: '69px',
+        color: 'rgb(68, 68, 68)',
+        marginBottom: '9px'
     },
-    logWrap: {
-        backgroundColor: blueGrey[900],
-        height: 300,
-        overflowY: 'auto',
-        borderRadius: 4,
-        padding: 8
+    iconText: {
+        fontSize: '14px',
+        fontWeight: 400,
+        color: 'rgb(78, 78, 78)',
+        textAlign: 'center',
+        whiteSpace: 'pre-line'
     },
-    logContent: {
-        fontSize: 16,
-        color: blueGrey[50],
-        marginTop: 4,
-        marginBottom: 4
+    totalBar: {
+        display: 'flex',
+        width: '605px',
+        height: '30px',
+        borderRadius: '8px',
+        backgroundColor: 'rgb(216, 216, 216)',
+        margin: '20px 0px'
     },
-    taskGroupWrap: {
-        backgroundColor: blueGrey[50]
+    reservedBar: {
+        width: 'calc(30%)',
+        height: '30px',
+        borderTopLeftRadius: '10px',
+        borderBottomLeftRadius: '10px',
+        backgroundColor: 'rgb(79, 222, 190)'
     },
-    driverStatus: {
-        fontSize: 12,
-        fontWeight: 'normal'
-    }
+    allocatedBar: {
+        width: 'calc(30%)',
+        height: '30px',
+        backgroundColor: 'rgb(95, 162, 241)'
+    },
+    legendsArea: {
+        display: 'flex',
+        justifyContent: 'start',
+        fontSize: '12px',
+        fontWeight: 400,
+        color: 'rgb(78, 78, 78)'
+    },
+    legend: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        margin: '0px 5px'
+    },
+    reservedSquare: {
+        width: '16PX',
+        height: '15px',
+        borderRadius: '4px',
+        backgroundColor: 'rgb(79, 222, 190)',
+        margin: '0px 5px'
+    },
+    allocatedSquare: {
+        width: '16PX',
+        height: '15px',
+        borderRadius: '4px',
+        backgroundColor: 'rgb(95, 162, 241)',
+        margin: '0px 5px'
+    },
+    kvItem: {
+        marginBottom: 30,
+        paddingLeft: '24px'
+    },
+    leftContent: {
+        flex: '0 0 auto',
+        minWidth: '400px',
+        maxWidth: '520px',
+        // width: '27%',
+        marginRight: '35px'
+    },
+    rightContent: {
+        // flex: 'auto',
+        minWidth: '792px',
+        maxWidth: '792px',
+        // width: '27%',
+        marginRight: '35px'
+    },
+    subTitle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 42,
+        fontSize: 24,
+        fontWeight: 300,
+        // lineHeight: '42px',
+        backgroundColor: 'rgba(97, 139, 162, 0.1)',
+        padding: '0px 24px'
+    },
 });
 
 const kvMap = {
@@ -166,6 +176,35 @@ class WorkNodeInfo extends Component {
         };
     }
 
+    componentDidMount() {
+        console.log('did mount')
+        const { dispatch, data } = this.props;
+        resetNodeResources(dispatch);
+        if (data && data.ID) {
+            const { dispatch, data } = this.props;
+            const { ID, Datacenter } = data;
+            console.log('mount request')
+            getNodeResources(dispatch, ID, Datacenter)
+        }
+    }
+
+    // componentDidUpdate() {
+    //     if (this.props.data && this.props.data.ID) {
+    //         const { dispatch, data } = this.props;
+    //         const { ID, Datacenter } = data;
+    //         console.log('update request')
+    //         getNodeResources(dispatch, ID, Datacenter)
+    //     }
+    // }
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        if (nextProps.data && nextProps.data.ID !== this.props.data.ID) {
+            const { dispatch, data } = this.props;
+            const { ID, Datacenter } = data;
+            console.log('mount request')
+            getNodeResources(dispatch, ID, Datacenter)
+        }
+    }
+
 
     selectTask = (index) => [
         this.setState({
@@ -174,358 +213,208 @@ class WorkNodeInfo extends Component {
     ]
 
     render() {
-        const { classes, className, data: detail } = this.props;
+        const { classes, className, data: detail, nodeResources } = this.props;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
         }
 
+        const style = {
+            keyName: {
+                fontSize: '14',
+                fontWeight: '300',
+                marginBottom: '3px'
+            },
+            value: {
+                paddingLeft: '8px',
+                fontSize: '16',
+                fontWeight: '400',
+                whiteSpace: 'pre-line',
+                wordBreak: 'break-all'
+            }
+        }
 
         return (
-            <Paper className={classes.root}>
-                {/* <Typography component="div">
-                    <Grid container className={classes.headerContainer} alignItems="center">
-                        <Grid className={classes.headerTtile}>{detail.Name}</Grid>
-                        <Grid className={`${classes.headerStatus} ${detail.Status === "ready" ? classes.statusGreen : null} ${detail.Status === "pending" ? classes.statusYellow : null}`}>{detail.Status}</Grid>
-                    </Grid>
-                </Typography> */}
-                {/* <AppBar position="static">
-                    <Tabs value={index} onChange={this.handleChange}>
-                        <Tab label="基本信息" />
-                        <Tab label="事件信息" />
-
-                    </Tabs>
-                </AppBar> */}
-                {/* 基本信息 */}
-                {/* {index === 0 && detail.Attributes && */}
+            <div>
                 {detail.Attributes &&
-                    <TabContainer>
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    类型
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    工作节点
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    数据中心
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Datacenter}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    主机名
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["unique.hostname"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    处理器架构
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["cpu.arch"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    处理器频率
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["cpu.frequency"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    处理器型号
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["cpu.modelname"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    处理器核数
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["cpu.numcores"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    操作系统
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["os.name"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    操作系统版本
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["os.version"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={1}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    内核版本
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={11}>
-                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                    {detail.Attributes["kernel.version"]}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-                        <Divider className={classes.contentDivider} />
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={3}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    运行时
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                        {
-                            runtimeList.map((runtime) => (
-                                <ExpansionPanel className={classes.taskGroupWrap} key={runtime}>
-                                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                        <Typography className={classes.bold + ' ' + classes.large + ' ' + classes.groupName}>{runtime}
-                                            <span className={classes.driverStatus}>({detail.Drivers[runtime] && detail.Drivers[runtime].Detected ? "可用" : "不可用"})</span>
-                                        </Typography>
-                                    </ExpansionPanelSummary>
-                                    <Divider />
-
-                                    <ExpansionPanelDetails>
-                                        {detail.Drivers[runtime] &&
-
-                                            <Grid container>
-                                                <Grid item xs={12}>
-
-                                                    <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                                                        <Grid item xs={2}>
-                                                            <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                                                健康度
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid item xs={10}>
-                                                            <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                                                {detail.Drivers[runtime] && detail.Drivers[runtime].Detected && detail.Drivers[runtime].Healthy ? "健康" : "不健康/不可用"}
-                                                                {/* {detail.Drivers[runtime] && !detail.Drivers[runtime].Detected ? "不可用": ""} */}
-                                                            </Typography>
-                                                        </Grid>
-                                                    </Grid>
-
-                                                    {detail.Drivers[runtime] && detail.Drivers[runtime].Attributes && runtime === "docker" &&
-
-                                                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                                                            <Grid item xs={2}>
-                                                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                                                    docker版本
-                                                                </Typography>
-                                                            </Grid>
-                                                            <Grid item xs={10}>
-                                                                <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                                                    {detail.Drivers[runtime].Attributes['driver.docker.version']}
-                                                                </Typography>
-                                                            </Grid>
-                                                        </Grid>
-
-
-                                                    }
-
-
-                                                </Grid>
-                                            </Grid>
-
-                                        }
-
-
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            ))}
-
-
-
-                        <Divider className={classes.contentDivider} />
-                        <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                            <Grid item xs={3}>
-                                <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                    配置信息
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                        {detail && detail.Resources && detail.Reserved &&
-
-                            <Grid container justify="flex-start" alignItems="center" className={classes.contentItem}>
-                                <Grid item xs={1}>
-                                    <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                        保留CPU
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                        {detail.Reserved.CPU} MHz
-                                    </Typography>
-                                </Grid>
-
-
-                                <Grid item xs={1}>
-                                    <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                        保留内存
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                        {detail.Reserved.MemoryMB} MB
-                                    </Typography>
-                                </Grid>
-
-                                <Grid item xs={1}>
-                                    <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                        保留磁盘
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                        {detail.Reserved.DiskMB} MB
-                                    </Typography>
-                                </Grid>
-
-                                <Grid item xs={1}>
-                                    <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                        可用CPU
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                        {detail.Resources.CPU} MHz
-                                    </Typography>
-                                </Grid>
-
-
-                                <Grid item xs={1}>
-                                    <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                        可用内存
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                        {detail.Resources.MemoryMB} MB
-                                    </Typography>
-                                </Grid>
-
-                                <Grid item xs={1}>
-                                    <Typography gutterBottom color="textPrimary" variant="subtitle1" className={classes.contentHeader}>
-                                        可用磁盘
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Typography color="textSecondary" variant="subtitle2" className={classes.contentBody}>
-                                        {detail.Resources.DiskMB} MB
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-
-
-                        }
-
-                    </TabContainer>}
-
-                {/* {index === 1 && <TabContainer>
-
-
-                    <div className={classes.logWrap}>
-                        {detail.Events.map((e, eIndex) => (
-                            <p className={classes.logContent} key={eIndex} >{e.Timestamp}: {e.Message}</p>
-                        ))
-
-                        }
-                    </div>
-                </TabContainer>}
-
-                {index === 2 && <TabContainer>
-
-
-                    {
-                        history.Versions.map(version => (
-                            <ExpansionPanel className={classes.contentItem} key={version.Version}>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Typography className={classes.heading + ' ' + classes.historyHeader}>版本-{version.Version}</Typography>
-                                    <Typography className={classes.heading + ' ' + classes.historyHeader}>修改时间-{version.SubmitTime}</Typography>
+                    <div className={classNameWrap}>
+                        <div className={classes.leftContent}>
+                            <div className={classes.aboveContent}>
+                                <div className={classes.subTitle}>节点信息</div>
+                                <div className={classes.kvContent}>
+                                    <KvItem keyName="工作节点" className={classes.kvItem} value={'工作节点'} style={style} />
+                                    <KvItem keyName="数据中心" className={classes.kvItem} value={detail.Datacenter} style={style} />
+                                    <KvItem keyName="主机名" className={classes.kvItem} value={detail.Attributes["unique.hostname"]} style={style} />
+                                    <KvItem keyName="处理器架构" className={classes.kvItem} value={detail.Attributes["cpu.arch"]} style={style} />
+                                    <KvItem keyName="处理器频率" className={classes.kvItem} value={detail.Attributes["cpu.frequency"] + 'MHz'} style={style} />
+                                    <KvItem keyName="处理器型号" className={classes.kvItem} value={detail.Attributes["cpu.modelname"]} style={style} />
+                                    <KvItem keyName="处理器核数" className={classes.kvItem} value={detail.Attributes["cpu.numcores"]} style={style} />
+                                    <KvItem keyName="操作系统" className={classes.kvItem} value={detail.Attributes["os.name"]} style={style} />
+                                    <KvItem keyName="系统版本" className={classes.kvItem} value={detail.Attributes["os.version"]} style={style} />
+                                    <KvItem keyName="内核版本" className={classes.kvItem} value={detail.Attributes["kernel.version"]} style={style} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className={classes.rightContent}>
+                            <div className={classes.aboveContent}>
+                                <div className={classes.subTitle}>运行环境</div>
+                                <div className={classes.runtimeArea}>
+                                    {/* <div>
+                                        <img src={docker} width="81" height="67" /></div>
+                                    <div>
+                                        {`Docker\n${}`}
+                                    </div> */}
                                     {
-                                        (version.Version === detail.Version) && <Typography className={classes.heading + ' ' + classes.historyHeader} color="textSecondary">当前版本</Typography>
+                                        runtimeList.map((runtime) => {
+                                            const isDetected = detail.Drivers[runtime.name] && detail.Drivers[runtime.name].Detected;
+                                            return (
+                                                <div key={runtime.name}>
+                                                    <div className={classes.img}>
+                                                        <img src={runtime.src} width={runtime.width} height={runtime.height} />
+                                                    </div>
+                                                    <div className={isDetected ? classes.imgText : (classes.imgText + ' ' + classes.notDetectedColor)}>
+                                                        {
+                                                            `${runtime.display}\n${isDetected ? "可用" : "不可用"}`
+                                                        }
+                                                    </div>
+                                                    {/* <p className={detail.Drivers[runtime.name] && detail.Drivers[runtime.name].Detected ? (classes.execnames + ' ' + classes.execnamesOn) : classes.execnames}>
+                                                    {runtime.name}
+                                                    <br />
+                                                    {detail.Drivers[runtime] && detail.Drivers[runtime.name].Detected ? "可用" : "不可用"}
+                                                </p> */}
+                                                </div>
+                                            )
+                                        })
                                     }
+                                </div>
+                            </div>
+                            <div className={classes.belowContent}>
+                                <div className={classes.subTitle}>资源</div>
+                                <div className={classes.resourcesArea}>
+                                    <div className={classes.resource}>
+                                        <div>
+                                            <div className={'icon-cpu ' + classes.icon}></div>
+                                            <div className={classes.iconText}>
+                                                {
+                                                    `CPU\n2000MHz`
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>1500 MB可用</div>
+                                            <div className={classes.totalBar}>
+                                                <div className={classes.reservedBar}></div>
+                                                <div className={classes.allocatedBar}></div>
+                                            </div>
+                                            <div className={classes.legendsArea}>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.reservedSquare}></div>
+                                                    <div>{`系统保留 100MHz`}</div>
+                                                </div>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.allocatedSquare}></div>
+                                                    <div>{`已分配 1200MHz`}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={classes.resource}>
+                                        <div>
+                                            <div className={'icon-microchip ' + classes.icon}></div>
+                                            <div className={classes.iconText}>
+                                                {
+                                                    `CPU\n2000MHz`
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>1500 MB可用</div>
+                                            <div className={classes.totalBar}>
+                                                <div className={classes.reservedBar}></div>
+                                                <div className={classes.allocatedBar}></div>
+                                            </div>
+                                            <div className={classes.legendsArea}>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.reservedSquare}></div>
+                                                    <div>{`系统保留 100MHz`}</div>
+                                                </div>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.allocatedSquare}></div>
+                                                    <div>{`已分配 1200MHz`}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={classes.resource}>
+                                        <div>
+                                            <div className={'icon-hard-disk ' + classes.icon}></div>
+                                            <div className={classes.iconText}>
+                                                {
+                                                    `CPU\n2000MHz`
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>1500 MB可用</div>
+                                            <div className={classes.totalBar}>
+                                                <div className={classes.reservedBar}></div>
+                                                <div className={classes.allocatedBar}></div>
+                                            </div>
+                                            <div className={classes.legendsArea}>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.reservedSquare}></div>
+                                                    <div>{`系统保留 100MHz`}</div>
+                                                </div>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.allocatedSquare}></div>
+                                                    <div>{`已分配 1200MHz`}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* <div className={classes.subTitle}>
+                                <div>运行环境</div>
+                            </div>
+                            <div>
+                                <div className={classes.execicons}>
+                                    <div className={classes.icons}>
+                                        <img src={docker} width="81" height="67" /></div>
+                                    <div className={classes.icons}>
+                                        <img src={qemu} width="68" height="68" /></div>
+                                    <div className={classes.icons}>
+                                        <img src={exec} width="83" height="83" /></div>
+                                    <div className={classes.icons}>
+                                        <img src={rawexec} width="79" height="79" /></div>
+                                    <div className={classes.icons + '' + { paddingTop: '20px' }}>
+                                        <img src={rkt} width="81" height="32" /></div>
+                                    <div className={classes.icons}>
+                                        <img src={java} width="45" height="65" /></div>
+                                </div>
+                                <div className={classes.execnamediv}>
+                                    {
+                                        runtimeList.map((runtime) => (
+                                            <div className={classes.execnamediv}>
+                                                <p className={detail.Drivers[runtime] && detail.Drivers[runtime].Detected ? (classes.execnames + ' ' + classes.execnamesOn) : classes.execnames}>
+                                                    {runtime}
+                                                    <br />
+                                                    {detail.Drivers[runtime] && detail.Drivers[runtime].Detected ? "可用" : "不可用"}
+                                                </p>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                            <div className={classes.belowContent}>
+                                <div className={classes.subTitle}>资源</div>
+                            </div> */}
+                    </div>
+                }
+            </div>
 
 
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <JSONInput
-                                        width="100%"
-                                        placeholder={version}
-                                        locale={locale}
-                                        viewOnly
-                                    ></JSONInput>
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
-                        ))
-                    }
-                </TabContainer>} */}
-
-            </Paper>
         );
     }
 }
@@ -534,6 +423,6 @@ WorkNodeInfo.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    return state.region;
+    return { nodeResources: state.Prometheus.nodeResources };
 }
 export default connect(mapStateToProps)(withStyles(styles)(WorkNodeInfo));

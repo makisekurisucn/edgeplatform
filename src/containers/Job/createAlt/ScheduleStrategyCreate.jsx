@@ -33,7 +33,7 @@ const styles = theme => ({
     },
     kvItem: {
         marginBottom: 25,
-        color: 'rgb(68, 105, 128)'
+        color: 'rgb(116, 116, 116)'
         // paddingLeft: '24px'
     },
     hidden: {

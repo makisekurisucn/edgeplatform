@@ -33,7 +33,7 @@ const styles = theme => ({
     },
     kvItem: {
         marginBottom: 25,
-        color: 'rgb(68, 105, 128)'
+        color: 'rgb(116, 116, 116)'
         // paddingLeft: '24px'
     },
     hidden: {
@@ -394,7 +394,7 @@ class JobInfo extends Component {
             case TASKS_ENV:
                 this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
                 break;
-            default:;
+            default: ;
         }
 
         if (newIsAllValid == true) {

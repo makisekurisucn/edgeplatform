@@ -40,6 +40,78 @@ function getNodeMemoryUtilization(nodeID, DC, duration) {
     });
 }
 
+function getNodeAllocatedCPU(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_allocated_cpu{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function getNodeUnallocatedCPU(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_unallocated_cpu{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function getNodeAllocatedDisk(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_allocated_disk{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function getNodeUnallocatedDisk(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_unallocated_disk{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function getNodeAllocatedMemory(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_allocated_memory{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function getNodeUnallocatedMemory(nodeID, DC, duration) {
+    const result = transformTime(duration);
+
+    return request({
+        url: `/api/v1/query_range?query=nomad_client_unallocated_memory{node_id='${nodeID}',datacenter='${DC}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        options: {
+            method: 'GET',
+            expectedDataType: 'json'
+        }
+    });
+}
+
 function getTaskCPUUtilization(allocID, taskName, duration) {
     const result = transformTime(duration);
 
@@ -70,6 +142,12 @@ export {
     getNodeCPUUtilization,
     getNodeDiskUtilization,
     getNodeMemoryUtilization,
+    getNodeAllocatedCPU,
+    getNodeUnallocatedCPU,
+    getNodeAllocatedDisk,
+    getNodeUnallocatedDisk,
+    getNodeAllocatedMemory,
+    getNodeUnallocatedMemory,
     getTaskCPUUtilization,
     getTaskMemoryUtilization
     // getNetworkUtilization
