@@ -19,6 +19,7 @@ const styles = theme => ({
     root: {
         // width: '100%',
         overflowX: 'auto',
+        padding: 12
         // paddingLeft: theme.spacing.unit * 3,
         // paddingRight: theme.spacing.unit * 3,
         // paddingTop: theme.spacing.unit * 3
@@ -56,11 +57,9 @@ class SimpleTable extends Component {
         const { classes, list, loading } = this.props;
         return (
             <div className={classes.root}>
-                <Paper>
-                    <Loading loading={loading}>
-                        <Table header={header} list={list} onItemClick={this.itemClick} />
-                    </Loading>
-                </Paper>
+                <Loading loading={loading}>
+                    <Table header={header} list={list} onItemClick={this.itemClick} />
+                </Loading>
             </div>
         );
     }

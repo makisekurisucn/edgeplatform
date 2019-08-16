@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
+import { takeLatest, put, call, fork } from 'redux-saga/effects';
 import { list as getWorkerList, serverList as getServerList, getWorkerDetail } from "../apis/node"
 
 // import { fetchAvatar } from '../servers/detail';
@@ -26,9 +26,29 @@ function* getNodeWorkerlist(action) {
                 list: workerList || []
             }
         });
+        for(let node of workerList){
+            yield fork(getNodeWorkerAdditional,node.ID, workerList);
+        }
     }
 }
-
+function* getNodeWorkerAdditional(nodeID, workerList){
+    let workerDetail = yield call(getWorkerDetail, nodeID);
+    if (!workerDetail.error) {
+        let res = [];
+        for(let i=0;i< workerList.length; i++){
+            if(workerList[i].ID === nodeID){
+                workerList[i].location = workerDetail.Meta.address || '未知';
+            }
+            res.push(workerList[i]);
+        }
+        yield put({
+            type: "NODE_UPDATE_WORKERLIST",
+            data: {
+                list: res || []
+            }
+        });
+    }
+}
 function* getNodeWorkerDetail(action) {
 
     let workerDetail = yield call(getWorkerDetail, action.data);

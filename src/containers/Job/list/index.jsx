@@ -28,6 +28,9 @@ const styles = theme => ({
     table: {
         minWidth: 700,
     },
+    tableWrap: {
+        padding: 12
+    },
     fab: {
         margin: theme.spacing.unit,
         position: "absolute",
@@ -40,7 +43,6 @@ const styles = theme => ({
     }
 });
 const header = [{ name: "名称", key: "Name" }, { name: "类型", key: "Type" }, { name: "状态", key: "Status" }, { name: "创建时间", key: "SubmitTime", type: "time" }];
-const list = [{ name: "hello", test: "没过", id: 1 }];
 class SimpleTable extends Component {
     constructor(props) {
         super(props);
@@ -67,12 +69,14 @@ class SimpleTable extends Component {
         console.log(list);
         return (
             <div className={classes.root}>
-                <Paper>
+                {/* <Paper> */}
                     <Loading loading={loading}>
                         <AppMainUpper type='job_list' />
-                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody} />
+                        <div className={classes.tableWrap}>
+                            <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody} />
+                        </div>
                     </Loading>
-                </Paper>
+                {/* </Paper> */}
 
 
             </div>
