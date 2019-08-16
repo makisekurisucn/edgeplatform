@@ -22,16 +22,18 @@ const styles = theme => ({
         minWidth: 700
     },
     tableHead: {
-        height: 62
+        height: 56
     },
     tableBody: {
-        height: 56,
+        height: 48,
+        backgroundColor: '#fff',
         '&:hover': {
-            backgroundColor: 'rgba(33, 28, 28, 0.09)'
+            backgroundColor: 'rgb(241,241,241)'
         }
     },
     tableRow: {
         backgroundColor: 'rgb(241,241,241)'
+
     },
     tableCell: {
         fontSize: '18px'

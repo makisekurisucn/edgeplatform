@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '../../../components/Table';
+// import Table from '../../../components/Table';
+import TableHoc from '../../../components/TableHoc';
+import Color from '../../../components/Color';
+
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
@@ -19,6 +22,7 @@ const styles = theme => ({
     root: {
         // width: '100%',
         overflowX: 'auto',
+        padding: 12
         // paddingLeft: theme.spacing.unit * 3,
         // paddingRight: theme.spacing.unit * 3,
         // paddingTop: theme.spacing.unit * 3
@@ -35,9 +39,28 @@ const styles = theme => ({
     },
     tableBody:{
         cursor:'pointer'
-    }
+    },
+
 });
-const header = [{ name: "名称", key: "Name" }, { name: "地址", key: "Address" }, { name: "DC", key: "Datacenter" }, { name: "状态", key: "Status" }];
+const kvMap = {
+    service: '服务',
+    pending: '启动中',
+    running: '运行中',
+    dead: '已停止',
+    ready: '就绪',
+    down: '已停止',
+    alive: '运行中'
+}
+const statusConvert = (status) => {
+    if(status ==="ready"){
+        return <Color color="green">{kvMap[status]}</Color>;
+    }
+    else{
+        return kvMap[status];
+    }
+};
+const header = [{ name: "名称", key: "Name" }, { name: "IP地址", key: "Address"}, { name: "DC", key: "Datacenter" }, {name: "地点",key: "location"},{ name: "状态", key: "Status",convert: statusConvert }];
+const TableH = TableHoc(header);
 class SimpleTable extends Component {
     constructor(props) {
         super(props);
@@ -46,7 +69,7 @@ class SimpleTable extends Component {
         };
     }
     itemClick = data => {
-        // console.log(this);
+        // console.log(this); 
         // if (data.key === 'Name') {
         this.props.history.push(`/console/node/worker/${data.item.ID}`);
         // }
@@ -61,11 +84,9 @@ class SimpleTable extends Component {
         const { classes, list, loading } = this.props;
         return (
             <div className={classes.root}>
-                <Paper>
-                    <Loading loading={loading}>
-                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody}/>
-                    </Loading>
-                </Paper>
+                <Loading loading={loading}>
+                    <TableH list={list} onItemClick={this.itemClick} className={classes.tableBody}/>
+                </Loading>
             </div>
         );
     }
