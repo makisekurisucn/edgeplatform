@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Tabs from '../../../components/Tabs';
 import Paper from '@material-ui/core/Paper';
-import { getJobDetail, resetStatus } from '../../../actions/Job';
+import { getJobDetail, resetStatus, stopJob, startJob, deleteJob } from '../../../actions/Job';
 import { getDCList } from '../../../actions/DC';
 import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
@@ -63,7 +63,14 @@ const tabList = [
 
 const kvMap = {
     pending: '启动中',
-    running: '运行中'
+    running: '运行中',
+    dead: '已停止'
+}
+
+const colorMap = {
+    pending: 'yellow',
+    running: 'green',
+    dead: 'gray'
 }
 
 class JobDetail extends Component {
@@ -105,8 +112,11 @@ class JobDetail extends Component {
         // alert(params);
     }
     render() {
-        const { classes, match, detail, history, status, allocationList } = this.props;
+        const { classes, match, detail, jobHistory, status, allocationList, nativeDetail } = this.props;
         console.log(status);
+        console.log('this props');
+        console.log(this.props);
+        const detailCopy = JSON.parse(JSON.stringify(nativeDetail))
         const { taskGroup, nodeInfo } = status;
         const { index, statusIndex } = this.state;
         let defaultCommand = {};
@@ -116,13 +126,23 @@ class JobDetail extends Component {
             case 'pending':
                 defaultCommand = {
                     name: '停止',
-                    handleClick: () => { console.log('stop') } //待定
+                    handleClick: () => {
+                        console.log('stop')
+                        detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count.toString() });
+                        detailCopy.TaskGroups[0].Count = 0;
+                        stopJob(this.props.dispatch, detailCopy);
+                    } //待定
                 };
                 break;
             default:
                 defaultCommand = {
                     name: '启动',
-                    handleClick: () => { console.log('start') } //待定
+                    handleClick: () => {
+                        console.log('start');
+                        // detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count });
+                        detailCopy.TaskGroups[0].Count = detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount) || detailCopy.TaskGroups[0].Count;
+                        startJob(this.props.dispatch, detailCopy);
+                    } //待定
                 };
         }
 
@@ -133,14 +153,18 @@ class JobDetail extends Component {
             },
             {
                 name: '删除',
-                handleClick: () => { console.log('delete') } //待定
+                handleClick: () => {
+                    console.log('delete');
+                    deleteJob(this.props.dispatch, detail.ID);
+                    this.props.history.push(`/console/jobs/list`);
+                } //待定
             }
         ]
 
         return (
             <Paper className={classes.root}>
-                <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} data={{ defaultCommand, commandList, name: detail.Name }} />
-                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, history }} reducedHeight={163} className2={{ bg: classes.bgcolor, selected: classes.selected }} />       {/* tabWrapColor='rgb(96,139,162)'  */}
+                <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} statusColor={colorMap[detail.Status] || ''} data={{ defaultCommand, commandList, name: detail.Name }} />
+                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, jobHistory }} reducedHeight={163} className2={{ bg: classes.bgcolor, selected: classes.selected }} />       {/* tabWrapColor='rgb(96,139,162)'  */}
             </Paper>
         );
     }
@@ -150,7 +174,13 @@ JobDetail.propTypes = {
 };
 function mapStateToProps(state, ownProps) {
     console.log(state)
-    return state.jobdetail;
+    return {
+        detail: state.jobdetail.detail,
+        jobHistory: state.jobdetail.history,
+        allocationList: state.jobdetail.allocationList,
+        status: state.jobdetail.status,
+        nativeDetail: state.jobdetail.nativeDetail
+    };
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(JobDetail));

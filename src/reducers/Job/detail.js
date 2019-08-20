@@ -1,6 +1,7 @@
 const jobDetailProcess = (detail) => {
     let res = {
         Datacenters: detail.Datacenters,
+        ID: detail.ID,
         Name: detail.Name,
         Constraints: detail.Constraints,
         Priority: detail.Priority,
@@ -38,7 +39,7 @@ const jobDetailProcess = (detail) => {
             //  提取port 信息
             if (task.Config && task.Config.port_map) {
                 // 提取驱动配置的所有端口
-                //port_map的形式可能为[{xxx:{http:8080}}],要对齐兼容的话需要改逻辑
+                //port_map的形式可能为[{xxx:{http:8080}}],要对其兼容的话需要改逻辑
                 task.Config.port_map.forEach(portItem => {
                     for (let key in portItem) {
                         port[key] = {
@@ -194,6 +195,7 @@ const jobAllocationListProcess = (list) => {
 const initialState = {
     index: 0,
     detail: {},
+    nativeDetail: {},
     history: {},
     status: {},
     allocationList: []
@@ -202,7 +204,7 @@ const JobRedu = (state = initialState, action) => {
     // alert(action.type);
     switch (action.type) {
         case 'JOB_UPDATE_JOBDETAIL':
-            return Object.assign({}, state, { detail: jobDetailProcess(action.data.detail) });
+            return Object.assign({}, state, { detail: jobDetailProcess(action.data.detail), nativeDetail: action.data.detail });
         case 'JOB_UPDATE_JOBHISTORY':
             return Object.assign({}, state, { history: action.data.history });
         case 'JOB_UPDATE_JOBSTATUS':

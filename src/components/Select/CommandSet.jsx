@@ -6,11 +6,11 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 const styles = theme => ({
     root: {
         height: '100%',
-        width: '85px',
+        width: '87px',
         boxSizing: 'border-box',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         backgroundColor: '#4BAF7E',
-        padding: '0px 17px',
+        // padding: '0px 17px',
         cursor: 'pointer',
         '&:hover': {
             backgroundColor: "#3c9268",
@@ -57,8 +57,13 @@ const styles = theme => ({
         zIndex: 10000
     },
     displayText: {
-        marginRight: '-20px',
+        // marginRight: '-20px',
+        marginRight: '-42px',
+        width: '100%',
         maxWidth: '100%',
+        padding: '0px 18px',
+        boxSizing: 'border-box',
+        textAlign: 'center',
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap'

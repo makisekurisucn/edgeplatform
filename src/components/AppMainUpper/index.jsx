@@ -77,7 +77,19 @@ const styles = theme => ({
         //backgroundColor: '#4BAF7E',
         //borderRadius: '11px',
         margin: '18px 20px',
-        border:'2px solid #4BAF7E',
+        border: '2px solid #4BAF7E',
+    },
+    green: {
+        color: '#4BAF7E',
+        border: '2px solid #4BAF7E',
+    },
+    yellow: {
+        color: '#AF954B',
+        border: '2px solid #AF954B',
+    },
+    gray: {
+        color: '#ABABAB',
+        border: '2px solid #ABABAB',
     },
     select: {
         top: 18,
@@ -157,7 +169,7 @@ class AppMainUpper extends Component {
         this.props.history.goBack();
     }
     render() {
-        const { classes, className, type, status, data = {} } = this.props;
+        const { classes, className, type, status, data = {}, statusColor } = this.props;
         const { selected } = this.state;
         let classNameWrap = '';
 
@@ -177,7 +189,7 @@ class AppMainUpper extends Component {
                     <div className={classes.title}>
                         <ArrowBackIos className={classes.arrow2} onClick={this.goBack} />
                         <div className={classes.jobApp}>{data.name}</div>
-                        <div className={classes.status}>{status}</div>
+                        <div className={classes.status + ' ' + classes[statusColor]}>{status}</div>
                     </div>
                     <div className={classes.select}>
                         <CommandSet className={classes.commandSet} defaultCommand={data.defaultCommand} commandList={data.commandList} />

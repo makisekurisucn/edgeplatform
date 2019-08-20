@@ -93,21 +93,25 @@ const styles = theme => ({
         display: 'flex',
         width: '605px',
         height: '30px',
+        overflow: 'hidden',
         borderRadius: '8px',
         backgroundColor: 'rgb(216, 216, 216)',
-        margin: '20px 0px'
+        margin: '31px 0px'
     },
     reservedBar: {
         width: 'calc(30%)',
         height: '30px',
-        borderTopLeftRadius: '10px',
-        borderBottomLeftRadius: '10px',
         backgroundColor: 'rgb(79, 222, 190)'
     },
     allocatedBar: {
         width: 'calc(30%)',
         height: '30px',
         backgroundColor: 'rgb(95, 162, 241)'
+    },
+    unallocatedBar: {
+        width: 'calc(30%)',
+        height: '30px',
+        backgroundColor: 'rgb(216, 216, 216)'
     },
     legendsArea: {
         display: 'flex',
@@ -119,7 +123,7 @@ const styles = theme => ({
     legend: {
         display: 'flex',
         justifyContent: 'space-between',
-        margin: '0px 5px'
+        margin: '0px 6px'
     },
     reservedSquare: {
         width: '16PX',
@@ -133,6 +137,13 @@ const styles = theme => ({
         height: '15px',
         borderRadius: '4px',
         backgroundColor: 'rgb(95, 162, 241)',
+        margin: '0px 5px'
+    },
+    unallocatedSquare: {
+        width: '16PX',
+        height: '15px',
+        borderRadius: '4px',
+        backgroundColor: 'rgb(216, 216, 216)',
         margin: '0px 5px'
     },
     kvItem: {
@@ -256,15 +267,18 @@ class WorkNodeInfo extends Component {
         const barWidth = {
             CPU: {
                 reserved: resourcesData.CPU.reserved / resourcesData.CPU.total,
-                allocated: resourcesData.CPU.allocated / resourcesData.CPU.total
+                allocated: resourcesData.CPU.allocated / resourcesData.CPU.total,
+                unallocated: resourcesData.CPU.unallocated / resourcesData.CPU.total
             },
             Disk: {
                 reserved: resourcesData.Disk.reserved / resourcesData.Disk.total,
-                allocated: resourcesData.Disk.allocated / resourcesData.Disk.total
+                allocated: resourcesData.Disk.allocated / resourcesData.Disk.total,
+                unallocated: resourcesData.Disk.unallocated / resourcesData.Disk.total
             },
             Memory: {
                 reserved: resourcesData.Memory.reserved / resourcesData.Memory.total,
-                allocated: resourcesData.Memory.allocated / resourcesData.Memory.total
+                allocated: resourcesData.Memory.allocated / resourcesData.Memory.total,
+                unallocated: resourcesData.Memory.unallocated / resourcesData.Memory.total
             }
         }
 
@@ -335,10 +349,11 @@ class WorkNodeInfo extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <div>{`${resourcesData.CPU.unallocated} MHz 可用`}</div>
+                                            {/* <div>{`${resourcesData.CPU.unallocated} MHz 可用`}</div> */}
                                             <div className={classes.totalBar}>
                                                 <div className={classes.reservedBar} style={{ width: `calc(${barWidth.CPU.reserved}*100%)` }}></div>
                                                 <div className={classes.allocatedBar} style={{ width: `calc(${barWidth.CPU.allocated}*100%)` }}></div>
+                                                <div className={classes.unallocatedBar} style={{ width: `calc(${barWidth.CPU.unallocated}*100%)` }}></div>
                                             </div>
                                             <div className={classes.legendsArea}>
                                                 <div className={classes.legend}>
@@ -348,6 +363,10 @@ class WorkNodeInfo extends Component {
                                                 <div className={classes.legend}>
                                                     <div className={classes.allocatedSquare}></div>
                                                     <div>{`已分配 ${resourcesData.CPU.allocated}MHz`}</div>
+                                                </div>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.unallocatedSquare}></div>
+                                                    <div>{`可用 ${resourcesData.CPU.unallocated}MHz`}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -362,10 +381,11 @@ class WorkNodeInfo extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <div>{`${nodeResources.unallocatedMemory} MB 可用`}</div>
+                                            {/* <div>{`${nodeResources.unallocatedMemory} MB 可用`}</div> */}
                                             <div className={classes.totalBar}>
                                                 <div className={classes.reservedBar} style={{ width: `calc(${barWidth.Memory.reserved}*100%)` }}></div>
                                                 <div className={classes.allocatedBar} style={{ width: `calc(${barWidth.Memory.allocated}*100%)` }}></div>
+                                                <div className={classes.unallocatedBar} style={{ width: `calc(${barWidth.Memory.unallocated}*100%)` }}></div>
                                             </div>
                                             <div className={classes.legendsArea}>
                                                 <div className={classes.legend}>
@@ -375,6 +395,10 @@ class WorkNodeInfo extends Component {
                                                 <div className={classes.legend}>
                                                     <div className={classes.allocatedSquare}></div>
                                                     <div>{`已分配 ${nodeResources.allocatedMemory}MB`}</div>
+                                                </div>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.unallocatedSquare}></div>
+                                                    <div>{`可用 ${nodeResources.unallocatedMemory}MB`}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -389,10 +413,11 @@ class WorkNodeInfo extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <div>{`${nodeResources.unallocatedDisk} MB 可用`}</div>
+                                            {/* <div>{`${nodeResources.unallocatedDisk} MB 可用`}</div> */}
                                             <div className={classes.totalBar}>
                                                 <div className={classes.reservedBar} style={{ width: `calc(${barWidth.Disk.reserved}*100%)` }}></div>
                                                 <div className={classes.allocatedBar} style={{ width: `calc(${barWidth.Disk.allocated}*100%)` }}></div>
+                                                <div className={classes.unallocatedBar} style={{ width: `calc(${barWidth.Disk.unallocated}*100%)` }}></div>
                                             </div>
                                             <div className={classes.legendsArea}>
                                                 <div className={classes.legend}>
@@ -402,6 +427,10 @@ class WorkNodeInfo extends Component {
                                                 <div className={classes.legend}>
                                                     <div className={classes.allocatedSquare}></div>
                                                     <div>{`已分配 ${nodeResources.allocatedDisk}MB`}</div>
+                                                </div>
+                                                <div className={classes.legend}>
+                                                    <div className={classes.unallocatedSquare}></div>
+                                                    <div>{`可用 ${nodeResources.unallocatedDisk}MB`}</div>
                                                 </div>
                                             </div>
                                         </div>

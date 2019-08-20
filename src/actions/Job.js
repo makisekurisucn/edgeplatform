@@ -25,10 +25,32 @@ const resetStatus = (dispatch) => {
         type: 'RESET_JOB_DETAIL'
     });
 }
+const stopJob = (dispatch, job) => {
+    dispatch({
+        type: 'JOB_EDIT_SAGA',
+        data: job
+    })
+}
+const startJob = (dispatch, job) => {
+    dispatch({
+        type: 'JOB_EDIT_SAGA',
+        data: job
+    })
+}
+const deleteJob = (dispatch, id) => {
+    console.log('action delete')
+    dispatch({
+        type: 'JOB_DELETE_SAGA',
+        data: id
+    })
+}
 export {
     getJobList,
     createJob,
     initCreateJob,
     getJobDetail,
-    resetStatus
+    resetStatus,
+    stopJob,
+    startJob,
+    deleteJob
 };
