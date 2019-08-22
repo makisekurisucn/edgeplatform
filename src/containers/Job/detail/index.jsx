@@ -86,7 +86,7 @@ class JobDetail extends Component {
         resetStatus(dispatch);
         let id = this.props.match.params.id;
         getJobDetail(dispatch, id);
-        startBlockingJobDetail(dispatch, id)
+        startBlockingJobDetail(dispatch, id, '2m')
         getDCList(dispatch);
         setRegion(currentRegion);
     }

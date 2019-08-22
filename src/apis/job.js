@@ -15,7 +15,7 @@ function list(postId) {
     });
 }
 
-function blockingList({ index = 0, wait = '5m' } = {}) {
+function blockingList({ index = 0, wait = '2m' } = {}) {
     return handleRequest({
         url: `/v1/jobs?index=${index}&wait=${wait}`,
         options: {
@@ -52,7 +52,7 @@ function detail(data) {
     });
 }
 
-function blockingDetail(data, { index = 0, wait = '5m' } = {}) {
+function blockingDetail(data, { index = 0, wait = '2m' } = {}) {
     return handleRequest({
         url: `/v1/job/${data}?index=${index}&wait=${wait}`,
         options: {
