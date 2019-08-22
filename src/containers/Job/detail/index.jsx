@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Tabs from '../../../components/Tabs';
 import Paper from '@material-ui/core/Paper';
-import { getJobDetail, resetStatus, stopJob, startJob, deleteJob } from '../../../actions/Job';
+import { getJobDetail, resetStatus, stopJob, startJob, deleteJob, startBlockingJobDetail, stopBlockingJobDetail } from '../../../actions/Job';
 import { getDCList } from '../../../actions/DC';
 import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
@@ -86,6 +86,7 @@ class JobDetail extends Component {
         resetStatus(dispatch);
         let id = this.props.match.params.id;
         getJobDetail(dispatch, id);
+        startBlockingJobDetail(dispatch, id)
         getDCList(dispatch);
         setRegion(currentRegion);
     }
@@ -96,6 +97,11 @@ class JobDetail extends Component {
             });
         }
 
+    }
+    componentWillUnmount() {
+        const { dispatch } = this.props;
+        let id = this.props.match.params.id;
+        stopBlockingJobDetail(dispatch, id)
     }
     handleChange = (event, index) => {
         this.setState({

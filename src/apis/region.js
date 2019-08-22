@@ -5,7 +5,9 @@ function getList() {
     return handleRequest({
         url: `/v1/regions`,
         options: {
-            method: 'GET',
+            method: 'GET'
+        },
+        customizedConf: {
             expectedDataType: 'json'
         }
     });

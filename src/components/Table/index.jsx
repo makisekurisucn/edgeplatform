@@ -48,6 +48,18 @@ const styles = theme => ({
         textAlign: 'center',
         fontSize: '18px',
         fontWeight: 400
+    },
+    green: {
+        color: '#4BAF7E',
+        border: '2px solid #4BAF7E',
+    },
+    yellow: {
+        color: '#AF954B',
+        border: '2px solid #AF954B',
+    },
+    gray: {
+        color: '#ABABAB',
+        border: '2px solid #ABABAB',
     }
 });
 
@@ -61,6 +73,18 @@ const kvMap = {
     ready: '就绪',
     down: '已停止',
     alive: '运行中'
+}
+
+const colorMap = {
+    service: '服务',
+    batch: '任务',
+    system: '系统服务',
+    pending: 'yellow',
+    running: 'green',
+    dead: 'gray',
+    ready: 'green',
+    down: 'gray',
+    alive: 'green'
 }
 
 class SimpleTable extends Component {
@@ -113,7 +137,7 @@ class SimpleTable extends Component {
                             {header.map((head) => {
                                 if (head.key === 'Status') {
                                     return <TableCell align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} >
-                                        <span className={classes.status}>{kvMap[this.processItem(head, row)] || this.processItem(head, row)}</span>
+                                        <span className={classes.status + ' ' + classes[colorMap[this.processItem(head, row)]]}>{kvMap[this.processItem(head, row)] || this.processItem(head, row)}</span>
                                     </TableCell>
                                 } else {
                                     return <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>

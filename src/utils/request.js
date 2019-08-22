@@ -24,8 +24,9 @@ function parseJSON(response) {
     return response.json();
 }
 
-function request({ url, options, callback }) {
+function request({ url, options, customizedConf, callback }) {
     options.mode = "cors";
+    let responseHeader = {};
     if (!options.sign) {
         let contentType = { 'Content-Type': 'application/json' };
         options.headers = Object.assign({}, contentType, options.headers);
@@ -38,15 +39,25 @@ function request({ url, options, callback }) {
         .then(checkStatus)
         // .then(parseJSON)
         .then((response) => {
-            if (options.expectedDataType === 'json') {
+            responseHeader['X-Nomad-Index'] = response.headers.get('X-Nomad-Index');
+            if (customizedConf.expectedDataType === 'json') {
                 return response.json();
-            } else if (options.expectedDataType === 'plain') {
+            } else if (customizedConf.expectedDataType === 'plain') {
                 return response.text();
             } else {
                 return response.json();
             }
         })
-        .then((data) => {
+        .then((body) => {
+            let data;
+            if (customizedConf.expectedDataType === 'plain') {
+                data = new String(body);
+            } else {
+                data = body;
+            }
+            data._getHeaders = function() {
+                return responseHeader;
+            }
             return data;
         }).catch((err) => {
             alert('发送fetch失败' + JSON.stringify(err.msg) + ',方法名：' + url); //需要后续改进
