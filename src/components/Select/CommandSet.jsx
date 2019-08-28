@@ -31,9 +31,10 @@ const styles = theme => ({
     expandMoreArrow: {
         // height: 24,
         // verticalAlign: 'text-bottom',
+        width: '20px',
         fontSize: '19px',
         position: 'relative',
-        left: '20px',
+        left: '19px',
         top: '0px',
         height: '100%',
         transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
@@ -94,13 +95,21 @@ class CommandSet extends Component {
 
         return (
             <div className={classNameWrap}>
-                <div className={classes.displayText} onClick={defaultCommand.handleClick} title={defaultCommand.name}>{defaultCommand.name}</div>
+                <div className={classes.displayText} onClick={defaultCommand.handleClick} title={defaultCommand.name}>
+                    {
+                        defaultCommand.component || defaultCommand.name
+                    }
+                </div>
                 <div className={classes.expandMore}>
                     <ExpandMore className={classes.expandMoreArrow} ></ExpandMore>
                     <ul className={classes.selectList}>
                         {
                             commandList.map((item, index) => {
-                                return <li className={classes.option} onClick={item.handleClick} key={item.name} title={item.name}>{item.name}</li>
+                                return <li className={classes.option} onClick={item.handleClick} key={item.name} title={item.name}>
+                                    {
+                                        item.component || item.name
+                                    }
+                                </li>
                             })
                         }
                     </ul>

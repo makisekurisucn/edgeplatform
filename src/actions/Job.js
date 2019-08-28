@@ -53,15 +53,24 @@ const resetStatus = (dispatch) => {
         type: 'RESET_JOB_DETAIL'
     });
 }
-const stopJob = (dispatch, job) => {
+const stopJob = (dispatch, id, job) => {
     dispatch({
         type: 'JOB_EDIT_SAGA',
+        id: id,
         data: job
     })
 }
-const startJob = (dispatch, job) => {
+const startJob = (dispatch, id, job) => {
     dispatch({
         type: 'JOB_EDIT_SAGA',
+        id: id,
+        data: job
+    })
+}
+const editJob = (dispatch, id, job) => {
+    dispatch({
+        type: 'JOB_EDIT_SAGA',
+        id: id,
         data: job
     })
 }
@@ -84,5 +93,6 @@ export {
     resetStatus,
     stopJob,
     startJob,
+    editJob,
     deleteJob
 };

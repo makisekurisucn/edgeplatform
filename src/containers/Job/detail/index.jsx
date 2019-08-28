@@ -14,6 +14,7 @@ import AppMainUpper from '../../../components/AppMainUpper';
 import JobInfo from './JobInfo';
 import AllocationDistribution from './AllocationDistribution';
 import JobHistory from './JobHistory';
+import Confirm from '../../../components/Dialog/Confirm';
 
 
 
@@ -40,8 +41,13 @@ const styles = theme => ({
         '&:before': {
             backgroundColor: '#416E87',//'#fff',
         }
+    },
+    delete: {
+        overflow: 'hidden',
+        maxWidth: '100%',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis'
     }
-
 
 
 });
@@ -119,6 +125,7 @@ class JobDetail extends Component {
     }
     render() {
         const { classes, match, detail, jobHistory, status, allocationList, nativeDetail } = this.props;
+        const jobID = this.props.match.params.id;
         console.log(status);
         console.log('this props');
         console.log(this.props);
@@ -136,7 +143,7 @@ class JobDetail extends Component {
                         console.log('stop')
                         detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count.toString() });
                         detailCopy.TaskGroups[0].Count = 0;
-                        stopJob(this.props.dispatch, detailCopy);
+                        stopJob(this.props.dispatch, jobID, { Job: detailCopy });
                     } //待定
                 };
                 break;
@@ -147,7 +154,7 @@ class JobDetail extends Component {
                         console.log('start');
                         // detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count });
                         detailCopy.TaskGroups[0].Count = detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount) || detailCopy.TaskGroups[0].Count;
-                        startJob(this.props.dispatch, detailCopy);
+                        startJob(this.props.dispatch, jobID, { Job: detailCopy });
                     } //待定
                 };
         }
@@ -155,15 +162,27 @@ class JobDetail extends Component {
         const commandList = [
             {
                 name: '编辑',
-                handleClick: () => { console.log('edit') } //待定
+                handleClick: () => {
+                    console.log('edit');
+                    this.props.history.push(`/console/jobs/${detail.ID}/edit`);
+                }
             },
             {
                 name: '删除',
-                handleClick: () => {
-                    console.log('delete');
-                    deleteJob(this.props.dispatch, detail.ID);
-                    this.props.history.push(`/console/jobs/list`);
-                } //待定
+                component: <Confirm
+                    render={(clickOpen) => (<div className={classes.delete} onClick={clickOpen}>删除</div>)}
+                    agree={{
+                        text: '确认',
+                        func: () => {
+                            console.log('delete');
+                            deleteJob(this.props.dispatch, detail.ID);
+                            this.props.history.push(`/console/jobs/list`);
+                        },
+                    }}
+                    disagree={{ text: '取消' }}
+                    dialogTitle={'警告'}
+                    dialogContent={'将会删除当前应用及其所有相关信息，确认删除吗'}
+                />
             }
         ]
 

@@ -43,11 +43,14 @@ const styles = theme => ({
         color: 'rgb(255, 255, 255)',
         // fontFamily: 'arrow-down-sm'
     },
+    buttonGruop: {
+        marginRight: '8px'
+    },
     unit: {
         width: '30px',
         fontSize: '14px',
         fontWeight: 300,
-        margin: '0px 8px',
+        marginRight: '8px',
         textAlign: 'center'
     }
 });
@@ -58,9 +61,11 @@ const styles = theme => ({
 function NumberInput(props) {
     const { classes, className, title, rules = {}, defaultValue, data, name, saveData } = props;
     const { step = 1, maxValue, minValue, required, unit } = rules;
-    let defaultValueWrap = defaultValue;
+    let defaultValueWrap = Number.parseInt(defaultValue);
+    console.log('question number');
+    console.log(defaultValueWrap);
 
-    if (typeof defaultValueWrap !== 'number') {
+    if (Object.is(NaN, defaultValueWrap)) {
         if (typeof minValue === 'number') {
             defaultValueWrap = minValue;
         } else if (typeof maxValue === 'number') {
@@ -127,9 +132,12 @@ function NumberInput(props) {
                     <div className={'icon-arrow-up-sm' + ' ' + classes.arrow} onClick={handleClick(step)}></div>
                     <div className={'icon-arrow-down-sm' + ' ' + classes.arrow} onClick={handleClick(-1 * step)}></div>
                 </div>
-                <div className={classes.unit}>
-                    {unit}
-                </div>
+                {
+                    unit ? <div className={classes.unit}>{unit}</div> : null
+                }
+                {/* <div className={classes.unit}>
+                    {unit || null}
+                </div> */}
             </div>
         </div>
     );

@@ -127,6 +127,17 @@ function multipleKVProcess(kvData = [], usingType) {
     }
 }
 
+function reverseMultipleKVProcess(data = {}) {
+    let resArr = [];
+    if (data === null) {
+        return [];
+    }
+    for (let key in data) {
+        resArr.push({ key: key, value: data[key] });
+    }
+    return resArr;
+}
+
 function multipleValueProcess(data = [], usingType) {
     let resArr = [];
     data.forEach((item) => {
@@ -137,6 +148,14 @@ function multipleValueProcess(data = [], usingType) {
     } else if (usingType === UPLOAD) {
         return resArr;
     }
+}
+
+function reverseMultipleValueProcess(data = []) {
+    let resArr = [];
+    data && data.forEach((item) => {
+        resArr.push({ value: item });
+    })
+    return resArr;
 }
 
 function portMappingProcess(data = [], usingType) {
@@ -170,6 +189,25 @@ function portMappingProcess(data = [], usingType) {
         return resObj;
     }
 
+}
+
+function reversePortMappingProcess({ services = [], portMap = [], networks = [] } = {}) {
+    let labelMap = {};
+    let resArr = [];
+    portMap && portMap.forEach((item) => {
+        for (let key in item) {
+            labelMap[key] = item[key];
+        }
+    })
+    networks && networks.forEach((network) => {
+        network.DynamicPorts && network.DynamicPorts.forEach((dynamicPort) => {
+            resArr.push({ LValue: labelMap[dynamicPort.Label], RValue: '', mapping: { value: 'DynamicPorts', display: '随机映射' } })
+        })
+        network.ReservedPorts && network.ReservedPorts.forEach((reservedPort) => {
+            resArr.push({ LValue: labelMap[reservedPort.Label], RValue: reservedPort.Value, mapping: { value: 'ReservedPorts', display: '静态映射' } })
+        })
+    })
+    return resArr;
 }
 
 
@@ -271,142 +309,132 @@ class JobInfo extends Component {
             isAllValid: false,
             [TASKS_DRIVER]: {
                 isValid: false,
-                data: undefined
+                data: props.data.TaskGroups[0].Tasks[0].Driver
             },
             [TASKS_CONFIG_IMAGE]: {
                 isValid: false,
-                data: undefined
+                data: props.data.TaskGroups[0].Tasks[0].Config.image
             },
             [TASKS_RESOURCES_CPU]: {
                 isValid: false,
-                data: undefined
+                data: props.data.TaskGroups[0].Tasks[0].Resources.CPU
             },
             [TASKS_RESOURCES_MEMORYMB]: {
                 isValid: false,
-                data: undefined
+                data: props.data.TaskGroups[0].Tasks[0].Resources.MemoryMB
             },
             [PORTMAPPING]: {
                 isValid: false,
-                data: undefined
+                data: reversePortMappingProcess({
+                    services: props.data.TaskGroups[0].Tasks[0].Config.image,
+                    portMap: props.data.TaskGroups[0].Tasks[0].Config.port_map,
+                    networks: props.data.TaskGroups[0].Tasks[0].Resources.Networks
+                })
             },
             [TASKS_CONFIG_COMMAND]: {
                 isValid: false,
-                data: undefined
+                data: props.data.TaskGroups[0].Tasks[0].Config.command
             },
             [TASKS_CONFIG_ARGS]: {
                 isValid: false,
-                data: undefined
+                data: reverseMultipleValueProcess(props.data.TaskGroups[0].Tasks[0].Config.args)
             },
             [TASKS_ENV]: {
                 isValid: false,
-                data: undefined
+                data: reverseMultipleKVProcess(props.data.TaskGroups[0].Tasks[0].Env)
             }
         };
-        this.dataSet = {
-            TaskGroups: [{
-                Name: '',
-                Count: 1,
-                Tasks: [{
-                    Name: '',
-                    Driver: '',
-                    Config: {
-                        args: ['', ''],
-                        command: '',
-                        image: '',
-                        port_map: [{
-                            'db': '6379'
-                        }]
-                    },
-                    Env: {
-                        '': '',
-                        '': ''
-                    },
-                    Services: [{
-                        Name: '',
-                        PortLabel: ''
-                    }],
-                    Resources: {
-                        CPU: '',
-                        MemoryMB: '',
-                        Networks: [{
-                            DynamicPorts: [{
-                                Label: 'db',
-                                Value: 0
-                            }]
-                        }]
-                    }
-                }]
-            }]
-        }
+        this.dataSet = props.data
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
-            let newDataSet = Object.assign({}, this.state);
-            delete newDataSet.isAllValid;
-
+            // let newDataSet = Object.assign({}, this.state);
+            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
-            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
     saveData = (name, result) => {
-        let newOriginalData = Object.assign({}, this.state, { [name]: result });
-        delete newOriginalData.isAllValid;
+        // let newOriginalData = Object.assign({}, this.state, { [name]: result });
+        // delete newOriginalData.isAllValid;
 
-        let newIsAllValid = true;
-        for (let key in newOriginalData) {
-            if (newOriginalData[key].isValid == false) {
-                newIsAllValid = false;
+        // let newIsAllValid = true;
+        // for (let key in newOriginalData) {
+        //     if (newOriginalData[key].isValid == false) {
+        //         newIsAllValid = false;
+        //     }
+        // }
+        // this.setState({
+        //     isAllValid: newIsAllValid,
+        //     [name]: result
+        // })
+        if (this.dataSet) {
+            switch (name) {
+                case TASKS_DRIVER:
+                    this.dataSet.TaskGroups[0].Tasks[0].Driver = normalProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_CONFIG_IMAGE:
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.image = normalProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_RESOURCES_CPU:
+                    this.dataSet.TaskGroups[0].Tasks[0].Resources.CPU = numberProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_RESOURCES_MEMORYMB:
+                    this.dataSet.TaskGroups[0].Tasks[0].Resources.MemoryMB = numberProcess(result.data, UPLOAD);
+                    break;
+                case PORTMAPPING:
+                    const portMapData = portMappingProcess(result.data, UPLOAD);
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.port_map = portMapData.port_map;
+                    this.dataSet.TaskGroups[0].Tasks[0].Resources.Networks = portMapData.Networks;
+                    this.dataSet.TaskGroups[0].Tasks[0].Services = portMapData.Services;
+                    break;
+                case TASKS_CONFIG_COMMAND:
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.command = normalProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_CONFIG_ARGS:
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.args = multipleValueProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_ENV:
+                    this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
+                    break;
+                default: ;
             }
         }
-        this.setState({
-            isAllValid: newIsAllValid,
-            [name]: result
+
+        this.setState((state, props) => {
+            let newOriginalData = Object.assign({}, state, { [name]: result });
+            delete newOriginalData.isAllValid;
+
+            let newIsAllValid = true;
+            for (let key in newOriginalData) {
+                if (newOriginalData[key].isValid == false) {
+                    newIsAllValid = false;
+                }
+            }
+            if (props.updateData && props.dataName) {
+                // props.updateData(props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
+                props.updateData(props.dataName, undefined, newIsAllValid);
+            }
+
+            return {
+                isAllValid: newIsAllValid,
+                [name]: result
+            }
         })
-        switch (name) {
-            case TASKS_DRIVER:
-                this.dataSet.TaskGroups[0].Tasks[0].Driver = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKS_CONFIG_IMAGE:
-                this.dataSet.TaskGroups[0].Tasks[0].Config.image = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKS_RESOURCES_CPU:
-                this.dataSet.TaskGroups[0].Tasks[0].Resources.CPU = numberProcess(result.data, UPLOAD);
-                break;
-            case TASKS_RESOURCES_MEMORYMB:
-                this.dataSet.TaskGroups[0].Tasks[0].Resources.MemoryMB = numberProcess(result.data, UPLOAD);
-                break;
-            case PORTMAPPING:
-                const portMapData = portMappingProcess(result.data, UPLOAD);
-                this.dataSet.TaskGroups[0].Tasks[0].Config.port_map = portMapData.port_map;
-                this.dataSet.TaskGroups[0].Tasks[0].Resources.Networks = portMapData.Networks;
-                this.dataSet.TaskGroups[0].Tasks[0].Services = portMapData.Services;
-                break;
-            case TASKS_CONFIG_COMMAND:
-                this.dataSet.TaskGroups[0].Tasks[0].Config.command = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKS_CONFIG_ARGS:
-                this.dataSet.TaskGroups[0].Tasks[0].Config.args = multipleValueProcess(result.data, UPLOAD);
-                break;
-            case TASKS_ENV:
-                this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
-                break;
-            default: ;
-        }
-
-        if (newIsAllValid == true) {
-            console.log(this.dataSet)
-        }
-
-        if (this.props.updateData && this.props.dataName) {
-            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
-        }
+        // if (this.props.updateData && this.props.dataName) {
+        //     console.log(newIsAllValid);
+        //     this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
+        // }
     }
 
     render() {
+        console.log('jobinfo render');
+        console.log(this.state.isAllValid);
+        console.log(this.state[PORTMAPPING]);
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;

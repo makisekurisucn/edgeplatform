@@ -88,7 +88,7 @@ function status(data) {
     });
 }
 
-function edit(data) {
+function edit(id, data) {
     //自己写规则
     // return handleRequest({
     //     url: `/v1/job/${data}`,
@@ -98,13 +98,10 @@ function edit(data) {
     //     }
     // });
     return handleRequest({
-        url: `/v1/job/${data.ID}`,
+        url: `/v1/job/${id}`,
         options: {
             method: 'POST',
-            body: {
-                // "Job": "AAAA",
-                "Job": data
-            }
+            body: data
         },
         customizedConf: {
             expectedDataType: 'json'

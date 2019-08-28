@@ -104,74 +104,75 @@ const stanzaList = [
 
 class BasicInfo extends Component {
     constructor(props) {
+        console.log('basicinfo create constructor');
         super(props);
         this.state = {
             isAllValid: false,
             [JOB_NAME]: {
                 isValid: false,
-                data: undefined
+                data: props.data.Name
             },
             [JOB_TYPE]: {
                 isValid: false,
-                data: undefined
+                data: props.data.Type
             }
         };
-        this.dataSet = {
-            ID: '',
-            Name: '',
-            Type: ''
-        }
+        this.dataSet = props.data
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
-            let newDataSet = Object.assign({}, this.state);
-            delete newDataSet.isAllValid;
-
+            // let newDataSet = Object.assign({}, this.state);
+            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                // console.log('will receive props, is valid: ' + this.state.isAllValid)
-                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
-            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
-    saveData = (name, result) => {
-        let newOriginalData = Object.assign({}, this.state, { [name]: result });
-        delete newOriginalData.isAllValid;
 
-        let newIsAllValid = true;
-        for (let key in newOriginalData) {
-            if (newOriginalData[key].isValid == false) {
-                newIsAllValid = false;
+    saveData = (name, result) => {
+        console.log(name);
+        console.log(result);
+        if (this.dataSet) {
+            switch (name) {
+                case JOB_NAME:
+                    this.dataSet.Name = normalProcess(result.data, UPLOAD);
+                    this.dataSet.ID = normalProcess(result.data, UPLOAD);
+                    break;
+                case JOB_TYPE:
+                    this.dataSet.Type = normalProcess(result.data, UPLOAD);
+                    break;
+                default: ;
             }
         }
-        switch (name) {
-            case JOB_NAME:
-                this.dataSet.Name = normalProcess(result.data, UPLOAD);
-                this.dataSet.ID = normalProcess(result.data, UPLOAD);
-                break;
-            case JOB_TYPE:
-                this.dataSet.Type = normalProcess(result.data, UPLOAD);
-                break;
-            default: ;
-        }
-        this.setState({
-            isAllValid: newIsAllValid,
-            [name]: result
+
+        this.setState((state, props) => {
+            let newOriginalData = Object.assign({}, state, { [name]: result });
+            delete newOriginalData.isAllValid;
+
+            let newIsAllValid = true;
+            for (let key in newOriginalData) {
+                if (newOriginalData[key].isValid == false) {
+                    newIsAllValid = false;
+                }
+            }
+            if (props.updateData && props.dataName) {
+                // props.updateData(props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
+                props.updateData(props.dataName, undefined, newIsAllValid);
+            }
+
+            return {
+                isAllValid: newIsAllValid,
+                [name]: result
+            }
         })
-        if (newIsAllValid == true) {
-            console.log(this.dataSet)
-        }
-        if (this.props.updateData && this.props.dataName) {
-            // console.log('name: ' + name)
-            // console.log('save data, is valid: ' + newIsAllValid)
-            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
-        }
     }
 
 
     render() {
+        console.log('basicinfo render');
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;

@@ -83,29 +83,11 @@ const drives = [
 ]
 
 const JOB_DATACENTERS = "Job-Datacenters",
-    TASKGROUPS_COUNT = "TaskGroups-Count",
-    TASKS_DRIVER = "Tasks-Driver",
-    TASKS_CONFIG_IMAGE = "Tasks-Config-image",
-    TASKS_RESOURCES_CPU = "Tasks-Resouces-CPU",
-    TASKS_RESOURCES_MEMORYMB = "Tasks-Resources-MemoryMB",
-    PORTMAPPING = "PortMapping",
-    TASKS_CONFIG_COMMAND = "Tasks-Config-command",
-    TASKS_CONFIG_ARGS = "Tasks-Config-args",
-    TASKS_ENV = "Tasks-Env";
+    TASKGROUPS_COUNT = "TaskGroups-Count";
 
 const DISPLAY = 'display', UPLOAD = 'upload', DynamicPorts = 'DynamicPorts', ReservedPorts = 'ReservedPorts';
 
-const kvMap = {
-    docker: 'Docker',
-    exec: 'Isolated Fork/Exec',
-    java: 'Java',
-    qemu: 'Qemu',
-    raw_exec: 'Raw Fork/Exec',
-    rkt: 'Rkt',
-    lxc: 'Lxc',
-    Singularity: 'Singularity',
-    "jail-task-driver": 'Jailtask driver'
-}
+const kvMap = {};
 
 function processWrap(func, ...values) {
     return function (data, usingType) {
@@ -141,44 +123,20 @@ function multipleValueProcess(data = [], usingType) {
     }
 }
 
-function portMappingProcess(data = [], usingType) {
-    if (usingType === DISPLAY) {
-        let resArr = [];
-        data.forEach((item) => {
-            resArr.push(`${item.LValue} ->${item.mapping.display} ${item.RValue}`);
-        })
-        return resArr.join('\n');
-    } else if (usingType === UPLOAD) {
-        let resObj = {
-            port_map: [],
-            Services: [],
-            Networks: [{
-                DynamicPorts: [],
-                ReservedPorts: []
-            }]
-        };
-        data.forEach((item, index) => {
-            const portLabel = `port${index}`;
-            if (item.mapping.value === DynamicPorts) {
-                resObj.port_map.push({ [portLabel]: item.LValue });
-                resObj.Services.push({ Name: portLabel, PortLabel: portLabel });
-                resObj.Networks[0].DynamicPorts.push({ Label: portLabel, Value: 0 });
-            } else if (item.mapping.value === ReservedPorts) {
-                resObj.port_map.push({ [portLabel]: item.LValue });
-                resObj.Services.push({ Name: portLabel, PortLabel: portLabel });
-                resObj.Networks[0].ReservedPorts.push({ Label: portLabel, Value: item.RValue });
-            }
-        })
-        return resObj;
-    }
-
+function reverseMultipleValueProcess(data = []) {
+    let resArr = [];
+    data && data.forEach((item) => {
+        resArr.push({ value: item });
+    })
+    return resArr;
 }
-
 
 function numberProcess(data, usingType, unit = '') {
     if (usingType === DISPLAY) {
         return `${data}${unit}`;
     } else if (usingType === UPLOAD) {
+        console.log(data);
+        console.log(typeof data);
         return data;
     }
 }
@@ -196,21 +154,24 @@ const stanzaList = [
         name: TASKGROUPS_COUNT,
         title: '实例数',
         dataProcess: processWrap(numberProcess),
-        component: NormalInput,
+        component: NumberInput,
         rules: {
-            required: true
+            required: true,
+            step: 1,
+            maxValue: 100,
+            minValue: 1
         }
     },
     {
         name: JOB_DATACENTERS,
         title: '数据中心',
-        options: drives,
-        dataProcess: processWrap(normalProcess),
-        component: NormalSelect,
+        // options: drives,
+        dataProcess: processWrap(multipleValueProcess),
+        component: MultipleInput,
         rules: {
             required: true
         }
-    },
+    }
     // {
     //     name: TASKS_RESOURCES_CPU,
     //     title: 'CPU',
@@ -273,67 +234,66 @@ class ScheduleStrategy extends Component {
             isAllValid: false,
             [JOB_DATACENTERS]: {
                 isValid: false,
-                data: undefined
+                data: reverseMultipleValueProcess(props.data.Datacenters)
             },
             [TASKGROUPS_COUNT]: {
                 isValid: false,
-                data: undefined
+                data: props.data.TaskGroups[0].Count
             }
         };
-        this.dataSet = {
-            Datacenters: [],
-            TaskGroups: [{
-                Count: 1
-            }]
-        }
+        this.dataSet = props.data
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
-            let newDataSet = Object.assign({}, this.state);
-            delete newDataSet.isAllValid;
-
+            // let newDataSet = Object.assign({}, this.state);
+            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
-            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
     saveData = (name, result) => {
-        let newOriginalData = Object.assign({}, this.state, { [name]: result });
-        delete newOriginalData.isAllValid;
-
-        let newIsAllValid = true;
-        for (let key in newOriginalData) {
-            if (newOriginalData[key].isValid == false) {
-                newIsAllValid = false;
+        console.log('save data in schedule');
+        if (this.dataSet) {
+            console.log('in switch');
+            switch (name) {
+                case JOB_DATACENTERS:
+                    this.dataSet.Datacenters = multipleValueProcess(result.data, UPLOAD);
+                    break;
+                case TASKGROUPS_COUNT:
+                    console.log('now its count upload');
+                    this.dataSet.TaskGroups[0].Count = numberProcess(result.data, UPLOAD);
+                    break;
+                default: ;
             }
         }
-        this.setState({
-            isAllValid: newIsAllValid,
-            [name]: result
+
+        this.setState((state, props) => {
+            let newOriginalData = Object.assign({}, state, { [name]: result });
+            delete newOriginalData.isAllValid;
+
+            let newIsAllValid = true;
+            for (let key in newOriginalData) {
+                if (newOriginalData[key].isValid == false) {
+                    newIsAllValid = false;
+                }
+            }
+            if (props.updateData && props.dataName) {
+                props.updateData(props.dataName, undefined, newIsAllValid);
+            }
+
+            return {
+                isAllValid: newIsAllValid,
+                [name]: result
+            }
         })
-        switch (name) {
-            case JOB_DATACENTERS:
-                this.dataSet.Datacenters = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKGROUPS_COUNT:
-                this.dataSet.TaskGroups[0].Count = normalProcess(result.data, UPLOAD);
-                break;
-            default: ;
-        }
-
-        if (newIsAllValid == true) {
-            console.log(this.dataSet)
-        }
-
-        if (this.props.updateData && this.props.dataName) {
-            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
-        }
     }
 
     render() {
+        console.log('schedule render');
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;
@@ -375,15 +335,6 @@ class ScheduleStrategy extends Component {
                                 }
                             })
                         }
-                        {/* <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
-                        <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} />
-                        <KvItem keyName="CPU" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_CPU].data, 'MHz')} style={style} />
-                        <KvItem keyName="内存" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_MEMORYMB].data, 'MB')} style={style} />
-                        <KvItem keyName="端口映射" className={classes.kvItem} value={portMappingProcess(dataSet[PORTMAPPING].data)} style={style} />
-                        <KvItem keyName="启动命令" className={classes.kvItem} value={dataSet[TASKS_CONFIG_COMMAND].data} style={style} />
-                        <KvItem keyName="启动参数" className={classes.kvItem} value={multipleValueProcess(dataSet[TASKS_CONFIG_ARGS].data)} style={style} />
-                        <KvItem keyName="环境变量" className={classes.kvItem} value={multipleKVProcess(dataSet[TASKS_ENV].data)} style={style} /> */}
-
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
@@ -405,20 +356,10 @@ class ScheduleStrategy extends Component {
                                 )
                             })
                         }
-                        {/* <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultValue={dataSet[TASKS_DRIVER].data} required saveData={this.saveData} />
-                        <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required saveData={this.saveData} defaultValue={dataSet[TASKS_CONFIG_IMAGE].data} />
-                        <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} defaultValue={dataSet[TASKS_RESOURCES_CPU].data} rules={{ step: 128, maxValue: 512, minValue: 0 }} saveData={this.saveData} />
-                        <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} defaultValue={dataSet[TASKS_RESOURCES_MEMORYMB].data} rules={{ step: 128, maxValue: 1280, minValue: 0 }} saveData={this.saveData} />
-                        <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} defaultValue={dataSet[PORTMAPPING].data} saveData={this.saveData} />
-                        <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} defaultValue={dataSet[TASKS_CONFIG_COMMAND].data} saveData={this.saveData} />
-                        <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} defaultValue={dataSet[TASKS_CONFIG_ARGS].data} hint={'请输入参数'} saveData={this.saveData} />
-                        <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} defaultValue={dataSet[TASKS_ENV].data} saveData={this.saveData} /> */}
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
                     <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
-                        {/* <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
-                        <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} /> */}
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -426,14 +367,6 @@ class ScheduleStrategy extends Component {
                                 )
                             })
                         }
-                        {/* <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} /> */}
                     </FadeWrap>
                 </div>
             </div>

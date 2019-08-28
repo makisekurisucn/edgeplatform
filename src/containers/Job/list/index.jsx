@@ -59,7 +59,7 @@ class SimpleTable extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
         getJobList(dispatch);
-        startBlockingJobList(dispatch,'2m')
+        startBlockingJobList(dispatch, '2m')
     }
     componentWillUnmount() {
         const { dispatch } = this.props;

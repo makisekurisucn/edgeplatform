@@ -82,6 +82,7 @@ const styles = theme => ({
 });
 class ProcessManage extends Component {
     constructor(props) {
+        console.log('processManage constructor');
         super(props);
         this.state = {
             currentStep: 0,
@@ -103,6 +104,7 @@ class ProcessManage extends Component {
 
     updataData = (dataName, newDataSet, isStepValid) => {
         console.log('update data')
+        console.log(dataName);
         console.log(isStepValid)
         this.setState({
             isCurrentStepValid: isStepValid
@@ -115,6 +117,7 @@ class ProcessManage extends Component {
     }
 
     render() {
+        console.log('processManage render');
         const { classes, className, stepList = [], currentStep, reducedHeight, tabWrapColor, data, uploadData } = this.props;
 
         let classNameWrap = classes.root;
@@ -152,7 +155,7 @@ class ProcessManage extends Component {
                                                 ss
                                                 `
                                             } */}
-                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} stepPosition={0} />
+                                            <step.component data={data} dataName={step.dataName} updateData={this.updataData} stepPosition={0} />
                                         </div>
                                     </FixedHeight>
                                 </div>
@@ -165,7 +168,7 @@ class ProcessManage extends Component {
                                     </div>
                                     <FixedHeight className={classes.fixedHeight} reducedHeight={270}>
                                         <div className={classes.stepMainContent}>
-                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} stepPosition={index > this.state.currentStep ? 1 : -1} />
+                                            <step.component data={data} dataName={step.dataName} updateData={this.updataData} stepPosition={index > this.state.currentStep ? 1 : -1} />
                                         </div>
                                     </FixedHeight>
                                 </div>

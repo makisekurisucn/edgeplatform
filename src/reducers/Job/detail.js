@@ -198,13 +198,16 @@ const initialState = {
     nativeDetail: {},
     history: {},
     status: {},
-    allocationList: []
+    allocationList: [],
+    loading: false
 };
 const JobRedu = (state = initialState, action) => {
     // alert(action.type);
     switch (action.type) {
+        case 'JOB_GETDETAIL_START':
+            return Object.assign({}, state, { loading: true });
         case 'JOB_UPDATE_JOBDETAIL':
-            return Object.assign({}, state, { detail: jobDetailProcess(action.data.detail), nativeDetail: action.data.detail });
+            return Object.assign({}, state, { detail: jobDetailProcess(action.data.detail), nativeDetail: action.data.detail, loading: false });
         case 'JOB_UPDATE_JOBHISTORY':
             return Object.assign({}, state, { history: action.data.history });
         case 'JOB_UPDATE_JOBSTATUS':

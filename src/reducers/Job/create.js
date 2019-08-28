@@ -98,7 +98,8 @@ const initialState = {
         }
     },
     loading: false,
-    success: false
+    success: false,
+    isEdit: false
 };
 const JobRedu = (state = initialState, action) => {
     // alert(action.type);
@@ -111,6 +112,10 @@ const JobRedu = (state = initialState, action) => {
             return Object.assign({}, state, { loading: false, success: true });
         case 'JOB_CREATE_FAIL':
             return Object.assign({}, state, { loading: false, success: false, errMsg: action.error });
+        case 'JOB_EDIT_START':
+            return Object.assign({}, state, { isEdit: true });
+        case 'JOB_EDIT_END':
+            return Object.assign({}, state, { isEdit: false });
         default:
             return state;
     }

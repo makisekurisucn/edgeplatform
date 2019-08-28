@@ -5,19 +5,10 @@ import { list as listNode } from "../apis/node"
 // import { fetchAvatar } from '../servers/detail';
 
 function* getJoblist(action) {
-    // if (action && action.type === 'JOB_GETJOBLIST_SAGA') {
-    //     console.log('normal get list');
-    // } else if (action === undefined) {
-    //     console.log('get list from jobdelete')
-    // } else {
-    //     console.log('unknown get list')
-    // }
-    // yield put({
-    //     type: "JOB_GET_JOBLIST_START"
-    // });
+    yield put({
+        type: "JOB_GET_JOBLIST_START"
+    });
     let joblist = yield call(list);
-    console.log('-----------')
-    console.log(joblist._getHeaders && joblist._getHeaders())
     yield put({
         type: "JOB_UPDATE_JOBLIST",
         data: {
@@ -77,14 +68,13 @@ function* createJob(action) {
 function* editJob(action) {
     console.log('edit saga')
     console.log(action.data)
-    let res = yield call(edit, action.data);
+    let res = yield call(edit, action.id, action.data);
     //can delete
     if (!res.error) {
         console.log('edit success');
         yield put({
             type: 'JOB_DETAIL_SAGA',
-            data: action.data.ID,
-            fromEdit: true
+            data: action.id
         })
     }
 
@@ -115,6 +105,9 @@ function* deleteJob(action) {
 }
 
 function* getJobDetail(action) {
+    yield put({
+        type: "JOB_GETDETAIL_START"
+    });
     let jobdetail = yield call(detail, action.data);
     if (!jobdetail.error) {
         yield put({

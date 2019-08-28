@@ -88,8 +88,6 @@ class Button extends Component {
         this.state = {
             selected: false
         };
-    }
-    UNSAFE_componentWillMount() {
         this.list = [];
     }
     UNSAFE_componentWillReceiveProps(nextProp) {
