@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
@@ -121,7 +120,7 @@ class BasicInfo extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
+        if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
             // let newDataSet = Object.assign({}, this.state);
             // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
@@ -154,7 +153,7 @@ class BasicInfo extends Component {
 
             let newIsAllValid = true;
             for (let key in newOriginalData) {
-                if (newOriginalData[key].isValid == false) {
+                if (newOriginalData[key].isValid === false) {
                     newIsAllValid = false;
                 }
             }
@@ -176,7 +175,7 @@ class BasicInfo extends Component {
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;
-        if (stepPosition == 1) {
+        if (stepPosition === 1) {
             rootWrap += ' ' + classes.hidden;
         }
 
@@ -202,11 +201,11 @@ class BasicInfo extends Component {
         return (
             <div className={rootWrap}>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== -1} from={'right'} to={'left'}>
                         {
-                            stanzaList.map((item, index) => {
+                            stanzaList.map((item) => {
                                 let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
-                                if (value == '' || value == undefined) {
+                                if (value === '' || value === undefined) {
                                 } else {
                                     return (
                                         <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />
@@ -218,7 +217,7 @@ class BasicInfo extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 0} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -238,7 +237,7 @@ class BasicInfo extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (

@@ -122,14 +122,14 @@ class NodeMetric extends Component {
     }
 
     render() {
-        const { classes, className, children, data, PrometheusData } = this.props;
+        const { classes, className, data, PrometheusData } = this.props;
         const { CPUData, diskData, memoryData } = PrometheusData;
 
         const CPUResult = this.dataWrapper(CPUData, CPUConfig);
         const diskResult = this.dataWrapper(diskData, diskConfig);
         const memoryResult = this.dataWrapper(memoryData, memoryConfig);
 
-        let CPUSelectList = [], diskSelectList = [], memorySelectList = [];
+        // let CPUSelectList = [], diskSelectList = [], memorySelectList = [];
 
 
         // const { isHidden, stage} = this.state;

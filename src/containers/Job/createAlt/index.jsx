@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 import ProcessManage from '../../../components/ProcessManage';
 import HorizontalStepper from '../../../components/ProcessManage/HorizontalStepper';
 import FixedHeight from '../../../components/FixedHeight';
@@ -172,13 +170,10 @@ class JobCreate extends Component {
         const { dispatch } = this.props;
         // data.Datacenters = ["xidoumen"];
         createJob(dispatch, { Job: data })
-        // console.log(link);
         this.props.history.push(`/console/jobs/list`);
-        // window.history.go(-1);
     }
     goBack = () => {
         window.history.go(-1);
-        // this.props.history.goBack();
     }
     changeStep = (newIndex) => {
         this.setState({
@@ -186,9 +181,6 @@ class JobCreate extends Component {
         })
     }
     handleUpload = (dataName, dataSet, isAllCompleted) => {
-        // console.log(Object.assign({}, this.state, { [dataName]: dataSet, isAllCompleted }))
-        // console.log(dataName + ' :isCompleted')
-        console.log('isAllCompleted: ' + isAllCompleted)
         this.setState({
             [dataName]: dataSet,
             isAllCompleted
@@ -196,8 +188,6 @@ class JobCreate extends Component {
     }
     render() {
         const { classes, className } = this.props;
-        const { basicInfoData, jobInfoData, scheduleStrategyData } = this.state;
-
 
         return (
             <Paper className={classes.root}>
@@ -210,16 +200,14 @@ class JobCreate extends Component {
                         <HorizontalStepper steps={stepList} stepIndex={this.state.stepIndex}></HorizontalStepper>
                     </div>
                     {
-                        this.state.isAllCompleted == true ?
+                        this.state.isAllCompleted === true ?
                             <span className={classes.createButton + ' ' + classes.validBkg} onClick={this.createJob}>新建</span> :
                             <span className={classes.createButton}>新建</span>
                     }
-                    {/* <span className={classes.createButton} onClick={this.createJob}>新建</span> */}
                 </div>
                 <FixedHeight reducedHeight={110} className={classes.fixedHeight}>
                     <div className={classes.main}>
                         <ProcessManage stepList={stepList} switchStep={this.changeStep} data={this.state.data} uploadData={this.handleUpload} />
-                        {/* <ProcessManage stepList={stepList} switchStep={this.changeStep} /> */}
                     </div>
                 </FixedHeight>
             </Paper>

@@ -1,5 +1,4 @@
-import { request } from './request'
-import { object, func } from 'prop-types';
+import { request } from './request';
 
 let currentRegion = '';
 let crossRegionRequest = '';
@@ -9,7 +8,6 @@ function getRegion() {
 }
 
 function getcrossRegionRequest() {
-
     return crossRegionRequest;
 }
 

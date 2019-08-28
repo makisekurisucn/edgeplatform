@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import { getNodeCPUUtilization as getNodeCPUData, getNodeDiskUtilization as getNodeDiskData, getNodeMemoryUtilization as getNodeMemoryData } from "../apis/prometheus";
 import { getTaskCPUUtilization as getTaskCPUData, getTaskMemoryUtilization as getTaskMemoryData } from "../apis/prometheus";
 import {

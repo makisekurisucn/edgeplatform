@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -231,7 +231,7 @@ function PortMapInput(props) {
     }
 
     const showOptions = () => {
-        if (isOptionListDisplay == false) {
+        if (isOptionListDisplay === false) {
             arrow.style.transform = 'rotate(180deg)';
             optionList.style.height = 'auto';
             isOptionListDisplay = true;
@@ -271,7 +271,7 @@ function PortMapInput(props) {
     }, [])
 
     useEffect(() => {
-        if (plusTimes == 0) {
+        if (plusTimes === 0) {
 
         } else {
             LInput.focus();
@@ -340,6 +340,7 @@ function PortMapInput(props) {
                                 {
                                     options.map((option, index) => {
                                         if (index === optIndex) {
+                                            return null
                                         } else {
                                             return <li className={classes.option} key={option.value} onClick={() => { setOptIndex(index) }} >{option.display}</li>
                                         }

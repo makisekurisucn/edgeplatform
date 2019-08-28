@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes, { func } from 'prop-types';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
 import KvInput from '../../../components/FormController/MultipleKvInput';
 import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
-import PortMapInput from '../../../components/FormController/PortMapInput';
 import KvItem from '../../../components/KvItem';
 import CoveredKvItem from '../../../components/KvItem/CoveredKvItem';
 import FadeWrap from '../../../components/FadeWrap';
@@ -43,49 +41,11 @@ const styles = theme => ({
     }
 });
 
-const drives = [
-    {
-        value: 'docker',
-        display: 'Docker'
-    },
-    // {
-    //     value: 'exec',
-    //     display: 'Isolated Fork/Exec'
-    // },
-    // {
-    //     value: 'java',
-    //     display: 'Java'
-    // },
-    {
-        value: 'qemu',
-        display: 'Qemu'
-    },
-    // {
-    //     value: 'raw_exec',
-    //     display: 'Raw Fork/Exec'
-    // },
-    // {
-    //     value: 'rkt',
-    //     display: 'Rkt'
-    // },
-    // {
-    //     value: 'lxc',
-    //     display: 'Lxc'
-    // },
-    // {
-    //     value: 'Singularity',
-    //     display: 'Singularity'
-    // },
-    // {
-    //     value: 'jail-task-driver',
-    //     display: 'Jailtask driver'
-    // }
-]
 
 const JOB_DATACENTERS = "Job-Datacenters",
     TASKGROUPS_COUNT = "TaskGroups-Count";
 
-const DISPLAY = 'display', UPLOAD = 'upload', DynamicPorts = 'DynamicPorts', ReservedPorts = 'ReservedPorts';
+const DISPLAY = 'display', UPLOAD = 'upload';
 
 const kvMap = {};
 
@@ -135,8 +95,6 @@ function numberProcess(data, usingType, unit = '') {
     if (usingType === DISPLAY) {
         return `${data}${unit}`;
     } else if (usingType === UPLOAD) {
-        console.log(data);
-        console.log(typeof data);
         return data;
     }
 }
@@ -172,59 +130,6 @@ const stanzaList = [
             required: true
         }
     }
-    // {
-    //     name: TASKS_RESOURCES_CPU,
-    //     title: 'CPU',
-    //     dataProcess: processWrap(numberProcess, 'MHz'),
-    //     component: NumberInput,
-    //     rules: {
-    //         step: 128,
-    //         maxValue: 512,
-    //         minValue: 0,
-    //         unit: 'MHz'
-    //     }
-    // },
-    // {
-    //     name: TASKS_RESOURCES_MEMORYMB,
-    //     title: '内存',
-    //     dataProcess: processWrap(numberProcess, 'MB'),
-    //     component: NumberInput,
-    //     rules: {
-    //         step: 128,
-    //         maxValue: 1280,
-    //         minValue: 0,
-    //         unit: 'MB'
-    //     }
-    // },
-    // {
-    //     name: PORTMAPPING,
-    //     title: '端口映射',
-    //     dataProcess: processWrap(portMappingProcess),
-    //     component: PortMapInput,
-    //     rules: {}
-    // },
-    // {
-    //     name: TASKS_CONFIG_COMMAND,
-    //     title: '启动命令',
-    //     dataProcess: processWrap(normalProcess),
-    //     component: NormalInput,
-    //     rules: {}
-    // },
-    // {
-    //     name: TASKS_CONFIG_ARGS,
-    //     title: '启动参数',
-    //     hint: '请输入参数',
-    //     dataProcess: processWrap(multipleValueProcess),
-    //     component: MultipleInput,
-    //     rules: {}
-    // },
-    // {
-    //     name: TASKS_ENV,
-    //     title: '环境变量',
-    //     dataProcess: processWrap(multipleKVProcess),
-    //     component: KvInput,
-    //     rules: {}
-    // }
 ]
 
 class ScheduleStrategy extends Component {
@@ -245,7 +150,7 @@ class ScheduleStrategy extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
+        if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
             // let newDataSet = Object.assign({}, this.state);
             // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
@@ -256,15 +161,12 @@ class ScheduleStrategy extends Component {
     }
 
     saveData = (name, result) => {
-        console.log('save data in schedule');
         if (this.dataSet) {
-            console.log('in switch');
             switch (name) {
                 case JOB_DATACENTERS:
                     this.dataSet.Datacenters = multipleValueProcess(result.data, UPLOAD);
                     break;
                 case TASKGROUPS_COUNT:
-                    console.log('now its count upload');
                     this.dataSet.TaskGroups[0].Count = numberProcess(result.data, UPLOAD);
                     break;
                 default: ;
@@ -277,7 +179,7 @@ class ScheduleStrategy extends Component {
 
             let newIsAllValid = true;
             for (let key in newOriginalData) {
-                if (newOriginalData[key].isValid == false) {
+                if (newOriginalData[key].isValid === false) {
                     newIsAllValid = false;
                 }
             }
@@ -297,8 +199,7 @@ class ScheduleStrategy extends Component {
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;
-        // if (stepPosition > 0) {
-        if (stepPosition == 1) {
+        if (stepPosition === 1) {
             rootWrap += ' ' + classes.hidden;
         }
 
@@ -323,11 +224,12 @@ class ScheduleStrategy extends Component {
         return (
             <div className={rootWrap}>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== -1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
-                                if (value == '' || value == undefined) {
+                                if (value === '' || value === undefined) {
+                                    return null
                                 } else {
                                     return (
                                         <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />
@@ -338,7 +240,7 @@ class ScheduleStrategy extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 0} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -359,7 +261,7 @@ class ScheduleStrategy extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -374,6 +276,6 @@ class ScheduleStrategy extends Component {
     }
 }
 ScheduleStrategy.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 export default withStyles(styles)(ScheduleStrategy);

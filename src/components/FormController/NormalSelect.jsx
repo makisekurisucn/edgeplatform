@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
@@ -103,7 +103,7 @@ function NormalSelect(props) {
     let arrow = null, optionList = null;
 
     const showOptions = () => {
-        if (isOptionListDisplay == false) {
+        if (isOptionListDisplay === false) {
             arrow.style.transform = 'rotate(180deg)';
             optionList.style.height = 'auto';
             isOptionListDisplay = true;
@@ -162,6 +162,7 @@ function NormalSelect(props) {
                     {
                         options.map((option, index) => {
                             if (index === optIndex) {
+                                return null
                                 // return <li className={classes.selectedOption} key={option.value} >{option.display}</li>
                             } else {
                                 return <li className={classes.option + ' ' + classes.noWrap} title={option.display} key={option.value} onClick={handleClick(index)} >{option.display}</li>

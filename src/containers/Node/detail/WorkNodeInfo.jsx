@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import KvItem from '../../../components/KvItem';
 import { getNodeResources, resetNodeResources } from '../../../actions/Prometheus';
-
 import java from '../../../assets/img/java.png'
 import docker from '../../../assets/img/docker-logo.png'
 import exec from '../../../assets/img/exec.png'
@@ -318,7 +317,7 @@ class WorkNodeInfo extends Component {
                                             return (
                                                 <div key={runtime.name}>
                                                     <div className={isDetected ? classes.img : (classes.img + ' ' + classes.notDetectedIconColor)}>
-                                                        <img src={runtime.src} width={runtime.width} height={runtime.height} />
+                                                        <img src={runtime.src} alt={runtime.display} width={runtime.width} height={runtime.height} />
                                                     </div>
                                                     <div className={isDetected ? classes.imgText : (classes.imgText + ' ' + classes.notDetectedColor)}>
                                                         {

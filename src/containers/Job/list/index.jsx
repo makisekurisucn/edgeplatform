@@ -3,14 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '../../../components/Table';
-import Paper from '@material-ui/core/Paper';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Loading from '../../../components/Loading';
 import { getJobList, startBlockingJobList, stopBlockingJobList } from '../../../actions/Job';
-import Tooltip from '@material-ui/core/Tooltip';
-import { NavLink } from 'react-router-dom';
-import Divider from '@material-ui/core/Divider';
 import AppMainUpper from '../../../components/AppMainUpper';
 
 

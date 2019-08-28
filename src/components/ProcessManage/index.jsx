@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import FadeWrap from '../../components/FadeWrap';
 import FixedHeight from '../../components/FixedHeight';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 // import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
@@ -103,22 +101,18 @@ class ProcessManage extends Component {
     }
 
     updataData = (dataName, newDataSet, isStepValid) => {
-        console.log('update data')
-        console.log(dataName);
-        console.log(isStepValid)
         this.setState({
             isCurrentStepValid: isStepValid
         })
         let isAllCompleted = false;
-        if (this.state.currentStep == (this.props.stepList.length - 1) && isStepValid == true) {
+        if (this.state.currentStep === (this.props.stepList.length - 1) && isStepValid === true) {
             isAllCompleted = true;
         }
         this.props.uploadData && this.props.uploadData(dataName, newDataSet, isAllCompleted)
     }
 
     render() {
-        console.log('processManage render');
-        const { classes, className, stepList = [], currentStep, reducedHeight, tabWrapColor, data, uploadData } = this.props;
+        const { classes, className, stepList = [], currentStep, reducedHeight, data, uploadData } = this.props;
 
         let classNameWrap = classes.root;
         if (className) {

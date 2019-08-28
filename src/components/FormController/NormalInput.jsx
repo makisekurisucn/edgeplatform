@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -56,7 +56,7 @@ function NormalInput(props) {
         //if数据验证有效
         if (saveData) {
             if (required) {
-                if (input.value == '') {
+                if (input.value === '') {
                     saveData(name, { isValid: false, data: input.value })
                     console.log('false');
                 } else {

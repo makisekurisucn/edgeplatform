@@ -8,7 +8,6 @@ import TaskMetric from './TaskMetric';
 import TaskLog from './TaskLog';
 import Select from '../../components/Select/SelectButton';
 import { setRegion } from '../../utils/handleRequest';
-import { stat } from 'fs';
 
 const styles = theme => ({
     root: {
@@ -127,9 +126,6 @@ class TaskView extends Component {
         };
     }
 
-    // componentDidUpdate(){
-
-    // }
     turnToNodeDetail = () => {
         const currentRegion = this.props.region;
         const nodeID = this.props.node.ID;
@@ -145,10 +141,7 @@ class TaskView extends Component {
         })
     }
     render() {
-        const { classes, className, children, DCInfo, alloc = {}, node, region } = this.props;
-        // const { isHidden, stage} = this.state;
-        console.log('-----------')
-        console.log(alloc)
+        const { classes, className, DCInfo, alloc = {}, node, region } = this.props;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;

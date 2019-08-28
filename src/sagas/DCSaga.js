@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import { list as getWorkerList, getWorkerDetail } from "../apis/node";
 import { getList as getRegionList } from "../apis/region";
 import { setRegion } from '../utils/handleRequest';

@@ -6,9 +6,6 @@ import Tabs from '../../../components/Tabs';
 import Paper from '@material-ui/core/Paper';
 import { getJobDetail, resetStatus, stopJob, startJob, deleteJob, startBlockingJobDetail, stopBlockingJobDetail } from '../../../actions/Job';
 import { getDCList } from '../../../actions/DC';
-import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
-import Divider from '@material-ui/core/Divider';
-import { formatTime } from '../../../utils/formatTime';
 import { setRegion, getRegion } from '../../../utils/handleRequest';
 import AppMainUpper from '../../../components/AppMainUpper';
 import JobInfo from './JobInfo';
@@ -96,42 +93,39 @@ class JobDetail extends Component {
         getDCList(dispatch);
         setRegion(currentRegion);
     }
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.statusIndex) {
             this.setState({
                 statusIndex: nextProps.statusIndex
             });
         }
-
     }
+
     componentWillUnmount() {
         const { dispatch } = this.props;
         let id = this.props.match.params.id;
         stopBlockingJobDetail(dispatch, id)
     }
+
     handleChange = (event, index) => {
         this.setState({
             index: index
         });
     }
-    handleSwitchInstance = (params) => (e) => {
 
+    handleSwitchInstance = (params) => (e) => {
         let statusIndex = this.state.statusIndex;
         statusIndex[params.taskGroup][params.task] = params.index;
         this.setState({
             statusIndex: statusIndex
         });
-        // alert(params);
     }
+
     render() {
-        const { classes, match, detail, jobHistory, status, allocationList, nativeDetail } = this.props;
+        const { classes, detail, jobHistory, status, allocationList, nativeDetail } = this.props;
         const jobID = this.props.match.params.id;
-        console.log(status);
-        console.log('this props');
-        console.log(this.props);
         const detailCopy = JSON.parse(JSON.stringify(nativeDetail))
-        const { taskGroup, nodeInfo } = status;
-        const { index, statusIndex } = this.state;
         let defaultCommand = {};
 
         switch (detail.Status) {
@@ -144,7 +138,7 @@ class JobDetail extends Component {
                         detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count.toString() });
                         detailCopy.TaskGroups[0].Count = 0;
                         stopJob(this.props.dispatch, jobID, { Job: detailCopy });
-                    } //待定
+                    }
                 };
                 break;
             default:
@@ -153,9 +147,9 @@ class JobDetail extends Component {
                     handleClick: () => {
                         console.log('start');
                         // detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count });
-                        detailCopy.TaskGroups[0].Count = detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount) || detailCopy.TaskGroups[0].Count;
+                        detailCopy.TaskGroups[0].Count = (detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount)) || detailCopy.TaskGroups[0].Count;
                         startJob(this.props.dispatch, jobID, { Job: detailCopy });
-                    } //待定
+                    }
                 };
         }
 

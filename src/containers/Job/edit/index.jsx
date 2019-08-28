@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 import ProcessManage from '../../../components/ProcessManage';
 import HorizontalStepper from '../../../components/ProcessManage/HorizontalStepper';
 import FixedHeight from '../../../components/FixedHeight';
@@ -197,8 +195,6 @@ class JobEdit extends Component {
                 task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
             })
         })
-        console.log(data)
-        console.log(this.jobID);
         const { dispatch } = this.props;
         editJob(dispatch, this.jobID, { Job: data });
 
@@ -206,7 +202,6 @@ class JobEdit extends Component {
     }
     goBack = () => {
         window.history.go(-1);
-        // this.props.history.goBack();
     }
     changeStep = (newIndex) => {
         this.setState({
@@ -214,8 +209,6 @@ class JobEdit extends Component {
         })
     }
     handleUpload = (dataName, dataSet, isAllCompleted) => {
-        // console.log(Object.assign({}, this.state, { [dataName]: dataSet, isAllCompleted }))
-        // console.log(dataName + ' :isCompleted')
         console.log('isAllCompleted: ' + isAllCompleted)
         this.setState({
             // [dataName]: dataSet,
@@ -223,12 +216,7 @@ class JobEdit extends Component {
         })
     }
     render() {
-        console.log('create render');
-        console.log(this.state.data);
-        const { classes, className, nativeDetail, loading } = this.props;
-        // const { basicInfoData, jobInfoData, scheduleStrategyData } = this.state;
-
-
+        const { classes, className, loading } = this.props;
 
         return (
             <Paper className={classes.root}>
@@ -241,19 +229,16 @@ class JobEdit extends Component {
                         <HorizontalStepper steps={stepList} stepIndex={this.state.stepIndex}></HorizontalStepper>
                     </div>
                     {
-                        this.state.isAllCompleted == true ?
+                        this.state.isAllCompleted === true ?
                             <span className={classes.createButton + ' ' + classes.validBkg} onClick={this.createJob}>更新</span> :
                             <span className={classes.createButton}>更新</span>
                     }
-                    {/* <span className={classes.createButton} onClick={this.createJob}>新建</span> */}
                 </div>
                 <FixedHeight reducedHeight={110} className={classes.fixedHeight}>
                     <div className={classes.main}>
                         <Loading loading={loading}>
                             <ProcessManage stepList={stepList} switchStep={this.changeStep} data={this.state.data} uploadData={this.handleUpload} />
                         </Loading>
-                        {/* <ProcessManage stepList={stepList} switchStep={this.changeStep} data={detailCopy} uploadData={this.handleUpload} /> */}
-                        {/* <ProcessManage stepList={stepList} switchStep={this.changeStep} /> */}
                     </div>
                 </FixedHeight>
             </Paper>

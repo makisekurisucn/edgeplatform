@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import CommandSet from '../Select/CommandSet';
 
 
@@ -103,34 +102,32 @@ const styles = theme => ({
         color: '#EEF9FF'
     }
 });
-const hasRouter = (current, link) => {
-    let currentArray = current.split('/');
-    let linkArray = link.split('/');
-    if (currentArray[0] === '') {
-        currentArray.shift();
-    }
-    if (linkArray[0] === '') {
-        linkArray.shift();
-    }
-    if (currentArray[currentArray.length - 1] === '') {
-        currentArray.pop();
-    }
-    if (linkArray[linkArray.length - 1] === '') {
-        linkArray.pop();
-    }
-    let isMatch = true;
-    linkArray.forEach((item, index) => {
-        if (!currentArray[index]) {
-            isMatch = false;
-        }
-        else if (currentArray[index] !== item) {
-            isMatch = false;
-        }
-    });
-    return isMatch;
-
-
-}
+// const hasRouter = (current, link) => {
+//     let currentArray = current.split('/');
+//     let linkArray = link.split('/');
+//     if (currentArray[0] === '') {
+//         currentArray.shift();
+//     }
+//     if (linkArray[0] === '') {
+//         linkArray.shift();
+//     }
+//     if (currentArray[currentArray.length - 1] === '') {
+//         currentArray.pop();
+//     }
+//     if (linkArray[linkArray.length - 1] === '') {
+//         linkArray.pop();
+//     }
+//     let isMatch = true;
+//     linkArray.forEach((item, index) => {
+//         if (!currentArray[index]) {
+//             isMatch = false;
+//         }
+//         else if (currentArray[index] !== item) {
+//             isMatch = false;
+//         }
+//     });
+//     return isMatch;
+// }
 
 
 class AppMainUpper extends Component {
@@ -170,8 +167,7 @@ class AppMainUpper extends Component {
     }
     render() {
         const { classes, className, type, status, data = {}, statusColor } = this.props;
-        const { selected } = this.state;
-        let classNameWrap = '';
+
 
         let myAppMainUpper;
         switch (type) {

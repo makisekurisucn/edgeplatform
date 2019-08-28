@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -154,7 +154,7 @@ function MultipleInput(props) {
     }, [])
 
     useEffect(() => {
-        if (plusTimes == 0) {
+        if (plusTimes === 0) {
 
         } else {
             valueInput.focus();
