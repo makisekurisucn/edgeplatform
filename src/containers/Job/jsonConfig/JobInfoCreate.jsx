@@ -308,42 +308,42 @@ class JobInfo extends Component {
             isAllValid: false,
             [TASKS_DRIVER]: {
                 isValid: false,
-                data: props.data.TaskGroups[0].Tasks[0].Driver
+                data: props.data.json.TaskGroups[0].Tasks[0].Driver
             },
             [TASKS_CONFIG_IMAGE]: {
                 isValid: false,
-                data: props.data.TaskGroups[0].Tasks[0].Config.image
+                data: props.data.json.TaskGroups[0].Tasks[0].Config.image
             },
             [TASKS_RESOURCES_CPU]: {
                 isValid: false,
-                data: props.data.TaskGroups[0].Tasks[0].Resources.CPU
+                data: props.data.json.TaskGroups[0].Tasks[0].Resources.CPU
             },
             [TASKS_RESOURCES_MEMORYMB]: {
                 isValid: false,
-                data: props.data.TaskGroups[0].Tasks[0].Resources.MemoryMB
+                data: props.data.json.TaskGroups[0].Tasks[0].Resources.MemoryMB
             },
             [PORTMAPPING]: {
                 isValid: false,
                 data: reversePortMappingProcess({
-                    services: props.data.TaskGroups[0].Tasks[0].Config.image,
-                    portMap: props.data.TaskGroups[0].Tasks[0].Config.port_map,
-                    networks: props.data.TaskGroups[0].Tasks[0].Resources.Networks
+                    services: props.data.json.TaskGroups[0].Tasks[0].Config.image,
+                    portMap: props.data.json.TaskGroups[0].Tasks[0].Config.port_map,
+                    networks: props.data.json.TaskGroups[0].Tasks[0].Resources.Networks
                 })
             },
             [TASKS_CONFIG_COMMAND]: {
                 isValid: false,
-                data: props.data.TaskGroups[0].Tasks[0].Config.command
+                data: props.data.json.TaskGroups[0].Tasks[0].Config.command
             },
             [TASKS_CONFIG_ARGS]: {
                 isValid: false,
-                data: reverseMultipleValueProcess(props.data.TaskGroups[0].Tasks[0].Config.args)
+                data: reverseMultipleValueProcess(props.data.json.TaskGroups[0].Tasks[0].Config.args)
             },
             [TASKS_ENV]: {
                 isValid: false,
-                data: reverseMultipleKVProcess(props.data.TaskGroups[0].Tasks[0].Env)
+                data: reverseMultipleKVProcess(props.data.json.TaskGroups[0].Tasks[0].Env)
             }
         };
-        this.dataSet = props.data
+        this.dataSet = props.data.json
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {

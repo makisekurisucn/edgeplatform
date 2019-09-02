@@ -207,7 +207,7 @@ class JobCreate extends Component {
                 </div>
                 <FixedHeight reducedHeight={110} className={classes.fixedHeight}>
                     <div className={classes.main}>
-                        <ProcessManage stepList={stepList} switchStep={this.changeStep} data={this.state.data} uploadData={this.handleUpload} />
+                        <ProcessManage stepList={stepList} switchStep={this.changeStep} data={{ json: this.state.data, type: 'create' }} uploadData={this.handleUpload} />
                     </div>
                 </FixedHeight>
             </Paper>

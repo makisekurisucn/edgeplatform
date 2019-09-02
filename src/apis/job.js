@@ -15,14 +15,16 @@ function list(postId) {
     });
 }
 
-function blockingList({ index = 0, wait = '2m' } = {}) {
+function blockingList({ index = 0, wait = '2m' } = {}, { signal } = {}) {
     return handleRequest({
         url: `/v1/jobs?index=${index}&wait=${wait}`,
         options: {
-            method: 'GET'
+            method: 'GET',
+            signal
         },
         customizedConf: {
-            expectedDataType: 'json'
+            expectedDataType: 'json',
+            canIgnoreError: true
         }
     });
 }
@@ -52,14 +54,16 @@ function detail(data) {
     });
 }
 
-function blockingDetail(data, { index = 0, wait = '2m' } = {}) {
+function blockingDetail(data, { index = 0, wait = '2m' } = {}, { signal } = {}) {
     return handleRequest({
         url: `/v1/job/${data}?index=${index}&wait=${wait}`,
         options: {
-            method: 'GET'
+            method: 'GET',
+            signal
         },
         customizedConf: {
-            expectedDataType: 'json'
+            expectedDataType: 'json',
+            canIgnoreError: true
         }
     });
 }
@@ -89,14 +93,6 @@ function status(data) {
 }
 
 function edit(id, data) {
-    //自己写规则
-    // return handleRequest({
-    //     url: `/v1/job/${data}`,
-    //     options: {
-    //         method: 'DELETE',
-    //         expectedDataType: 'json'
-    //     }
-    // });
     return handleRequest({
         url: `/v1/job/${id}`,
         options: {

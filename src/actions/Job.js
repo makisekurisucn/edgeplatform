@@ -75,7 +75,6 @@ const editJob = (dispatch, id, job) => {
     })
 }
 const deleteJob = (dispatch, id) => {
-    console.log('action delete')
     dispatch({
         type: 'JOB_DELETE_SAGA',
         data: id

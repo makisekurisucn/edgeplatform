@@ -85,7 +85,8 @@ const stanzaList = [
         dataProcess: processWrap(normalProcess),
         component: NormalInput,
         rules: {
-            required: true
+            required: true,
+            isImmutable: true
         }
     },
     {
@@ -109,14 +110,14 @@ class BasicInfo extends Component {
             isAllValid: false,
             [JOB_NAME]: {
                 isValid: false,
-                data: props.data.Name
+                data: props.data.json.Name
             },
             [JOB_TYPE]: {
                 isValid: false,
-                data: props.data.Type
+                data: props.data.json.Type
             }
         };
-        this.dataSet = props.data
+        this.dataSet = props.data.json
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -172,7 +173,7 @@ class BasicInfo extends Component {
 
     render() {
         console.log('basicinfo render');
-        const { classes, className, stepPosition } = this.props;
+        const { classes, className, stepPosition, data } = this.props;
 
         let rootWrap = classes.root;
         if (stepPosition === 1) {
@@ -226,7 +227,7 @@ class BasicInfo extends Component {
                                         className={classes.marginBottom}
                                         name={item.name}
                                         title={item.title}
-                                        rules={item.rules}
+                                        rules={(data.type === 'edit' && item.rules.isImmutable) ? Object.assign({}, item.rules, { disabled: true }) : item.rules}
                                         options={item.options}
                                         defaultValue={dataSet[item.name].data}
                                         saveData={this.saveData}

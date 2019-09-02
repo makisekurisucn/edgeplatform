@@ -139,14 +139,14 @@ class ScheduleStrategy extends Component {
             isAllValid: false,
             [JOB_DATACENTERS]: {
                 isValid: false,
-                data: reverseMultipleValueProcess(props.data.Datacenters)
+                data: reverseMultipleValueProcess(props.data.json.Datacenters)
             },
             [TASKGROUPS_COUNT]: {
                 isValid: false,
-                data: props.data.TaskGroups[0].Count
+                data: props.data.json.TaskGroups[0].Count
             }
         };
-        this.dataSet = props.data
+        this.dataSet = props.data.json
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
