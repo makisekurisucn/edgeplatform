@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import CommandSet from '../Select/CommandSet';
 
 
@@ -77,7 +76,19 @@ const styles = theme => ({
         //backgroundColor: '#4BAF7E',
         //borderRadius: '11px',
         margin: '18px 20px',
-        border:'2px solid #4BAF7E',
+        border: '2px solid #4BAF7E',
+    },
+    green: {
+        color: '#4BAF7E',
+        border: '2px solid #4BAF7E',
+    },
+    yellow: {
+        color: '#AF954B',
+        border: '2px solid #AF954B',
+    },
+    gray: {
+        color: '#ABABAB',
+        border: '2px solid #ABABAB',
     },
     select: {
         top: 18,
@@ -91,34 +102,32 @@ const styles = theme => ({
         color: '#EEF9FF'
     }
 });
-const hasRouter = (current, link) => {
-    let currentArray = current.split('/');
-    let linkArray = link.split('/');
-    if (currentArray[0] === '') {
-        currentArray.shift();
-    }
-    if (linkArray[0] === '') {
-        linkArray.shift();
-    }
-    if (currentArray[currentArray.length - 1] === '') {
-        currentArray.pop();
-    }
-    if (linkArray[linkArray.length - 1] === '') {
-        linkArray.pop();
-    }
-    let isMatch = true;
-    linkArray.forEach((item, index) => {
-        if (!currentArray[index]) {
-            isMatch = false;
-        }
-        else if (currentArray[index] !== item) {
-            isMatch = false;
-        }
-    });
-    return isMatch;
-
-
-}
+// const hasRouter = (current, link) => {
+//     let currentArray = current.split('/');
+//     let linkArray = link.split('/');
+//     if (currentArray[0] === '') {
+//         currentArray.shift();
+//     }
+//     if (linkArray[0] === '') {
+//         linkArray.shift();
+//     }
+//     if (currentArray[currentArray.length - 1] === '') {
+//         currentArray.pop();
+//     }
+//     if (linkArray[linkArray.length - 1] === '') {
+//         linkArray.pop();
+//     }
+//     let isMatch = true;
+//     linkArray.forEach((item, index) => {
+//         if (!currentArray[index]) {
+//             isMatch = false;
+//         }
+//         else if (currentArray[index] !== item) {
+//             isMatch = false;
+//         }
+//     });
+//     return isMatch;
+// }
 
 
 class AppMainUpper extends Component {
@@ -157,9 +166,8 @@ class AppMainUpper extends Component {
         this.props.history.goBack();
     }
     render() {
-        const { classes, className, type, status, data = {} } = this.props;
-        const { selected } = this.state;
-        let classNameWrap = '';
+        const { classes, className, type, status, data = {}, statusColor } = this.props;
+
 
         let myAppMainUpper;
         switch (type) {
@@ -177,7 +185,7 @@ class AppMainUpper extends Component {
                     <div className={classes.title}>
                         <ArrowBackIos className={classes.arrow2} onClick={this.goBack} />
                         <div className={classes.jobApp}>{data.name}</div>
-                        <div className={classes.status}>{status}</div>
+                        <div className={classes.status + ' ' + classes[statusColor]}>{status}</div>
                     </div>
                     <div className={classes.select}>
                         <CommandSet className={classes.commandSet} defaultCommand={data.defaultCommand} commandList={data.commandList} />

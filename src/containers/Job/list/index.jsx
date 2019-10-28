@@ -3,14 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '../../../components/Table';
-import Paper from '@material-ui/core/Paper';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Loading from '../../../components/Loading';
-import { getJobList } from '../../../actions/Job';
-import Tooltip from '@material-ui/core/Tooltip';
-import { NavLink } from 'react-router-dom';
-import Divider from '@material-ui/core/Divider';
+import { getJobList, startBlockingJobList, stopBlockingJobList } from '../../../actions/Job';
 import AppMainUpper from '../../../components/AppMainUpper';
 
 
@@ -59,10 +53,11 @@ class SimpleTable extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
         getJobList(dispatch);
-        // this.state.list = list;
-        // console.log("test1");
-        //  react setState 测试用例
-
+        startBlockingJobList(dispatch, '2m')
+    }
+    componentWillUnmount() {
+        const { dispatch } = this.props;
+        stopBlockingJobList(dispatch)
     }
     render() {
         const { classes, list, loading } = this.props;
@@ -70,12 +65,12 @@ class SimpleTable extends Component {
         return (
             <div className={classes.root}>
                 {/* <Paper> */}
-                    <Loading loading={loading}>
-                        <AppMainUpper type='job_list' />
-                        <div className={classes.tableWrap}>
-                            <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody} />
-                        </div>
-                    </Loading>
+                <Loading loading={loading}>
+                    <AppMainUpper type='job_list' />
+                    <div className={classes.tableWrap}>
+                        <Table header={header} list={list} onItemClick={this.itemClick} className={classes.tableBody} />
+                    </div>
+                </Loading>
                 {/* </Paper> */}
 
 

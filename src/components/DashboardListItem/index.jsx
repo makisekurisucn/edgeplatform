@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
-import DesktopMac from '@material-ui/icons/DesktopMac';
 import PinDrop from '@material-ui/icons/PinDrop';
 import Computer from '@material-ui/icons/Computer';
 
@@ -121,7 +120,7 @@ class ListItem extends Component {
         });
     }
     render() {
-        const { classes, barName, regionList, className, index, selected, type, region, Datacenter } = this.props;
+        const { classes, className, index, selected, type, region, Datacenter } = this.props;
         let classNameWrap;
         let item = {};
         const itemData = this.props.itemData ? this.props.itemData : {};

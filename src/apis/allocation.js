@@ -1,13 +1,14 @@
 // import { request } from '../utils/request';
 import { handleRequest } from '../utils/handleRequest';
-import { request } from '../utils/request';
 
 
 function list(postId) {
     return handleRequest({
         url: `/v1/allocations`,
         options: {
-            method: 'GET',
+            method: 'GET'
+        },
+        customizedConf: {
             expectedDataType: 'json'
         }
     });
@@ -24,10 +25,12 @@ function taskLogs(id, params) {
     };
     const finalParams = Object.assign({}, initialParams, params);
     const expectedDataType = finalParams.plain ? 'plain' : 'json';
-    return request({
+    return handleRequest({
         url: `/v1/client/fs/logs/${id}?task=${finalParams.task}&follow=${finalParams.follow}&type=${finalParams.type}&offset=${finalParams.offset}&origin=${finalParams.origin}&plain=${finalParams.plain}`,
         options: {
-            method: 'GET',
+            method: 'GET'
+        },
+        customizedConf: {
             expectedDataType
         }
     });

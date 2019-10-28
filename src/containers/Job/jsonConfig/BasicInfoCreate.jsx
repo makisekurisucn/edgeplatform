@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
@@ -86,7 +85,8 @@ const stanzaList = [
         dataProcess: processWrap(normalProcess),
         component: NormalInput,
         rules: {
-            required: true
+            required: true,
+            isImmutable: true
         }
     },
     {
@@ -104,78 +104,79 @@ const stanzaList = [
 
 class BasicInfo extends Component {
     constructor(props) {
+        console.log('basicinfo create constructor');
         super(props);
         this.state = {
             isAllValid: false,
             [JOB_NAME]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.Name
             },
             [JOB_TYPE]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.Type
             }
         };
-        this.dataSet = {
-            ID: '',
-            Name: '',
-            Type: ''
-        }
+        this.dataSet = props.data.json
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
-            let newDataSet = Object.assign({}, this.state);
-            delete newDataSet.isAllValid;
-
+        if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
+            // let newDataSet = Object.assign({}, this.state);
+            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                // console.log('will receive props, is valid: ' + this.state.isAllValid)
-                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
-            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
-    saveData = (name, result) => {
-        let newOriginalData = Object.assign({}, this.state, { [name]: result });
-        delete newOriginalData.isAllValid;
 
-        let newIsAllValid = true;
-        for (let key in newOriginalData) {
-            if (newOriginalData[key].isValid == false) {
-                newIsAllValid = false;
+    saveData = (name, result) => {
+        console.log(name);
+        console.log(result);
+        if (this.dataSet) {
+            switch (name) {
+                case JOB_NAME:
+                    this.dataSet.Name = normalProcess(result.data, UPLOAD);
+                    this.dataSet.ID = normalProcess(result.data, UPLOAD);
+                    break;
+                case JOB_TYPE:
+                    this.dataSet.Type = normalProcess(result.data, UPLOAD);
+                    break;
+                default: ;
             }
         }
-        switch (name) {
-            case JOB_NAME:
-                this.dataSet.Name = normalProcess(result.data, UPLOAD);
-                this.dataSet.ID = normalProcess(result.data, UPLOAD);
-                break;
-            case JOB_TYPE:
-                this.dataSet.Type = normalProcess(result.data, UPLOAD);
-                break;
-            default: ;
-        }
-        this.setState({
-            isAllValid: newIsAllValid,
-            [name]: result
+
+        this.setState((state, props) => {
+            let newOriginalData = Object.assign({}, state, { [name]: result });
+            delete newOriginalData.isAllValid;
+
+            let newIsAllValid = true;
+            for (let key in newOriginalData) {
+                if (newOriginalData[key].isValid === false) {
+                    newIsAllValid = false;
+                }
+            }
+            if (props.updateData && props.dataName) {
+                // props.updateData(props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
+                props.updateData(props.dataName, undefined, newIsAllValid);
+            }
+
+            return {
+                isAllValid: newIsAllValid,
+                [name]: result
+            }
         })
-        if (newIsAllValid == true) {
-            console.log(this.dataSet)
-        }
-        if (this.props.updateData && this.props.dataName) {
-            // console.log('name: ' + name)
-            // console.log('save data, is valid: ' + newIsAllValid)
-            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
-        }
     }
 
 
     render() {
-        const { classes, className, stepPosition } = this.props;
+        console.log('basicinfo render');
+        const { classes, className, stepPosition, data } = this.props;
 
         let rootWrap = classes.root;
-        if (stepPosition == 1) {
+        if (stepPosition === 1) {
             rootWrap += ' ' + classes.hidden;
         }
 
@@ -201,11 +202,11 @@ class BasicInfo extends Component {
         return (
             <div className={rootWrap}>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== -1} from={'right'} to={'left'}>
                         {
-                            stanzaList.map((item, index) => {
+                            stanzaList.map((item) => {
                                 let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
-                                if (value == '' || value == undefined) {
+                                if (value === '' || value === undefined) {
                                 } else {
                                     return (
                                         <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />
@@ -217,7 +218,7 @@ class BasicInfo extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 0} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -226,7 +227,7 @@ class BasicInfo extends Component {
                                         className={classes.marginBottom}
                                         name={item.name}
                                         title={item.title}
-                                        rules={item.rules}
+                                        rules={(data.type === 'edit' && item.rules.isImmutable) ? Object.assign({}, item.rules, { disabled: true }) : item.rules}
                                         options={item.options}
                                         defaultValue={dataSet[item.name].data}
                                         saveData={this.saveData}
@@ -237,7 +238,7 @@ class BasicInfo extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (

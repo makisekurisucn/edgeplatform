@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import EventItem from '../../components/EventItem';
-import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import { getTaskLogs, getBothTaskLogs } from '../../actions/Allocation';
 import FixedHeight from '../../components/FixedHeight';
 import Select from '../../components/Select/HorizontalButton';
@@ -136,13 +134,6 @@ class TaskLog extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        //需要修改，这里传进来的props为stdout和stderr，因此重复发一个相同请求后，判断前后props相同，不会更新，不会无限循环
-        // console.log('prev')
-        // console.log(this.props.taskLogs)
-        // console.log('next')
-        // console.log(next.taskLogs)
-        // console.log(this.props.taskLogs.stdout === next.taskLogs.stdout)
-        // console.log(this.props.taskLogs === next.taskLogs)
         if (nextProps.data.alloc.ID && nextProps.data.taskName) {
             const prevAllocID = this.props.data.alloc.ID;
             const prevTaskName = this.props.data.taskName;
@@ -240,7 +231,7 @@ class TaskLog extends Component {
 
 
     render() {
-        const { classes, className, data, taskLogs, stdout, stderr } = this.props;
+        const { classes, className, stdout, stderr } = this.props;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import ReactEcharts from 'echarts-for-react';
 import echarts from 'echarts';
 import { Map, Marker, Circle } from 'react-amap';
-import Search from '@material-ui/icons/Search';
 import SearchBox from '../../components/SearchBox';
 import ListItem from '../../components/DashboardListItem';
 import EmptyListItem from '../../components/DashboardListItem/EmptyListItem';
@@ -12,13 +11,11 @@ import FadeWrap from '../../components/FadeWrap';
 import ListNav from '../../components/ListNav';
 import DashboardNodeView from '../../containers/DashboardNodeView';
 import NumberBoard from '../../components/NumberBoard'
-import Button from '@material-ui/core/Button';
 import { getDCList, getNodeList } from '../../actions/DC';
 import { getWorkerDetail } from '../../actions/Node';
 import { setRegion } from '../../utils/handleRequest';
 import { getAllocationList } from '../../actions/Allocation';
 import { getNodePrometheus } from '../../actions/Prometheus';
-import { node } from 'prop-types';
 
 
 
@@ -570,7 +567,7 @@ class Dashboard extends Component {
                                     if (item.type === 'dc') {
                                         return <ListItem type='dc' itemData={item.DCInfo} region={item.DC.region} Datacenter={item.DC.Datacenter} index={index} onClick={this.showList} key={index} />
                                     } else if (item.type === 'node') {
-                                        return <ListItem type='search_node' itemData={{ ...item.DCInfo, name: item.node.name, ID: item.node.ID }} region={item.node.region} Datacenter={item.node.Datacenter} index={index} onClick={this.showDetail} key={index} selected={index == this.state.nodeIndex} />
+                                        return <ListItem type='search_node' itemData={{ ...item.DCInfo, name: item.node.name, ID: item.node.ID }} region={item.node.region} Datacenter={item.node.Datacenter} index={index} onClick={this.showDetail} key={index} selected={index === this.state.nodeIndex} />
                                     }
                                 })
                             }

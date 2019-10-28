@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import createSagaMiddleware from 'redux-saga';
-import { createStore, applyMiddleware} from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
 import './index.css';
@@ -15,7 +15,7 @@ import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProductio
 const sagaMiddleware = createSagaMiddleware();
 const composeEnhancers = composeWithDevTools({
     // options like actionSanitizer, stateSanitizer
-  });
+});
 const store = createStore(reducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
 sagaMiddleware.run(rootSagas);
 ReactDOM.render(
@@ -23,7 +23,7 @@ ReactDOM.render(
         <HashRouter>
             <App />
         </HashRouter>
-    </Provider>, 
+    </Provider>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

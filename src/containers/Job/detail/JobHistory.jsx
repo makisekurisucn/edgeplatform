@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import KvItem from '../../../components/KvItem';
-import Tabs from '../../../components/Tabs';
 import { formatTime } from '../../../utils/formatTime';
 import Select from '../../../components/Select/SelectButton';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
@@ -136,10 +135,10 @@ function HandleDiff(props) {
     } else {
         return <div>
             {
-                props.value ? <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} /> : null
+                props.value || props.value === 0 ? <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} /> : null
             }
             {
-                props.prevValue ? <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> : null
+                props.prevValue || props.prevValue === 0 ? <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> : null
             }
             {/* <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} />
             <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> */}
@@ -228,7 +227,7 @@ class JobHistory extends Component {
 
     render() {
         const { classes, className, data: jobDetail } = this.props;
-        const { detail, status, history: jobHistory } = jobDetail;
+        const { detail, jobHistory } = jobDetail;
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         // const taskList = detail.TaskGroups ? detail.TaskGroups[0].Tasks : [];

@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import { list, taskLogs } from "../apis/allocation";
 import { setRegion } from '../utils/handleRequest';
 
@@ -22,7 +22,7 @@ function* getTaskLogs(action) {
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: logs.error ? logs.data.msg : logs,
+            logs: logs.error ? logs.data.msg : logs.toString(),
             logType: action.params.type || 'stdout'
         }
     })
@@ -37,14 +37,14 @@ function* getBothTaskLogs(action) {
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: stdoutLogs.error ? stdoutLogs.data.msg : stdoutLogs,
+            logs: stdoutLogs.error ? stdoutLogs.data.msg : stdoutLogs.toString(),
             logType: 'stdout'
         }
     })
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
-            logs: stderrLogs.error ? stderrLogs.data.msg : stderrLogs,
+            logs: stderrLogs.error ? stderrLogs.data.msg : stderrLogs.toString(),
             logType: 'stderr'
         }
     })

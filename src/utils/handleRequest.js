@@ -1,5 +1,4 @@
-import { request } from './request'
-import { object, func } from 'prop-types';
+import { request } from './request';
 
 let currentRegion = '';
 let crossRegionRequest = '';
@@ -9,24 +8,27 @@ function getRegion() {
 }
 
 function getcrossRegionRequest() {
-
     return crossRegionRequest;
 }
 
 function setRegion(region) {
     currentRegion = region;
-    if (currentRegion === '') {
+    if (currentRegion === '' || currentRegion === null || currentRegion === undefined) {
         crossRegionRequest = '';
     } else {
-        crossRegionRequest = "?region=" + currentRegion;
+        // crossRegionRequest = "?region=" + currentRegion;
+        crossRegionRequest = "region=" + currentRegion;
     }
 }
 
-function handleRequest({ url, options, callback }) {
+function handleRequest({ url, options, customizedConf, callback }) {
     let token = { 'X-Nomad-Token': 'c5172544-9f25-8b2a-96a3-c713154191cd' };
-    url = url + getcrossRegionRequest();
+    // url = url + getcrossRegionRequest();
+    if (getcrossRegionRequest() !== '') {
+        url = url + (url.indexOf('?') > -1 ? '&' : '?') + getcrossRegionRequest();
+    }
     options.headers = Object.assign({}, options.headers, token);
-    return request({ url, options, callback });
+    return request({ url, options, customizedConf, callback });
 }
 
 

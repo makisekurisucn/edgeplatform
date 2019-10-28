@@ -7,10 +7,11 @@ import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import ProcessManage from '../../../components/ProcessManage';
 import HorizontalStepper from '../../../components/ProcessManage/HorizontalStepper';
 import FixedHeight from '../../../components/FixedHeight';
-import { createJob, initCreateJob } from '../../../actions/Job';
+import { getJobDetail, editJob } from '../../../actions/Job';
 import BasicInfo from '../jsonConfig/BasicInfoCreate';
 import JobInfo from '../jsonConfig/JobInfoCreate';
 import ScheduleStrategy from '../jsonConfig/ScheduleStrategyCreate';
+import Loading from '../../../components/Loading';
 
 
 const styles = theme => ({
@@ -115,23 +116,36 @@ const stepList = [
     }
 ];
 
-class JobCreate extends Component {
+const matchRouter = (current) => {
+    let currentArray = current.split('/');
+    let jobID, index;
+    index = currentArray.indexOf('jobs') + 1;
+    if (currentArray[index + 1] === 'edit') {
+        jobID = currentArray[index];
+    } else {
+        jobID = '';
+    }
+    return jobID;
+}
+
+class JobEdit extends Component {
     constructor(props) {
+        console.log('create constructor');
         super(props);
         this.state = {
             // titleIndex: 0,
             stepIndex: 0,
-            basicInfoData: {},
-            jobInfoData: {},
-            scheduleStrategyData: {},
+            // basicInfoData: {},
+            // jobInfoData: {},
+            // scheduleStrategyData: {},
             isAllCompleted: false,
             data: {
                 ID: '',
                 Name: '',
-                Type: 'service',
+                Type: '',
                 TaskGroups: [{
                     Name: '',
-                    Count: 1,
+                    Count: '',
                     Tasks: [{
                         Name: '',
                         Driver: '',
@@ -144,8 +158,8 @@ class JobCreate extends Component {
                         Env: {},
                         Services: [],
                         Resources: {
-                            CPU: 500,
-                            MemoryMB: 256,
+                            CPU: '',
+                            MemoryMB: '',
                             Networks: [{
                                 DynamicPorts: [],
                                 ReservedPorts: []
@@ -155,6 +169,21 @@ class JobCreate extends Component {
                 }]
             }
         };
+        this.jobID = matchRouter(this.props.location.pathname);
+    }
+
+    componentDidMount() {
+        const { dispatch } = this.props;
+        getJobDetail(dispatch, this.jobID);
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        if (nextProps.nativeDetail.ID && nextProps.nativeDetail !== this.props.nativeDetail) {
+            const detailCopy = JSON.parse(JSON.stringify(nextProps.nativeDetail));
+            this.setState({
+                data: detailCopy
+            })
+        }
     }
 
     createJob = () => {
@@ -166,11 +195,10 @@ class JobCreate extends Component {
                 task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
             })
         })
-        console.log(data)
         const { dispatch } = this.props;
-        // data.Datacenters = ["xidoumen"];
-        createJob(dispatch, { Job: data })
-        this.props.history.push(`/console/jobs/list`);
+        editJob(dispatch, this.jobID, { Job: data });
+
+        this.props.history.push(`/console/jobs/detail/${this.jobID}`);
     }
     goBack = () => {
         window.history.go(-1);
@@ -181,33 +209,36 @@ class JobCreate extends Component {
         })
     }
     handleUpload = (dataName, dataSet, isAllCompleted) => {
+        console.log('isAllCompleted: ' + isAllCompleted)
         this.setState({
-            [dataName]: dataSet,
+            // [dataName]: dataSet,
             isAllCompleted
         })
     }
     render() {
-        const { classes, className } = this.props;
+        const { classes, className, loading } = this.props;
 
         return (
             <Paper className={classes.root}>
                 <div className={classes.titleContent}>
                     <div className={classes.mainTitle}>
                         <ArrowBackIos className={classes.arrowBack} onClick={this.goBack} />
-                        <span>新建应用</span>
+                        <span>编辑应用</span>
                     </div>
                     <div className={classes.processArea}>
                         <HorizontalStepper steps={stepList} stepIndex={this.state.stepIndex}></HorizontalStepper>
                     </div>
                     {
                         this.state.isAllCompleted === true ?
-                            <span className={classes.createButton + ' ' + classes.validBkg} onClick={this.createJob}>新建</span> :
-                            <span className={classes.createButton}>新建</span>
+                            <span className={classes.createButton + ' ' + classes.validBkg} onClick={this.createJob}>更新</span> :
+                            <span className={classes.createButton}>更新</span>
                     }
                 </div>
                 <FixedHeight reducedHeight={110} className={classes.fixedHeight}>
                     <div className={classes.main}>
-                        <ProcessManage stepList={stepList} switchStep={this.changeStep} data={{ json: this.state.data, type: 'create' }} uploadData={this.handleUpload} />
+                        <Loading loading={loading}>
+                            <ProcessManage stepList={stepList} switchStep={this.changeStep} data={{ json: this.state.data, type: 'edit' }} uploadData={this.handleUpload} />
+                        </Loading>
                     </div>
                 </FixedHeight>
             </Paper>
@@ -215,13 +246,17 @@ class JobCreate extends Component {
         );
     }
 }
-JobCreate.propTypes = {
+JobEdit.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
+    console.log('vreate map state to props');
     console.log(state)
-    return state.jobcreate;
+    return {
+        loading: state.jobdetail.loading,
+        nativeDetail: state.jobdetail.nativeDetail
+    }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(JobCreate));
+export default connect(mapStateToProps)(withStyles(styles)(JobEdit));

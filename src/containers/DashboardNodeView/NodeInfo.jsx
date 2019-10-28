@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import KvItem from '../../components/KvItem'
-import Tabs from '../../components/Tabs';
 const styles = theme => ({
     root: {
         position: 'relative',

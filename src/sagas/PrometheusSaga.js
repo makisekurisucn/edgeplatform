@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import { getNodeCPUUtilization as getNodeCPUData, getNodeDiskUtilization as getNodeDiskData, getNodeMemoryUtilization as getNodeMemoryData } from "../apis/prometheus";
 import { getTaskCPUUtilization as getTaskCPUData, getTaskMemoryUtilization as getTaskMemoryData } from "../apis/prometheus";
 import {
@@ -58,7 +58,7 @@ function* getTaskResources(action) {
         let data = yield call(list[i].func, action.nodeID, action.DC, action.duration);
         if (!data.error) {
             const valuesArr = data.data.result[0] && data.data.result[0].values;
-            resources[list[i].name] = valuesArr === undefined ? valuesArr[valuesArr.length - 1][1] : 0;
+            resources[list[i].name] = valuesArr !== undefined ? valuesArr[valuesArr.length - 1][1] : 0;
         }
     }
     console.log(resources)

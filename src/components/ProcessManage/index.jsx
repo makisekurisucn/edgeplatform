@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import FadeWrap from '../../components/FadeWrap';
 import FixedHeight from '../../components/FixedHeight';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 // import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
@@ -82,6 +80,7 @@ const styles = theme => ({
 });
 class ProcessManage extends Component {
     constructor(props) {
+        console.log('processManage constructor');
         super(props);
         this.state = {
             currentStep: 0,
@@ -102,20 +101,18 @@ class ProcessManage extends Component {
     }
 
     updataData = (dataName, newDataSet, isStepValid) => {
-        console.log('update data')
-        console.log(isStepValid)
         this.setState({
             isCurrentStepValid: isStepValid
         })
         let isAllCompleted = false;
-        if (this.state.currentStep == (this.props.stepList.length - 1) && isStepValid == true) {
+        if (this.state.currentStep === (this.props.stepList.length - 1) && isStepValid === true) {
             isAllCompleted = true;
         }
         this.props.uploadData && this.props.uploadData(dataName, newDataSet, isAllCompleted)
     }
 
     render() {
-        const { classes, className, stepList = [], currentStep, reducedHeight, tabWrapColor, data, uploadData } = this.props;
+        const { classes, className, stepList = [], currentStep, reducedHeight, data, uploadData } = this.props;
 
         let classNameWrap = classes.root;
         if (className) {
@@ -152,7 +149,7 @@ class ProcessManage extends Component {
                                                 ss
                                                 `
                                             } */}
-                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} stepPosition={0} />
+                                            <step.component data={data} dataName={step.dataName} updateData={this.updataData} stepPosition={0} />
                                         </div>
                                     </FixedHeight>
                                 </div>
@@ -165,7 +162,7 @@ class ProcessManage extends Component {
                                     </div>
                                     <FixedHeight className={classes.fixedHeight} reducedHeight={270}>
                                         <div className={classes.stepMainContent}>
-                                            <step.component data={data[step.dataName]} dataName={step.dataName} updateData={this.updataData} stepPosition={index > this.state.currentStep ? 1 : -1} />
+                                            <step.component data={data} dataName={step.dataName} updateData={this.updataData} stepPosition={index > this.state.currentStep ? 1 : -1} />
                                         </div>
                                     </FixedHeight>
                                 </div>

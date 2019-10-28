@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -41,7 +41,7 @@ const styles = theme => ({
 
 function NormalInput(props) {
     const { classes, className, title, hint, defaultValue = '', rules = {}, data, name, saveData } = props;
-    const { required } = rules;
+    const { required, disabled } = rules;
     let inputArea = null, input = null;
 
     const handleFocus = (event) => {
@@ -56,13 +56,16 @@ function NormalInput(props) {
         //if数据验证有效
         if (saveData) {
             if (required) {
-                if (input.value == '') {
+                if (input.value === '') {
                     saveData(name, { isValid: false, data: input.value })
+                    console.log('false');
                 } else {
                     saveData(name, { isValid: true, data: input.value })
+                    console.log('true');
                 }
             } else {
                 saveData(name, { isValid: true, data: input.value })
+                console.log('true');
             }
         }
 
@@ -71,6 +74,8 @@ function NormalInput(props) {
 
     useEffect(() => {
         handleChange()
+        console.log('normal input');
+        console.log(input.value);
     }, [])
 
     let classNameWrap = classes.root;
@@ -84,7 +89,16 @@ function NormalInput(props) {
                 {required ? `*${title}` : title}
             </div>
             <div className={classes.inputArea} ref={ele => { inputArea = ele; }}>
-                <input className={classes.input} ref={ele => { input = ele; }} placeholder={hint} defaultValue={defaultValue} onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange} />
+                <input
+                    className={classes.input}
+                    ref={ele => { input = ele; }}
+                    placeholder={hint}
+                    defaultValue={defaultValue}
+                    disabled={disabled}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                />
             </div>
         </div>
     );

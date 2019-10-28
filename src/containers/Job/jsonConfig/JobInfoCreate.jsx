@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes, { func } from 'prop-types';
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
@@ -127,6 +126,17 @@ function multipleKVProcess(kvData = [], usingType) {
     }
 }
 
+function reverseMultipleKVProcess(data = {}) {
+    let resArr = [];
+    if (data === null) {
+        return [];
+    }
+    for (let key in data) {
+        resArr.push({ key: key, value: data[key] });
+    }
+    return resArr;
+}
+
 function multipleValueProcess(data = [], usingType) {
     let resArr = [];
     data.forEach((item) => {
@@ -137,6 +147,14 @@ function multipleValueProcess(data = [], usingType) {
     } else if (usingType === UPLOAD) {
         return resArr;
     }
+}
+
+function reverseMultipleValueProcess(data = []) {
+    let resArr = [];
+    data && data.forEach((item) => {
+        resArr.push({ value: item });
+    })
+    return resArr;
 }
 
 function portMappingProcess(data = [], usingType) {
@@ -170,6 +188,25 @@ function portMappingProcess(data = [], usingType) {
         return resObj;
     }
 
+}
+
+function reversePortMappingProcess({ services = [], portMap = [], networks = [] } = {}) {
+    let labelMap = {};
+    let resArr = [];
+    portMap && portMap.forEach((item) => {
+        for (let key in item) {
+            labelMap[key] = item[key];
+        }
+    })
+    networks && networks.forEach((network) => {
+        network.DynamicPorts && network.DynamicPorts.forEach((dynamicPort) => {
+            resArr.push({ LValue: labelMap[dynamicPort.Label], RValue: '', mapping: { value: 'DynamicPorts', display: '随机映射' } })
+        })
+        network.ReservedPorts && network.ReservedPorts.forEach((reservedPort) => {
+            resArr.push({ LValue: labelMap[reservedPort.Label], RValue: reservedPort.Value, mapping: { value: 'ReservedPorts', display: '静态映射' } })
+        })
+    })
+    return resArr;
 }
 
 
@@ -271,147 +308,115 @@ class JobInfo extends Component {
             isAllValid: false,
             [TASKS_DRIVER]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.TaskGroups[0].Tasks[0].Driver
             },
             [TASKS_CONFIG_IMAGE]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.TaskGroups[0].Tasks[0].Config.image
             },
             [TASKS_RESOURCES_CPU]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.TaskGroups[0].Tasks[0].Resources.CPU
             },
             [TASKS_RESOURCES_MEMORYMB]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.TaskGroups[0].Tasks[0].Resources.MemoryMB
             },
             [PORTMAPPING]: {
                 isValid: false,
-                data: undefined
+                data: reversePortMappingProcess({
+                    services: props.data.json.TaskGroups[0].Tasks[0].Config.image,
+                    portMap: props.data.json.TaskGroups[0].Tasks[0].Config.port_map,
+                    networks: props.data.json.TaskGroups[0].Tasks[0].Resources.Networks
+                })
             },
             [TASKS_CONFIG_COMMAND]: {
                 isValid: false,
-                data: undefined
+                data: props.data.json.TaskGroups[0].Tasks[0].Config.command
             },
             [TASKS_CONFIG_ARGS]: {
                 isValid: false,
-                data: undefined
+                data: reverseMultipleValueProcess(props.data.json.TaskGroups[0].Tasks[0].Config.args)
             },
             [TASKS_ENV]: {
                 isValid: false,
-                data: undefined
+                data: reverseMultipleKVProcess(props.data.json.TaskGroups[0].Tasks[0].Env)
             }
         };
-        this.dataSet = {
-            TaskGroups: [{
-                Name: '',
-                Count: 1,
-                Tasks: [{
-                    Name: '',
-                    Driver: '',
-                    Config: {
-                        args: ['', ''],
-                        command: '',
-                        image: '',
-                        port_map: [{
-                            'db': '6379'
-                        }]
-                    },
-                    Env: {
-                        '': '',
-                        '': ''
-                    },
-                    Services: [{
-                        Name: '',
-                        PortLabel: ''
-                    }],
-                    Resources: {
-                        CPU: '',
-                        MemoryMB: '',
-                        Networks: [{
-                            DynamicPorts: [{
-                                Label: 'db',
-                                Value: 0
-                            }]
-                        }]
-                    }
-                }]
-            }]
-        }
+        this.dataSet = props.data.json
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
-            let newDataSet = Object.assign({}, this.state);
-            delete newDataSet.isAllValid;
-
+        if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
+            // let newDataSet = Object.assign({}, this.state);
+            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
-            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
     saveData = (name, result) => {
-        let newOriginalData = Object.assign({}, this.state, { [name]: result });
-        delete newOriginalData.isAllValid;
-
-        let newIsAllValid = true;
-        for (let key in newOriginalData) {
-            if (newOriginalData[key].isValid == false) {
-                newIsAllValid = false;
+        if (this.dataSet) {
+            switch (name) {
+                case TASKS_DRIVER:
+                    this.dataSet.TaskGroups[0].Tasks[0].Driver = normalProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_CONFIG_IMAGE:
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.image = normalProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_RESOURCES_CPU:
+                    this.dataSet.TaskGroups[0].Tasks[0].Resources.CPU = numberProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_RESOURCES_MEMORYMB:
+                    this.dataSet.TaskGroups[0].Tasks[0].Resources.MemoryMB = numberProcess(result.data, UPLOAD);
+                    break;
+                case PORTMAPPING:
+                    const portMapData = portMappingProcess(result.data, UPLOAD);
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.port_map = portMapData.port_map;
+                    this.dataSet.TaskGroups[0].Tasks[0].Resources.Networks = portMapData.Networks;
+                    this.dataSet.TaskGroups[0].Tasks[0].Services = portMapData.Services;
+                    break;
+                case TASKS_CONFIG_COMMAND:
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.command = normalProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_CONFIG_ARGS:
+                    this.dataSet.TaskGroups[0].Tasks[0].Config.args = multipleValueProcess(result.data, UPLOAD);
+                    break;
+                case TASKS_ENV:
+                    this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
+                    break;
+                default: ;
             }
         }
-        this.setState({
-            isAllValid: newIsAllValid,
-            [name]: result
+
+        this.setState((state, props) => {
+            let newOriginalData = Object.assign({}, state, { [name]: result });
+            delete newOriginalData.isAllValid;
+
+            let newIsAllValid = true;
+            for (let key in newOriginalData) {
+                if (newOriginalData[key].isValid === false) {
+                    newIsAllValid = false;
+                }
+            }
+            if (props.updateData && props.dataName) {
+                // props.updateData(props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
+                props.updateData(props.dataName, undefined, newIsAllValid);
+            }
+            return {
+                isAllValid: newIsAllValid,
+                [name]: result
+            }
         })
-        switch (name) {
-            case TASKS_DRIVER:
-                this.dataSet.TaskGroups[0].Tasks[0].Driver = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKS_CONFIG_IMAGE:
-                this.dataSet.TaskGroups[0].Tasks[0].Config.image = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKS_RESOURCES_CPU:
-                this.dataSet.TaskGroups[0].Tasks[0].Resources.CPU = numberProcess(result.data, UPLOAD);
-                break;
-            case TASKS_RESOURCES_MEMORYMB:
-                this.dataSet.TaskGroups[0].Tasks[0].Resources.MemoryMB = numberProcess(result.data, UPLOAD);
-                break;
-            case PORTMAPPING:
-                const portMapData = portMappingProcess(result.data, UPLOAD);
-                this.dataSet.TaskGroups[0].Tasks[0].Config.port_map = portMapData.port_map;
-                this.dataSet.TaskGroups[0].Tasks[0].Resources.Networks = portMapData.Networks;
-                this.dataSet.TaskGroups[0].Tasks[0].Services = portMapData.Services;
-                break;
-            case TASKS_CONFIG_COMMAND:
-                this.dataSet.TaskGroups[0].Tasks[0].Config.command = normalProcess(result.data, UPLOAD);
-                break;
-            case TASKS_CONFIG_ARGS:
-                this.dataSet.TaskGroups[0].Tasks[0].Config.args = multipleValueProcess(result.data, UPLOAD);
-                break;
-            case TASKS_ENV:
-                this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
-                break;
-            default: ;
-        }
-
-        if (newIsAllValid == true) {
-            console.log(this.dataSet)
-        }
-
-        if (this.props.updateData && this.props.dataName) {
-            this.props.updateData(this.props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
-        }
     }
 
     render() {
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;
-        // if (stepPosition > 0) {
-        if (stepPosition == 1) {
+        if (stepPosition === 1) {
             rootWrap += ' ' + classes.hidden;
         }
 
@@ -436,11 +441,12 @@ class JobInfo extends Component {
         return (
             <div className={rootWrap}>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== -1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
-                                if (value == '' || value == undefined) {
+                                if (value === '' || value === undefined) {
+                                    return null
                                 } else {
                                     return (
                                         <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />
@@ -448,19 +454,11 @@ class JobInfo extends Component {
                                 }
                             })
                         }
-                        {/* <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
-                        <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} />
-                        <KvItem keyName="CPU" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_CPU].data, 'MHz')} style={style} />
-                        <KvItem keyName="内存" className={classes.kvItem} value={numberProcess(dataSet[TASKS_RESOURCES_MEMORYMB].data, 'MB')} style={style} />
-                        <KvItem keyName="端口映射" className={classes.kvItem} value={portMappingProcess(dataSet[PORTMAPPING].data)} style={style} />
-                        <KvItem keyName="启动命令" className={classes.kvItem} value={dataSet[TASKS_CONFIG_COMMAND].data} style={style} />
-                        <KvItem keyName="启动参数" className={classes.kvItem} value={multipleValueProcess(dataSet[TASKS_CONFIG_ARGS].data)} style={style} />
-                        <KvItem keyName="环境变量" className={classes.kvItem} value={multipleKVProcess(dataSet[TASKS_ENV].data)} style={style} /> */}
 
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 0} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -478,20 +476,10 @@ class JobInfo extends Component {
                                 )
                             })
                         }
-                        {/* <NormalSelect className={classes.marginBottom} name={TASKS_DRIVER} title={'运行时'} options={drives} defaultValue={dataSet[TASKS_DRIVER].data} required saveData={this.saveData} />
-                        <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_IMAGE} title={'镜像'} required saveData={this.saveData} defaultValue={dataSet[TASKS_CONFIG_IMAGE].data} />
-                        <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_CPU} title={'CPU'} unit={'MHz'} defaultValue={dataSet[TASKS_RESOURCES_CPU].data} rules={{ step: 128, maxValue: 512, minValue: 0 }} saveData={this.saveData} />
-                        <NumberInput className={classes.marginBottom} name={TASKS_RESOURCES_MEMORYMB} title={'内存'} unit={'MB'} defaultValue={dataSet[TASKS_RESOURCES_MEMORYMB].data} rules={{ step: 128, maxValue: 1280, minValue: 0 }} saveData={this.saveData} />
-                        <PortMapInput className={classes.marginBottom} name={PORTMAPPING} title={'端口映射'} defaultValue={dataSet[PORTMAPPING].data} saveData={this.saveData} />
-                        <NormalInput className={classes.marginBottom} name={TASKS_CONFIG_COMMAND} title={'启动命令'} defaultValue={dataSet[TASKS_CONFIG_COMMAND].data} saveData={this.saveData} />
-                        <MultipleInput className={classes.marginBottom} name={TASKS_CONFIG_ARGS} title={'启动参数'} defaultValue={dataSet[TASKS_CONFIG_ARGS].data} hint={'请输入参数'} saveData={this.saveData} />
-                        <KvInput className={classes.marginBottom} name={TASKS_ENV} title={'环境变量'} defaultValue={dataSet[TASKS_ENV].data} saveData={this.saveData} /> */}
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
-                        {/* <KvItem keyName="运行时" className={classes.kvItem} value={kvMap[dataSet[TASKS_DRIVER].data]} style={style} />
-                        <KvItem keyName="镜像" className={classes.kvItem} value={dataSet[TASKS_CONFIG_IMAGE].data} style={style} /> */}
+                    <FadeWrap isHidden={stepPosition !== 1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -499,14 +487,6 @@ class JobInfo extends Component {
                                 )
                             })
                         }
-                        {/* <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} />
-                        <CoveredKvItem className={classes.kvItem} /> */}
                     </FadeWrap>
                 </div>
             </div>

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes, { func } from 'prop-types';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
 import KvInput from '../../../components/FormController/MultipleKvInput';
 import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
-import PortMapInput from '../../../components/FormController/PortMapInput';
 import KvItem from '../../../components/KvItem';
 import CoveredKvItem from '../../../components/KvItem/CoveredKvItem';
 import FadeWrap from '../../../components/FadeWrap';
@@ -43,95 +41,165 @@ const styles = theme => ({
     }
 });
 
+
+const JOB_DATACENTERS = "Job-Datacenters",
+    TASKGROUPS_COUNT = "TaskGroups-Count";
+
+const DISPLAY = 'display', UPLOAD = 'upload';
+
 const kvMap = {};
 
 function processWrap(func, ...values) {
-    return function (data) {
-        return func(data, values);
+    return function (data, usingType) {
+        return func(data, usingType, values);
     }
 }
 
-function multipleKVProcess(kvData = []) {
-    let resArr = [];
-    kvData.forEach((item) => {
-        resArr.push(`${item.key}=${item.value}`);
-    })
-    return resArr.join('\n');
+function multipleKVProcess(kvData = [], usingType) {
+    if (usingType === DISPLAY) {
+        let resArr = [];
+        kvData.forEach((item) => {
+            resArr.push(`${item.key}=${item.value}`);
+        })
+        return resArr.join('\n');
+    } else if (usingType === UPLOAD) {
+        let resObj = {};
+        kvData.forEach((item) => {
+            resObj[item.key] = item.value;
+        })
+        return resObj;
+    }
 }
 
-function multipleValueProcess(data = []) {
+function multipleValueProcess(data = [], usingType) {
     let resArr = [];
     data.forEach((item) => {
         resArr.push(`${item.value}`);
     })
-    return resArr.join('\n');
+    if (usingType === DISPLAY) {
+        return resArr.join('\n');
+    } else if (usingType === UPLOAD) {
+        return resArr;
+    }
 }
 
-function portMappingProcess(data = []) {
+function reverseMultipleValueProcess(data = []) {
     let resArr = [];
-    data.forEach((item) => {
-        resArr.push(`${item.LValue} ->${item.mapping.display} ${item.RValue}`);
+    data && data.forEach((item) => {
+        resArr.push({ value: item });
     })
-    return resArr.join('\n');
+    return resArr;
 }
 
-function numberProcess(data, unit) {
-    return `${data}${unit}`;
+function numberProcess(data, usingType, unit = '') {
+    if (usingType === DISPLAY) {
+        return `${data}${unit}`;
+    } else if (usingType === UPLOAD) {
+        return data;
+    }
 }
 
-function normalProcess(data) {
-    return kvMap[data] || data;
+function normalProcess(data, usingType) {
+    if (usingType === DISPLAY) {
+        return kvMap[data] || data;
+    } else if (usingType === UPLOAD) {
+        return data;
+    }
 }
 
-const stanzaList = [];
+const stanzaList = [
+    {
+        name: TASKGROUPS_COUNT,
+        title: '实例数',
+        dataProcess: processWrap(numberProcess),
+        component: NumberInput,
+        rules: {
+            required: true,
+            step: 1,
+            maxValue: 100,
+            minValue: 1
+        }
+    },
+    {
+        name: JOB_DATACENTERS,
+        title: '数据中心',
+        // options: drives,
+        dataProcess: processWrap(multipleValueProcess),
+        component: MultipleInput,
+        rules: {
+            required: true
+        }
+    }
+]
 
 class ScheduleStrategy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isAllValid: true
-
+            isAllValid: false,
+            [JOB_DATACENTERS]: {
+                isValid: false,
+                data: reverseMultipleValueProcess(props.data.json.Datacenters)
+            },
+            [TASKGROUPS_COUNT]: {
+                isValid: false,
+                data: props.data.json.TaskGroups[0].Count
+            }
         };
+        this.dataSet = props.data.json
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.stepPosition == 0 && this.props.stepPosition !== 0) {
-            let newDataSet = Object.assign({}, this.state);
-            delete newDataSet.isAllValid;
-
+        if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
+            // let newDataSet = Object.assign({}, this.state);
+            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
+                this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
-            // this.props.updataStatus(this.state.isAllValid)
         }
     }
 
     saveData = (name, result) => {
-        let newDataSet = Object.assign({}, this.state, { [name]: result });
-        delete newDataSet.isAllValid;
-
-        let newIsAllValid = true;
-        for (let key in newDataSet) {
-            if (newDataSet[key].isValid == false) {
-                newIsAllValid = false;
+        if (this.dataSet) {
+            switch (name) {
+                case JOB_DATACENTERS:
+                    this.dataSet.Datacenters = multipleValueProcess(result.data, UPLOAD);
+                    break;
+                case TASKGROUPS_COUNT:
+                    this.dataSet.TaskGroups[0].Count = numberProcess(result.data, UPLOAD);
+                    break;
+                default: ;
             }
         }
-        this.setState({
-            isAllValid: newIsAllValid,
-            [name]: result
+
+        this.setState((state, props) => {
+            let newOriginalData = Object.assign({}, state, { [name]: result });
+            delete newOriginalData.isAllValid;
+
+            let newIsAllValid = true;
+            for (let key in newOriginalData) {
+                if (newOriginalData[key].isValid === false) {
+                    newIsAllValid = false;
+                }
+            }
+            if (props.updateData && props.dataName) {
+                props.updateData(props.dataName, undefined, newIsAllValid);
+            }
+
+            return {
+                isAllValid: newIsAllValid,
+                [name]: result
+            }
         })
-        if (this.props.updateData && this.props.dataName) {
-            this.props.updateData(this.props.dataName, newDataSet, newIsAllValid);
-        }
     }
 
-
     render() {
+        console.log('schedule render');
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;
-        // if (stepPosition > 0) {
-        if (stepPosition == 1) {
+        if (stepPosition === 1) {
             rootWrap += ' ' + classes.hidden;
         }
 
@@ -156,11 +224,12 @@ class ScheduleStrategy extends Component {
         return (
             <div className={rootWrap}>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != -1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== -1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
-                                let value = item.dataProcess(dataSet[item.name].data);
-                                if (value == '' || value == undefined) {
+                                let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
+                                if (value === '' || value === undefined) {
+                                    return null
                                 } else {
                                     return (
                                         <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />
@@ -168,11 +237,10 @@ class ScheduleStrategy extends Component {
                                 }
                             })
                         }
-
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 0} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 0} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -193,7 +261,7 @@ class ScheduleStrategy extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition != 1} from={'right'} to={'left'}>
+                    <FadeWrap isHidden={stepPosition !== 1} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -208,6 +276,6 @@ class ScheduleStrategy extends Component {
     }
 }
 ScheduleStrategy.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 export default withStyles(styles)(ScheduleStrategy);

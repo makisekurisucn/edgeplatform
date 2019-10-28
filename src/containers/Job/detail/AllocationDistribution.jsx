@@ -194,7 +194,6 @@ class AllocationDistribution extends Component {
 
     showAlloc = (item, index) => {
         let isHidden = false;
-        const { dispatch } = this.props;
         if (this.state.allocIndex !== index) {
             this.setState({
                 isTaskDetailHidden: isHidden,
@@ -408,7 +407,7 @@ class AllocationDistribution extends Component {
                             <FixedHeight reducedHeight={227}>
                                 {
 
-searchList_sort.length < 1 ? <EmptyListItem></EmptyListItem> : searchList_sort.map((item, index) => {  //searchList.map((item, index) => {
+                                    searchList_sort.length < 1 ? <EmptyListItem></EmptyListItem> : searchList_sort.map((item, index) => {  //searchList.map((item, index) => {
                                         if (index === this.state.allocIndex) {
                                             return <ListItem onClick={this.showAlloc} index={index} itemData={item} key={item.title} selected></ListItem>;
                                         } else {

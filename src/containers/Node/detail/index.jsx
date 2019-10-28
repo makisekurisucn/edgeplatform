@@ -6,9 +6,6 @@ import Tabs from '../../../components/Tabs';
 import Paper from '@material-ui/core/Paper';
 // import { getJobDetail, resetStatus } from '../../../actions/Job';
 // import { getDCList } from '../../../actions/DC';
-import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
-import Divider from '@material-ui/core/Divider';
-import { formatTime } from '../../../utils/formatTime';
 import { getWorkerDetail, resetStatus } from '../../../actions/Node';
 import { setRegion, getRegion } from '../../../utils/handleRequest';
 import AppMainUpper from '../../../components/AppMainUpper';
@@ -94,9 +91,9 @@ class WorkNodeDetail extends Component {
 
 
     render() {
-        const { classes, match, detail } = this.props;
+        const { classes, detail } = this.props;
 
-        const { index, statusIndex } = this.state;
+        // const { index, statusIndex } = this.state;
         let defaultCommand = {};
 
         switch (detail.Status) {

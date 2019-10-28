@@ -93,8 +93,6 @@ class SelectButton extends Component {
         this.state = {
             selected: false
         };
-    }
-    UNSAFE_componentWillMount() {
         this.list = [];
     }
     UNSAFE_componentWillReceiveProps(nextProp) {
@@ -127,7 +125,7 @@ class SelectButton extends Component {
     }
 
     render() {
-        const { classes, className, title, list, valueKey, displayKey, value } = this.props;
+        const { classes, className, value } = this.props;
         const internalList = this.list;
         let display;
         let classNameWrap = classes.root;
@@ -139,7 +137,6 @@ class SelectButton extends Component {
                 display = item.display;
             }
         });
-        console.log(internalList)
         return (
             <div className={classNameWrap}>
                 <p className={classes.display}>
