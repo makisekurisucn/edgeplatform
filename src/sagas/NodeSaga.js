@@ -1,11 +1,12 @@
 import { takeLatest, put, call, fork } from 'redux-saga/effects';
-import { list as getWorkerList, serverList as getServerList, getWorkerDetail } from "../apis/node"
+import { list as getWorkerList, serverList as getServerList, getWorkerDetail } from "../apis/node";
+import { requestSaga } from './requestSaga';
 
 // import { fetchAvatar } from '../servers/detail';
 
 function* getNodeServerlist(action) {
 
-    let list = yield call(getServerList);
+    let list = yield* requestSaga(call, getServerList);
     if (!list.error) {
         yield put({
             type: "NODE_UPDATE_SERVERLIST",
@@ -18,7 +19,7 @@ function* getNodeServerlist(action) {
 
 function* getNodeWorkerlist(action) {
 
-    let workerList = yield call(getWorkerList);
+    let workerList = yield* requestSaga(call, getWorkerList);
     if (!workerList.error) {
         yield put({
             type: "NODE_UPDATE_WORKERLIST",
@@ -26,17 +27,18 @@ function* getNodeWorkerlist(action) {
                 list: workerList || []
             }
         });
-        for(let node of workerList){
-            yield fork(getNodeWorkerAdditional,node.ID, workerList);
+        for (let node of workerList) {
+            yield fork(getNodeWorkerAdditional, node.ID, workerList);
         }
     }
 }
-function* getNodeWorkerAdditional(nodeID, workerList){
-    let workerDetail = yield call(getWorkerDetail, nodeID);
+
+function* getNodeWorkerAdditional(nodeID, workerList) {
+    let workerDetail = yield* requestSaga(call, getWorkerDetail, nodeID);
     if (!workerDetail.error) {
         let res = [];
-        for(let i=0;i< workerList.length; i++){
-            if(workerList[i].ID === nodeID){
+        for (let i = 0; i < workerList.length; i++) {
+            if (workerList[i].ID === nodeID) {
                 workerList[i].location = workerDetail.Meta.address || '未知';
             }
             res.push(workerList[i]);
@@ -49,9 +51,10 @@ function* getNodeWorkerAdditional(nodeID, workerList){
         });
     }
 }
+
 function* getNodeWorkerDetail(action) {
 
-    let workerDetail = yield call(getWorkerDetail, action.data);
+    let workerDetail = yield* requestSaga(call, getWorkerDetail, action.data);
     if (!workerDetail.error) {
         yield put({
             type: "NODE_UPDATE_WORKERDETAIL",

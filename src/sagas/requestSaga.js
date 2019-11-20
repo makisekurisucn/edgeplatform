@@ -1,27 +1,23 @@
 import { takeLatest, put, call, all } from 'redux-saga/effects';
-// import { list, create, detail, history, status, purge, edit, blockingList, blockingDetail } from "../apis/job"
-// import { list as listNode } from "../apis/node"
 
 
-function* requestSaga(api, ...values) {
-    // yield put({
-    //     type: "JOB_GET_JOBLIST_START"
-    // });
-    // let joblist = yield call(list);
-    // yield put({
-    //     type: "JOB_UPDATE_JOBLIST",
-    //     data: {
-    //         list: joblist.error ? [] : joblist || []
-    //     }
-    // });
-    let result = yield call(api, ...values)
+function* requestSaga(func, api, ...values) {
+    let result = yield func(api, ...values)
     if (result.error) {
+        console.log(result);
+        let date = new Date();
         yield put({
-            type: "",
-            data: ""
+            type: "NOTIFICATION_ADD_NOTIFICATIONLIST",
+            data: {
+                key: date.valueOf(),
+                type: 'error',
+                title: '',
+                content: '',
+                date: date.valueOf()
+            }
         })
     }
     return result;
 }
 
-export default requestSaga;
+export { requestSaga };

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
+import Notification from '../Notification';
 import { getRegionList } from '../../actions/Region'
 import TopButton from '../NavButton'
 import Select from '../Select'
@@ -50,6 +51,9 @@ const styles = theme => ({
     },
     actionArea: {
         // padding: "0px 10px"
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     buttonRoot: {
         height: 60,
@@ -122,6 +126,7 @@ class TopBar extends Component {
                         // displayKey="regionName" 
                         value={this.state.currentRegion}
                         onSelected={this.selectRegion} ></Select>
+                    <Notification />
                 </div>
             </div>
         );

@@ -19,7 +19,7 @@ const styles = theme => ({
         backgroundColor: 'rgb(51,66,69)'
     },
     selectedWrap: {
-        backgroundColor: "#262E2F" 
+        backgroundColor: "#262E2F"
     },
     // selected: {
     //     height: 4,
@@ -61,7 +61,7 @@ class Button extends Component {
         this.state = {
             selected: false
         };
-        props.history.listen((location) => {
+        this.unlisten = props.history.listen((location) => {
             console.log(location.pathname);
             this.setState({
                 selected: hasRouter(location.pathname, props.link)
@@ -83,6 +83,11 @@ class Button extends Component {
             });
         }
     }
+
+    componentWillUnmount() {
+        this.unlisten();
+    }
+
     goTo = (link) => (event) => {
         console.log(link);
         // if (!this.state.selected) {

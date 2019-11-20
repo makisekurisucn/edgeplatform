@@ -9,10 +9,11 @@ import {
     getNodeAllocatedMemory,
     getNodeUnallocatedMemory,
 } from "../apis/prometheus";
+import { requestSaga } from './requestSaga';
 
 
 function* getNodeCPUUtilization(action) {
-    let CPUData = yield call(getNodeCPUData, action.nodeID, action.DC, action.duration);
+    let CPUData = yield* requestSaga(call, getNodeCPUData, action.nodeID, action.DC, action.duration);
 
     if (!CPUData.error) {
         yield put({
@@ -23,7 +24,7 @@ function* getNodeCPUUtilization(action) {
 }
 
 function* getNodeDiskUtilization(action) {
-    let DiskData = yield call(getNodeDiskData, action.nodeID, action.DC, action.duration);
+    let DiskData = yield* requestSaga(call, getNodeDiskData, action.nodeID, action.DC, action.duration);
 
     if (!DiskData.error) {
         yield put({
@@ -34,7 +35,7 @@ function* getNodeDiskUtilization(action) {
 }
 
 function* getNodeMemoryUtilization(action) {
-    let MemoryData = yield call(getNodeMemoryData, action.nodeID, action.DC, action.duration);
+    let MemoryData = yield* requestSaga(call, getNodeMemoryData, action.nodeID, action.DC, action.duration);
 
     if (!MemoryData.error) {
         yield put({
@@ -55,7 +56,7 @@ function* getTaskResources(action) {
     ]
     let resources = {};
     for (let i = 0; i < list.length; i++) {
-        let data = yield call(list[i].func, action.nodeID, action.DC, action.duration);
+        let data = yield* requestSaga(call, list[i].func, action.nodeID, action.DC, action.duration);
         if (!data.error) {
             const valuesArr = data.data.result[0] && data.data.result[0].values;
             resources[list[i].name] = valuesArr !== undefined ? valuesArr[valuesArr.length - 1][1] : 0;
@@ -71,7 +72,7 @@ function* getTaskResources(action) {
 }
 
 function* getTaskCPUUtilization(action) {
-    let CPUData = yield call(getTaskCPUData, action.allocID, action.taskName, action.duration);
+    let CPUData = yield* requestSaga(call, getTaskCPUData, action.allocID, action.taskName, action.duration);
 
     if (!CPUData.error) {
         yield put({
@@ -82,7 +83,7 @@ function* getTaskCPUUtilization(action) {
 }
 
 function* getTaskMemoryUtilization(action) {
-    let MemoryData = yield call(getTaskMemoryData, action.allocID, action.taskName, action.duration);
+    let MemoryData = yield* requestSaga(call, getTaskMemoryData, action.allocID, action.taskName, action.duration);
 
     if (!MemoryData.error) {
         yield put({

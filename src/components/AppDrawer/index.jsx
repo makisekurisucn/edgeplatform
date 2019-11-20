@@ -23,15 +23,15 @@ const styles = theme => ({
         lineHeight: '50px',
         textAlign: 'center',
         fontSize: 18,
-        color:'rgb(68, 105, 128)',
+        color: 'rgb(68, 105, 128)',
         '&:hover': {
             backgroundColor: "#CDCDCD"
         },
         //
         backgroundColor: 'rgb(230,230,230)'
     },
-    placeholder :{
-        height:'49px', //临时占位符
+    placeholder: {
+        height: '49px', //临时占位符
     },
 
     selectedWrap: {
@@ -72,7 +72,8 @@ const styles = theme => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        backgroundColor: "rgb(241, 241, 241)"
+        backgroundColor: "rgb(241, 241, 241)",
+        zIndex: 1000
     },
     toolbar: theme.mixins.toolbar
 });
@@ -124,9 +125,9 @@ class AppDrawer extends Component {
                     {menuList.map((item, index) => {
                         if (item.type === "link") {
                             if (index === 1) {
-                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected1 ,selectedBgc:classes.selectedWrap}} key={item.text}></SideButton>
+                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected1, selectedBgc: classes.selectedWrap }} key={item.text}></SideButton>
                             } else {
-                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected2 ,selectedBgc:classes.selectedWrap}} key={item.text}></SideButton>
+                                return <SideButton content={item.text} link={item.link} className={{ buttonRoot: classes.buttonRoot, selected: classes.selected2, selectedBgc: classes.selectedWrap }} key={item.text}></SideButton>
                             }
                         }
                         if (item.type === "divider") {

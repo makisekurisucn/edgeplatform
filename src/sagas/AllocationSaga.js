@@ -1,10 +1,11 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import { list, taskLogs } from "../apis/allocation";
 import { setRegion } from '../utils/handleRequest';
+import { requestSaga } from './requestSaga';
 
 
 function* getAllocationlist(action) {
-    let allocationlist = yield call(list);
+    let allocationlist = yield* requestSaga(call, list);
 
     if (!allocationlist.error) {
         yield put({
@@ -18,7 +19,7 @@ function* getAllocationlist(action) {
 }
 
 function* getTaskLogs(action) {
-    const logs = yield call(taskLogs, action.id, action.params);
+    const logs = yield* requestSaga(call, taskLogs, action.id, action.params);
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',
         data: {
@@ -30,9 +31,9 @@ function* getTaskLogs(action) {
 
 function* getBothTaskLogs(action) {
     let stdoutParams = Object.assign({}, action.params, { type: 'stdout' });
-    const stdoutLogs = yield call(taskLogs, action.id, stdoutParams);
+    const stdoutLogs = yield* requestSaga(call, taskLogs, action.id, stdoutParams);
     let stderrParams = Object.assign({}, action.params, { type: 'stderr' });
-    const stderrLogs = yield call(taskLogs, action.id, stderrParams);
+    const stderrLogs = yield* requestSaga(call, taskLogs, action.id, stderrParams);
 
     yield put({
         type: 'ALLOCATION_UPDATE_TASKLOGS',

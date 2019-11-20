@@ -2,10 +2,11 @@ import { takeLatest, put, call } from 'redux-saga/effects';
 import { list as getWorkerList, getWorkerDetail } from "../apis/node";
 import { getList as getRegionList } from "../apis/region";
 import { setRegion } from '../utils/handleRequest';
+import { requestSaga } from './requestSaga';
 
 
 function* getDClist(action) {
-    let regionList = yield call(getRegionList);
+    let regionList = yield* requestSaga(call, getRegionList);
     let DClist = [];
     let allRegionNodelist = [];
     let DCInfoMap = {};
@@ -25,14 +26,14 @@ function* getDClist(action) {
         DCInfoMap[regionList[i]] = {};
 
         setRegion(regionList[i]);
-        let workerList = yield call(getWorkerList);
+        let workerList = yield* requestSaga(call, getWorkerList);
         for (let j = 0; j < workerList.length; j++) {
             if (DClistInRegion.indexOf(workerList[j].Datacenter) > -1) {
-                let workerDetail = yield call(getWorkerDetail, workerList[j].ID);
+                let workerDetail = yield* requestSaga(call, getWorkerDetail, workerList[j].ID);
                 DCInfoMap[regionList[i]][workerList[j].Datacenter] = Object.assign({}, DCInfoMap[regionList[i]][workerList[j].Datacenter], workerDetail.Meta);
             } else {
                 DClistInRegion.push(workerList[j].Datacenter);
-                let workerDetail = yield call(getWorkerDetail, workerList[j].ID);
+                let workerDetail = yield* requestSaga(call, getWorkerDetail, workerList[j].ID);
                 DCInfoMap[regionList[i]][workerList[j].Datacenter] = Object.assign({}, initialMeta, workerDetail.Meta);
             }
             allRegionNodelist.push({
@@ -59,7 +60,7 @@ function* getNodelist(action) {
     let nodelist = [];
 
     setRegion(action.region);
-    let workerList = yield call(getWorkerList);
+    let workerList = yield* requestSaga(call, getWorkerList);
     if (!workerList.error) {
         for (let i = 0; i < workerList.length; i++) {
             if (workerList[i].Datacenter === action.Datacenter) {

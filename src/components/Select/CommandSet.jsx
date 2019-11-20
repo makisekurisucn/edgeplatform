@@ -55,7 +55,7 @@ const styles = theme => ({
         },
         backgroundColor: '#4BAF7E',
         textAlign: 'center',
-        zIndex: 10000
+        zIndex: 200
     },
     displayText: {
         // marginRight: '-20px',

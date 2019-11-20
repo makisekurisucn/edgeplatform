@@ -1,6 +1,7 @@
 import { takeLatest, put, call, all } from 'redux-saga/effects';
 import { list, create, detail, history, status, purge, edit, blockingList, blockingDetail } from "../apis/job"
-import { list as listNode } from "../apis/node"
+import { list as listNode } from "../apis/node";
+import { requestSaga } from './requestSaga';
 
 // import { fetchAvatar } from '../servers/detail';
 let blockingListConstructor, blockingDetailConstructor;
@@ -9,7 +10,8 @@ function* getJoblist(action) {
     yield put({
         type: "JOB_GET_JOBLIST_START"
     });
-    let joblist = yield call(list);
+    // let joblist = yield call(list);
+    let joblist = yield* requestSaga(call, list);
     yield put({
         type: "JOB_UPDATE_JOBLIST",
         data: {
@@ -28,10 +30,11 @@ function* getBlockingJoblist(action) {
         blockingListConstructor = new AbortController();
         const signal = blockingListConstructor.signal;
 
-        const initialResponse = yield call(list);
+        const initialResponse = yield* requestSaga(call, list);
         let X_Nomad_Index = initialResponse._getHeaders()['X-Nomad-Index'];
         while (true) {
-            let blockingJoblist = yield call(blockingList, { index: X_Nomad_Index, wait: action.wait }, { signal });
+            // let blockingJoblist = yield call(blockingList, { index: X_Nomad_Index, wait: action.wait }, { signal });
+            let blockingJoblist = yield* requestSaga(call, blockingList, { index: X_Nomad_Index, wait: action.wait }, { signal });
             if (!blockingJoblist.error) {
                 const new_X_Nomad_Index = blockingJoblist._getHeaders()['X-Nomad-Index'];
                 if (X_Nomad_Index === new_X_Nomad_Index) {
@@ -56,7 +59,7 @@ function* createJob(action) {
     yield put({
         type: "JOB_CREATE_START"
     });
-    let res = yield call(create, action.data);
+    let res = yield* requestSaga(call, create, action.data);
     if (res.error) {
         yield put({
             type: "JOB_CREATE_FAIL",
@@ -70,7 +73,7 @@ function* createJob(action) {
 }
 
 function* editJob(action) {
-    let res = yield call(edit, action.id, action.data);
+    let res = yield* requestSaga(call, edit, action.id, action.data);
     //can delete
     // if (!res.error) {
     //     console.log('edit success');
@@ -84,7 +87,7 @@ function* editJob(action) {
 
 function* deleteJob(action) {
     console.log('delete saga')
-    let res = yield call(purge, action.data);
+    let res = yield* requestSaga(call, purge, action.data);
     //can delete
     // if (!res.error) {
     //     console.log('delete success')
@@ -96,7 +99,7 @@ function* getJobDetail(action) {
     yield put({
         type: "JOB_GETDETAIL_START"
     });
-    let jobdetail = yield call(detail, action.data);
+    let jobdetail = yield* requestSaga(call, detail, action.data);
     if (!jobdetail.error) {
         yield put({
             type: "JOB_UPDATE_JOBDETAIL",
@@ -139,10 +142,10 @@ function* getBlockingJobDetail(action) {
         blockingDetailConstructor = new AbortController();
         const signal = blockingDetailConstructor.signal;
 
-        const initialResponse = yield call(detail, action.data);
+        const initialResponse = yield* requestSaga(call, detail, action.data);
         let X_Nomad_Index = initialResponse._getHeaders()['X-Nomad-Index'];
         while (true) {
-            let blockingJobDetail = yield call(blockingDetail, action.data, { index: X_Nomad_Index, wait: action.wait }, { signal });
+            let blockingJobDetail = yield* requestSaga(call, blockingDetail, action.data, { index: X_Nomad_Index, wait: action.wait }, { signal });
             if (!blockingJobDetail.error) {
                 const new_X_Nomad_Index = blockingJobDetail._getHeaders()['X-Nomad-Index'];
                 if (X_Nomad_Index === new_X_Nomad_Index) {
@@ -185,7 +188,7 @@ function* getBlockingJobDetail(action) {
 }
 
 function* getJobHistory(action) {
-    let jobHistory = yield call(history, action.data.id);
+    let jobHistory = yield* requestSaga(call, history, action.data.id);
     if (!jobHistory.error) {
         yield put({
             type: "JOB_UPDATE_JOBHISTORY",
@@ -197,10 +200,12 @@ function* getJobHistory(action) {
 }
 
 function* getJobStatus(action) {
-    let [jobStatus, nodeList] = yield all([
-        call(status, action.data.id),
-        call(listNode)
-    ]);
+    let jobStatus = yield* requestSaga(call, status, action.data.id);
+    let nodeList = yield* requestSaga(call, listNode);
+    // let [jobStatus, nodeList] = yield all([
+    //     call(status, action.data.id),
+    //     call(listNode)
+    // ]);
 
     if (!(jobStatus.error || nodeList.error)) {
         yield put({

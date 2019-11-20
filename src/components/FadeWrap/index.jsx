@@ -161,7 +161,8 @@ FadeWrap.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
-    return state.region;
-}
-export default connect(mapStateToProps)(withStyles(styles)(FadeWrap));
+// function mapStateToProps(state, ownProps) {
+//     return state.region;
+// }
+// export default connect(mapStateToProps)(withStyles(styles)(FadeWrap));
+export default withStyles(styles)(FadeWrap);

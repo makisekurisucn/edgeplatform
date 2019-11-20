@@ -1,10 +1,11 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-import { getList } from "../apis/region"
+import { getList } from "../apis/region";
+import { requestSaga } from './requestSaga';
 
 
 function* getRegionList(action) {
 
-    let list = yield call(getList);
+    let list = yield* requestSaga(call, getList);
     if (!list.error) {
         yield put({
             type: "REGION_UPDATE",

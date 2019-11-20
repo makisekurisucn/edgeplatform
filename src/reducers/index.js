@@ -9,6 +9,7 @@ import region from './Region'
 import DClist from './DC/list'
 import Allocationlist from './Allocation'
 import Prometheus from './Prometheus/metricData'
+import notification from './Notification'
 
 // import visibilityFilter from './visibilityFilter'
 
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
     region,
     DClist,
     Allocationlist,
-    Prometheus
+    Prometheus,
+    notification
     //   visibilityFilter
 })
 

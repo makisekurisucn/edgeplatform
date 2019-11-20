@@ -15,10 +15,11 @@ import './App.css';
 const styles = theme => ({
     topBar: {
         position: 'fixed',
+        alignItems: 'center',
         top: 0,
         left: 0,
         width: '100%',
-        zIndex: 100000
+        zIndex: 1100
     },
     app: {
         height: '100%'

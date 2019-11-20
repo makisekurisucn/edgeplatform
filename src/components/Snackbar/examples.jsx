@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 import { withSnackbar } from 'notistack';
 
 const styles = {
@@ -29,7 +30,7 @@ const styles = {
     },
     warning: {
         backgroundColor: '#ffa000',
-    }
+    },
 };
 
 const buttons = [
@@ -41,58 +42,12 @@ const buttons = [
 
 
 class MessageButtons extends Component {
-    componentDidMount() {
-        // window.addEventListener('addNotification', this.handleEvent);
-        window.addEventListener(this.props.eventName, this.handleEvent);
-    }
-
-    componentWillUnmount() {
-        // window.removeEventListener('addNotification', this.handleEvent);
-        window.removeEventListener(this.props.eventName, this.handleEvent);
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (!this.props.toCloseAll && nextProps.toCloseAll) {
-            this.closeAll();
-        }
-    }
-
-    action = (key) => (
-        <Fragment>
-            <Button onClick={() => { alert(`I belong to snackbar with key ${key}`); }}>
-                {'Alert'}
-            </Button>
-            <Button onClick={() => { this.props.closeSnackbar(key) }}>
-                {'Dismiss'}
-            </Button>
-        </Fragment>
-    );
-
-    handleEvent = (e) => {
+    handleClick = button => () => {
+        // Avoid material-ui warnings. more info: https://material-ui.com/style/typography/#migration-to-typography-v2
+        // eslint-disable-next-line no-underscore-dangle
         window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-        if (this.props.toCloseAll) {
-        } else {
-            this.props.enqueueSnackbar(e.detail && e.detail.content, {
-                variant: e.detail.type,
-                // action: this.action
-                // action: (
-                //     <Button color="secondary" size="small" onClick={() => alert('clicked on my custom action')}>
-                //         My action
-                //     </Button>
-                // )
-                // children:<div>{e.detail.content}</div> //弹出框的样式
-            })
-        }
-    }
-
-    closeAll = () => {
-        this.props.closeSnackbar();
-    }
-
-    // handleClick = button => () => {
-    //     window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-    //     this.props.enqueueSnackbar(button.message, { variant: button.variant });
-    // };
+        this.props.enqueueSnackbar(button.message, { variant: button.variant });
+    };
 
     handleClickWithAction = () => {
         this.props.enqueueSnackbar('Customise this snackbar youself.', {
@@ -116,13 +71,42 @@ class MessageButtons extends Component {
         });
     };
 
+    handleDismiss = () => {
+        this.props.closeSnackbar()
+    }
+
     render() {
-        return null;
+        const { classes } = this.props;
+        return (
+            <Paper className={classes.root}>
+                {buttons.map(button => (
+                    <Button
+                        key={button.variant}
+                        variant="contained"
+                        className={classNames(classes.button, classes[button.variant])}
+                        onClick={this.handleClick(button)}
+                    >
+                        {button.variant}
+                    </Button>
+                ))}
+                <Button
+                    variant="contained"
+                    className={classes.button}
+                    onClick={this.handleClickWithAction}
+                    // onClick={this.handleDismiss}
+                >
+                    default
+                </Button>
+            </Paper>
+        );
     }
 }
 
 MessageButtons.propTypes = {
-    enqueueSnackbar: PropTypes.func.isRequired
+    classes: PropTypes.object.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired,
 };
 
-export default withSnackbar(MessageButtons);
+export default withStyles(styles)(
+    withSnackbar(MessageButtons),
+);
