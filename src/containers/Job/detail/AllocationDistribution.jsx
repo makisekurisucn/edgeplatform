@@ -91,12 +91,12 @@ const getRadius = (str) => {
             return parseInt(str) * 1000;
         } else if (str.indexOf('m') > -1) {
             return parseInt(str);
-        } else {
-            return 0;
         }
     }
+    return 0;
+
 }
-const getCenter = (longitude, latitude) => {
+const getCenter = (longitude = '未知', latitude = '未知') => {
     let center = {};
     if (longitude !== '未知' && latitude !== '未知') {
         center.longitude = longitude;
@@ -229,10 +229,18 @@ class AllocationDistribution extends Component {
         const { classes, className, data, DCInfoMap, nodelist } = this.props;
         const { detail: jobDetail, status, allocationList } = data;
         const plugins = ['Scale', 'ControlBar'];
-        let DCInfo = {};
+        let DCInfo = {
+            DC: "未知",
+            address: "未知",
+            arch: "未知",
+            latitude: "未知",
+            longitude: "未知",
+            range: "未知",
+            region: "未知"
+        };
         let currentNode = {};
         let searchList = [];
-        let searchList_temp = [];//创建searchList副本用于job排序 20190813
+        let searchList_temp = [];
         let searchList_sort = [];
         let searchListLongitude = 0, searchListLatitude = 0, validSearchNumber = 0;
         let searchListCenter = {};
@@ -242,19 +250,31 @@ class AllocationDistribution extends Component {
             }
         })
         if (jobDetail.Region && currentNode.Datacenter) {
-            DCInfo = DCInfoMap[jobDetail.Region][currentNode.Datacenter];
+            if (DCInfoMap[jobDetail.Region]) {
+                DCInfo = DCInfoMap[jobDetail.Region][currentNode.Datacenter];
+            }
         }
 
-
         allocationList.forEach(alloc => {
-            let DCInfo = {};
+            let DCInfo = {
+                DC: "未知",
+                address: "未知",
+                arch: "未知",
+                latitude: "未知",
+                longitude: "未知",
+                range: "未知",
+                region: "未知"
+            };
+
             let runningTasksNumber = 0;
             let pendingTaskNumber = 0;
             let deadTaskNumber = 0;
             let Datacenter = '';
             nodelist.forEach(node => {
-                if (node.ID === alloc.NodeID && DCInfoMap[jobDetail.Region]) {
-                    DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
+                if (node.ID === alloc.NodeID) {
+                    if (DCInfoMap[jobDetail.Region]) {
+                        DCInfo = DCInfoMap[jobDetail.Region][node.Datacenter];
+                    }
                     Datacenter = node.Datacenter;
                 }
             })
@@ -304,16 +324,16 @@ class AllocationDistribution extends Component {
                 if (isMatched === true) {
                     searchList.push(itemData);
                     if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
-                        searchListLongitude += parseInt(DCInfo.longitude);
-                        searchListLatitude += parseInt(DCInfo.latitude);
+                        searchListLongitude += parseFloat(DCInfo.longitude);
+                        searchListLatitude += parseFloat(DCInfo.latitude);
                         validSearchNumber++;
                     }
                 }
             } else {
                 searchList.push(itemData);
                 if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
-                    searchListLongitude += parseInt(DCInfo.longitude);
-                    searchListLatitude += parseInt(DCInfo.latitude);
+                    searchListLongitude += parseFloat(DCInfo.longitude);
+                    searchListLatitude += parseFloat(DCInfo.latitude);
                     validSearchNumber++;
                 }
             }

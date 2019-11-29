@@ -13,7 +13,7 @@ import Snackbar from '../Snackbar';
 const styles = theme => ({
     root: {
         position: 'relative',
-        width: '40px',
+        width: '60px',
         height: '60px',
         lineHeight: '60px',
         color: '#EEF9FF',
