@@ -98,14 +98,30 @@ const styles = theme => ({
         fontSize: 24,
         fontWeight: 300,
         backgroundColor: 'rgba(97, 139, 162, 0.1)',
-        padding: '0px 24px'
+        paddingLeft: '24px'
     },
     SelectButton: {
-        width: '98px',
-        fontSize: '14px',
+        height: '100%',
+        width: '111px',
+        fontSize: '18px',
         fontWeight: '400',
         verticalAlign: 'middle',
         backgroundColor: 'rgba(97,139,162,0.8)'
+    },
+    displayText: {
+        maxWidth: 'calc(100% - 40px)',
+        marginRight: '-27px'
+    },
+    textArrow: {
+        left: '27px',
+        fontSize: '27px'
+    },
+    selectList: {
+        top: 42
+    },
+    option: {
+        height: '42px',
+        lineHeight: '42px'
     }
 });
 
@@ -119,18 +135,20 @@ const kvMap = {
 function HandleDiff(props) {
     const style = {
         keyName: {
-            fontSize: '14',
-            fontWeight: '300',
+            fontSize: '16px',
+            fontWeight: '400',
             marginBottom: '3px'
         },
         value: {
-            fontSize: '16',
-            fontWeight: '400',
+            fontSize: '14px',
+            fontWeight: '300',
             whiteSpace: 'pre-line',
             wordBreak: 'break-all'
         }
     }
-    if (props.value === props.prevValue) {
+    if (props.toDiff === false) {
+        return <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} />;
+    } else if (props.value === props.prevValue) {
         return props.value ? <KvItem keyName={props.keyName} className={props.classes.kvItem} value={props.value} style={style} /> : null;
     } else {
         return <div>
@@ -140,8 +158,6 @@ function HandleDiff(props) {
             {
                 props.prevValue || props.prevValue === 0 ? <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> : null
             }
-            {/* <KvItem keyName={props.keyName} className={props.classes.greenKvItem} value={props.value} sign={'++'} style={style} />
-            <KvItem keyName={props.keyName} className={props.classes.redKvItem} value={props.prevValue} sign={'--'} style={style} /> */}
         </div>
     }
 }
@@ -201,15 +217,38 @@ class JobHistory extends Component {
 
     }
 
-    portDataProcess = (ports = []) => {
-        let resArr = [];
-        ports.forEach(port => {
-            if (port.DynamicPort) {
-                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> 动态映射`);
-            } else if (port.ReservedPort) {
-                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> ${port.ReservedPort}`);
+    portDataProcess = (port_Map = [], networks = []) => {
+        let ports = {}, resArr = [];
+        port_Map.forEach(portItem => {
+            for (let key in portItem) {
+                ports[key] = {
+                    originPort: portItem[key]
+                };
             }
         })
+        networks.forEach(nw => {
+            if (nw.DynamicPorts) {
+                nw.DynamicPorts.forEach(nwdp => {
+                    if (ports[nwdp.Label]) {
+                        ports[nwdp.Label].DynamicPort = true;
+                    }
+                });
+            }
+            if (nw.ReservedPorts) {
+                nw.ReservedPorts.forEach(nwrp => {
+                    if (ports[nwrp.Label]) {
+                        ports[nwrp.Label].ReservedPort = nwrp.Value;
+                    }
+                });
+            }
+        });
+        for (let key in ports) {
+            if (ports[key].DynamicPort) {
+                resArr.push(`${key}: ${ports[key].originPort}-> 动态映射`);
+            } else if (ports[key].ReservedPort) {
+                resArr.push(`${key}: ${ports[key].originPort}-> ${ports[key].ReservedPort}`);
+            }
+        }
         return resArr.join('\n');
     }
 
@@ -228,18 +267,13 @@ class JobHistory extends Component {
     render() {
         const { classes, className, data: jobDetail } = this.props;
         const { detail, jobHistory } = jobDetail;
-        // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
-        // const taskList = detail.TaskGroups ? detail.TaskGroups[0].Tasks : [];
-        // const taskInfo = detail.TaskGroups ? detail.TaskGroups[0].Tasks[0] : { Config: {} };
-        // const taskInfo = taskList[this.state.selectedTaskIndex] || { Config: {} };
+
         const selectedVersion = classes.version + ' ' + classes.selected;
         if (className) {
             classNameWrap += ' ' + className;
         }
 
-        console.log('------------------------')
-        console.log(jobHistory)
         let versions = jobHistory.Versions || [];
         let versionList = [];
         versions.forEach((version, index) => {
@@ -267,23 +301,7 @@ class JobHistory extends Component {
                 prevTaskInfo = task;
             }
         })
-        // const prevTaskInfo = prevTaskGroup.Tasks ? (prevTaskGroup.Tasks[this.state.selectedTaskIndex] || { Config: {}, Resources: {} }) : { Config: {}, Resources: {} };
 
-
-        const style = {
-            keyName: {
-                fontSize: '14',
-                fontWeight: '300',
-                marginBottom: '3px'
-            },
-            value: {
-                fontSize: '16',
-                fontWeight: '400',
-                whiteSpace: 'pre-line',
-                wordBreak: 'break-all'
-            }
-        }
-        console.log(taskInfo)
         return (
             <div className={classNameWrap}>
                 <div className={classes.versionList}>
@@ -312,12 +330,10 @@ class JobHistory extends Component {
                         <div className={classes.subTitle}>基本信息</div>
                         <div className={classes.kvContent}>
                             <HandleDiff classes={classes} keyName="类型" value={kvMap[currentVersion.Type] || currentVersion.Type} prevValue={kvMap[prevVersion.Type] || prevVersion.Type} />
-                            {/* <HandleDiff classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} prevValue={formatTime(prevVersion.SubmitTime)} /> */}
-                            <KvItem keyName="更改时间" className={classes.kvItem} value={formatTime(currentVersion.SubmitTime)} style={style} />
-                            <HandleDiff classes={classes} keyName="Region" value={currentVersion.Region} prevValue={prevVersion.Region} />
+                            <HandleDiff classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} toDiff={false} />
+                            <HandleDiff classes={classes} keyName="地域" value={currentVersion.Region} prevValue={prevVersion.Region} />
                             <HandleDiff classes={classes} keyName="数据中心" value={this.showDatacenter(currentVersion.Datacenters)} prevValue={this.showDatacenter(prevVersion.Datacenters)} />
-                            {/* <HandleDiff classes={classes} keyName="当前版本" value={currentVersion.Version} prevValue={prevVersion.Version} /> */}
-                            <KvItem keyName="当前版本" className={classes.kvItem} value={currentVersion.Version} style={style} />
+                            <HandleDiff classes={classes} keyName="当前版本" value={currentVersion.Version} toDiff={false} />
                             <HandleDiff classes={classes} keyName="状态" value={kvMap[currentVersion.Status] || currentVersion.Status} prevValue={kvMap[prevVersion.Status] || prevVersion.Status} />
                         </div>
                     </div>
@@ -325,8 +341,6 @@ class JobHistory extends Component {
                         <div className={classes.subTitle}>调度策略</div>
                         <div className={classes.kvContent}>
                             <div className={classes.schedule}>
-                                {/* {`aaa=aaa\nbbb=bbb`} */}
-                                {/* <KvItem keyName={null} value={this.constraintProcess(detail.Constraints)} style={style} /> */}
                                 {
                                     this.constraintProcess(detail.Constraints)
                                 }
@@ -337,10 +351,21 @@ class JobHistory extends Component {
                 <div className={classes.subContent}>
                     <div className={classes.subTitle}>
                         <div>应用信息</div>
-                        {/* <div></div> */}
-                        <Select className={classes.SelectButton} list={taskGroup.Tasks || []} value={taskInfo.Name} valueKey={'Name'} displayKey={'Name'} onSelected={this.selectTask} />
+                        <Select
+                            className={classes.SelectButton}
+                            list={taskGroup.Tasks || []}
+                            value={taskInfo.Name}
+                            valueKey={'Name'}
+                            displayKey={'Name'}
+                            onSelected={this.selectTask}
+                            extendedClasses={{
+                                displayText: classes.displayText,
+                                textArrow: classes.textArrow,
+                                selectList: classes.selectList,
+                                option: classes.option
+                            }}
+                        />
                     </div>
-                    {/* <div className={classes.subTitle}>应用信息</div> */}
                     <div className={classes.kvContent}>
                         <HandleDiff classes={classes} keyName="运行时类型" value={taskInfo.Driver} prevValue={prevTaskInfo.Driver} />
                         <HandleDiff classes={classes} keyName="容器镜像" value={taskInfo.Config.image} prevValue={prevTaskInfo.Config.image} />
@@ -350,8 +375,10 @@ class JobHistory extends Component {
                         <HandleDiff classes={classes} keyName="启动命令" value={taskInfo.Config.command} prevValue={prevTaskInfo.Config.command} />
                         <HandleDiff classes={classes} keyName="启动参数" value={this.arrToString(taskInfo.Config.args)} prevValue={this.arrToString(prevTaskInfo.Config.args)} />
                         <HandleDiff classes={classes} keyName="环境变量" value={this.objToString(taskInfo.Env)} prevValue={this.objToString(prevTaskInfo.Env)} />
-                        <HandleDiff classes={classes} keyName="端口与服务" value={this.portDataProcess(taskInfo.ports)} prevValue={this.portDataProcess(prevTaskInfo.ports)} />
-                        {/* 启动命令，环境变量和端口服务还没设置好数据 */}
+                        <HandleDiff classes={classes} keyName="端口与服务"
+                            value={this.portDataProcess(taskInfo.Config.port_map, taskInfo.Resources.Networks)}
+                            prevValue={this.portDataProcess(prevTaskInfo.Config.port_map, prevTaskInfo.Resources.Networks)}
+                        />
                     </div>
                 </div>
             </div>

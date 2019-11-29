@@ -115,7 +115,7 @@ class TopBar extends Component {
                     </Typography>
 
                     <div className={classes.menuList}>
-                        <TopButton content="看板" link="/dashboard" className={{ buttonRoot: classes.buttonRoot, selected: classes.selected }}></TopButton>
+                        {/* <TopButton content="看板" link="/dashboard" className={{ buttonRoot: classes.buttonRoot, selected: classes.selected }}></TopButton> */}
                         <TopButton content="控制台" link="/console" className={{ buttonRoot: classes.buttonRoot, selected: classes.selected }}></TopButton>
                     </div>
                 </div>

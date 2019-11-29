@@ -64,7 +64,7 @@ function request({ url, options, customizedConf, callback }) {
                 console.log('now you stop all the list blocking queries');
             }
             if (!customizedConf.canIgnoreError) {
-                alert('发送fetch失败' + JSON.stringify(err.msg) + ',方法名：' + url); //需要后续改进
+                // alert('发送fetch失败' + JSON.stringify(err.msg) + ',方法名：' + url); //需要后续改进
             }
             return { error: true, data: err };
 

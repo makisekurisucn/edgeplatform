@@ -25,7 +25,7 @@ const styles = theme => ({
     },
     headerTop: {
         height: 74,
-        lineHeight: '74px',
+        // lineHeight: '74px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -65,7 +65,7 @@ const styles = theme => ({
         fontSize: '12px',
         fontWeight: '400',
         color: 'rgb(44,99,130)',
-        backgroundColor: 'rgba(238,249,255,0.35)',
+        backgroundColor: 'rgba(238, 249, 255, 0.35)',
         padding: '2px 4px',
         lineHeight: '16px',
         height: '16px',
@@ -88,7 +88,23 @@ const styles = theme => ({
     taskList: {
         padding: '0px 6px',
         width: '76px',
-        marginRight: '10px'
+        marginRight: '10px',
+        '&:hover': {
+            backgroundColor: 'rgb(53, 88, 107)'
+        }
+    },
+    selectList: {
+        backgroundColor: 'rgb(97, 139, 162)',
+        '& li:hover': {
+            backgroundColor: 'rgb(53, 88, 107)'
+        }
+    },
+    selected: {
+        backgroundColor: 'rgb(53, 88, 107)'
+    },
+    option: {
+        height: '22px',
+        lineHeight: '22px'
     }
 });
 const tabList = [
@@ -162,7 +178,16 @@ class TaskView extends Component {
                     <div className={classes.headerTop}>
                         <div className={classes.headerName}>
                             <p className={classes.mainTitle} title={getAllocationName(alloc.Name)}>{getAllocationName(alloc.Name)}</p>
-                            <Select className={classes.taskList} list={list} value={list[this.state.currentTaskIndex]} onSelected={this.selectTask} />
+                            <Select
+                                className={classes.taskList} list={list}
+                                value={list[this.state.currentTaskIndex]}
+                                onSelected={this.selectTask}
+                                extendedClasses={{
+                                    selectList: classes.selectList,
+                                    option: classes.option,
+                                    selected: classes.selected
+                                }}
+                            />
                             <span className={classes.status}>{status}</span>
                         </div>
                         <div>

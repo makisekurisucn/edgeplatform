@@ -10,11 +10,8 @@ const styles = theme => ({
         height: 50,
         boxSizing: 'border-box',
         lineHeight: '50px',
-        // textAlign: 'center',
         fontSize: 20,
-        // borderBottom: '1px solid rgb(149,163,170)',
         color: 'rgb(76,92,102)',
-        // position: 'relative',
         backgroundColor: 'rgb(231,231,231)',
         display: 'flex',
         justifyContent: 'space-between',
@@ -24,12 +21,11 @@ const styles = theme => ({
         height: 71,
         boxSizing: 'border-box',
         lineHeight: '64px',
-        // textAlign: 'center',
         fontSize: 32,
-        color: '#0C567F',//'#EEF9FF',
+        color: '#0C567F',
         display: 'flex',
         justifyContent: 'space-between',
-        backgroundColor: '#F5F6F6'//'rgb(96,139,162)'
+        backgroundColor: '#F5F6F6'
     },
     leftContent: {
         height: '100%',
@@ -42,19 +38,16 @@ const styles = theme => ({
     arrow1: {
         color: '#979797',
         fontSize: 29,
-        // verticalAlign: 'middle',
         padding: '0px 2px 0px 19px',
         cursor: 'pointer',
         height: '50px'
-        // lineHeight: '60px'
     },
     arrow2: {
-        color: '#4B8BAF',//'#EEF9FF',
+        color: '#4B8BAF',
         fontSize: 37,
         paddingLeft: '19px',
         cursor: 'pointer',
         height: 71
-        // lineHeight: '60px'
     },
     createJob: {
         float: 'right',
@@ -67,14 +60,11 @@ const styles = theme => ({
     },
     status: {
         width: '106px',
-        // height: '36px',
-        color: '#4BAF7E',//'#EEF9FF',
-        lineHeight: '34px',
+        color: '#4BAF7E',
+        lineHeight: '31px',
         textAlign: 'center',
         fontSize: '21px',
         fontWeight: 400,
-        //backgroundColor: '#4BAF7E',
-        //borderRadius: '11px',
         margin: '18px 20px',
         border: '2px solid #4BAF7E',
     },
@@ -102,32 +92,6 @@ const styles = theme => ({
         color: '#EEF9FF'
     }
 });
-// const hasRouter = (current, link) => {
-//     let currentArray = current.split('/');
-//     let linkArray = link.split('/');
-//     if (currentArray[0] === '') {
-//         currentArray.shift();
-//     }
-//     if (linkArray[0] === '') {
-//         linkArray.shift();
-//     }
-//     if (currentArray[currentArray.length - 1] === '') {
-//         currentArray.pop();
-//     }
-//     if (linkArray[linkArray.length - 1] === '') {
-//         linkArray.pop();
-//     }
-//     let isMatch = true;
-//     linkArray.forEach((item, index) => {
-//         if (!currentArray[index]) {
-//             isMatch = false;
-//         }
-//         else if (currentArray[index] !== item) {
-//             isMatch = false;
-//         }
-//     });
-//     return isMatch;
-// }
 
 
 class AppMainUpper extends Component {
@@ -135,28 +99,8 @@ class AppMainUpper extends Component {
         super(props);
         this.state = {
         };
-        // props.history.listen((location) => {
-        //     console.log(location.pathname);
-        //     this.setState({
-        //         selected: hasRouter(location.pathname, props.link)
-        //     });
-
-        // })
     }
 
-    // componentWillMount() {
-    //     this.setState({
-    //         selected: hasRouter(this.props.location.pathname, this.props.link)
-    //     });
-    // }
-
-    // componentWillReceiveProps(nextProp) {
-    //     if (nextProp.location.pathname && nextProp.link) {
-    //         this.setState({
-    //             selected: hasRouter(nextProp.location.pathname, nextProp.link)
-    //         });
-    //     }
-    // }
     goTo = (link) => (event) => {
         console.log(link);
         this.props.history.push(link);
@@ -189,15 +133,6 @@ class AppMainUpper extends Component {
                     </div>
                     <div className={classes.select}>
                         <CommandSet className={classes.commandSet} defaultCommand={data.defaultCommand} commandList={data.commandList} />
-
-                        {/* <span className={classes.command}>{defaultCommandName}</span>
-                        <div className={classes.expandMore}>
-                            <ExpandMore className={classes.expandMoreArrow} ></ExpandMore>
-                            <ul className={classes.selectList}>
-                                <li>编辑</li>
-                                <li>删除</li>
-                            </ul>
-                        </div> */}
                     </div>
                 </div>;
                 break;
@@ -217,18 +152,6 @@ class AppMainUpper extends Component {
 
         return (
             <div>{myAppMainUpper}</div>
-            /* joblist头部 */
-            // <div className={classes.root}>
-            //     <ArrowBackIos className={classes.arrow} />
-            //     <span>应用列表</span>
-            //     <span className={classes.createJob} onClick={this.goTo('/console/jobs/create')}>新建应用</span>
-            // </div>
-            /* jobdetail头部 */
-            // <div className={classes.root2}>
-            //     <ArrowBackIos className={classes.arrow} />
-            //     <span className={classes.jobApp}>应用APP</span>
-            //     <span className={classes.status}>运行中</span>
-            // </div>
         );
     }
 }

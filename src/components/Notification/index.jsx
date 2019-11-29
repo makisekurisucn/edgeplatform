@@ -14,10 +14,10 @@ const styles = theme => ({
     root: {
         position: 'relative',
         width: '40px',
-        height: '40px',
-        lineHeight: '40px',
+        height: '60px',
+        lineHeight: '60px',
         color: '#EEF9FF',
-        padding: '0px 4px'
+        marginLeft: '10px'
     },
     viewport: {
         display: 'flex',
@@ -45,8 +45,8 @@ const styles = theme => ({
             width: '6px',
             height: '6px',
             position: 'absolute',
-            top: '6px',
-            right: '4px',
+            top: '16px',
+            right: '7px',
             display: 'inline-block',
             backgroundColor: '#ff0000',
             borderRadius: '50%'
@@ -94,23 +94,10 @@ class Notification extends React.Component {
             toScrollUp: false
         }
         this.countDownTime = null;
-        //以下内容需要删除
-        this.index = 0;
-        this.arr = [
-            { key: 0, type: 'default', title: `小明`, content: '目前公司网络不稳定', date: '15:58' },
-            { key: 1, type: 'info', title: `小红`, content: '报名成功后需在5天内提供证明', date: '16:03' },
-            { key: 2, type: 'success', title: `小霞`, content: '可达鸭', date: '16:23' },
-            { key: 3, type: 'warning', title: `小刚`, content: '大岩蛇', date: '17:37' },
-            { key: 4, type: 'error', title: `小智`, content: '皮卡丘', date: '17:58' }
-        ]
     }
 
     componentDidMount() {
         window.addEventListener('addNotification', this.eventListener);
-    }
-
-    UNSAFE_componentWillReceiveProps() {
-        console.log('Icon will receive props');
     }
 
     componentWillUnmount() {
@@ -150,19 +137,12 @@ class Notification extends React.Component {
     }
 
     handleClick = () => {
-        console.log('----------------------------');
-        console.log('clicked the bell');
         const isDisplay = this.state.isListDisplay;
-        console.log('isDisplay: ' + isDisplay);
         if (isDisplay === false) {
             this.setState({
                 isListDisplay: !isDisplay
             })
         }
-        // this.setState({
-        //     isListDisplay: !isDisplay
-        // })
-
     }
 
     hideList = () => {
@@ -179,19 +159,6 @@ class Notification extends React.Component {
             //     isListDisplay: false
             // })
         }
-    }
-
-    //以下内容需要删除
-    handleAdd = () => {
-        const { dispatch } = this.props;
-        const date = new Date();
-        // addNotification(dispatch, { key: date.valueOf(), type: 'warning', title: `warning`, content: date.toString(), date: date.valueOf() });
-        addNotification(dispatch, this.arr[this.index]);
-        if (this.index < 4) {
-            this.index = this.index + 1;
-        }
-        // var event = new Event('addNotification');
-        // window.dispatchEvent(event);
     }
 
     render() {
@@ -213,18 +180,8 @@ class Notification extends React.Component {
             numberAreaClassName += ' ' + classes.toLeft;
         }
 
-        // if (this.state.toScrollUp) {
-        //     numberClassName += ' ' + classes.toTop;
-        // }
-        // if (count) {
-        //     numberClassName += ' ' + classes.toTop;
-        // }
-        console.log('notification render');
-
         return (
             <Fragment>
-                {/* 以下button需要删除 */}
-                <button onClick={this.handleAdd} style={{ marginRight: '210px' }}>add</button>
                 <div className={classNameWrap}>
                     <div className={classes.viewport} onMouseEnter={this.showNumber} onMouseLeave={this.hideNumber} onClick={this.handleClick}>
                         <div className={iconClassName}>
@@ -254,8 +211,6 @@ class Notification extends React.Component {
 
 
 function mapStateToProps(state, ownProps) {
-    console.log('map state to props');
-    console.log(state);
     return state.notification;
 }
 export default connect(mapStateToProps)(withStyles(styles)(Notification));

@@ -51,29 +51,43 @@ const styles = theme => ({
         fontWeight: 300,
         // lineHeight: '42px',
         backgroundColor: 'rgba(97, 139, 162, 0.1)',
-        padding: '0px 24px'
+        paddingLeft: '24px'
     },
     SelectButton: {
-        // top: '12px',
-        // position: 'relative',
-        width: '98px',
-        fontSize: '14px',
+        height: '100%',
+        width: '111px',
+        fontSize: '18px',
         fontWeight: '400',
         verticalAlign: 'middle',
         backgroundColor: 'rgba(97,139,162,0.8)'
+    },
+    displayText: {
+        maxWidth: 'calc(100% - 40px)',
+        marginRight: '-27px'
+    },
+    textArrow: {
+        left: '27px',
+        fontSize: '27px'
+    },
+    selectList: {
+        top: 42
+    },
+    option: {
+        height: '42px',
+        lineHeight: '42px'
     }
 });
 
 function KvItemFilter(props) {
     const style = {
         keyName: {
-            fontSize: '14',
-            fontWeight: '300',
+            fontSize: '16px',
+            fontWeight: '400',
             marginBottom: '3px'
         },
         value: {
-            fontSize: '16',
-            fontWeight: '400',
+            fontSize: '14px',
+            fontWeight: '300',
             whiteSpace: 'pre-line',
             wordBreak: 'break-all'
         }
@@ -134,9 +148,9 @@ class JobInfo extends Component {
         let resArr = [];
         ports.forEach(port => {
             if (port.DynamicPort) {
-                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> 动态映射`);
+                resArr.push(`${port.name}: ${port.originPort}-> 动态映射`);
             } else if (port.ReservedPort) {
-                resArr.push(`${port.service && port.service.Name}: ${port.originPort}-> ${port.ReservedPort}`);
+                resArr.push(`${port.name}: ${port.originPort}-> ${port.ReservedPort}`);
             }
         })
         return resArr.join('\n');
@@ -174,7 +188,7 @@ class JobInfo extends Component {
                         <div className={classes.kvContent}>
                             <KvItemFilter classes={classes} keyName="类型" value={kvMap[detail.Type] || detail.Type} />
                             <KvItemFilter classes={classes} keyName="更改时间" value={formatTime(detail.SubmitTime)} />
-                            <KvItemFilter classes={classes} keyName="Region" value={detail.Region} />
+                            <KvItemFilter classes={classes} keyName="地域" value={detail.Region} />
                             <KvItemFilter classes={classes} keyName="数据中心" value={this.showDatacenter(detail.Datacenters)} />
                             <KvItemFilter classes={classes} keyName="当前版本" value={detail.Version} />
                             <KvItemFilter classes={classes} keyName="状态" value={kvMap[detail.Status] || detail.Status} />
@@ -196,10 +210,19 @@ class JobInfo extends Component {
                 <div className={classes.subContent}>
                     <div className={classes.subTitle}>
                         <div>应用信息</div>
-                        {/* <div></div> */}
-                        <Select className={classes.SelectButton} list={taskList} value={taskInfo.Name} valueKey={'Name'} displayKey={'Name'} onSelected={this.selectTask} />
+                        <Select
+                            className={classes.SelectButton}
+                            list={taskList} value={taskInfo.Name}
+                            valueKey={'Name'} displayKey={'Name'}
+                            onSelected={this.selectTask}
+                            extendedClasses={{
+                                displayText: classes.displayText,
+                                textArrow: classes.textArrow,
+                                selectList: classes.selectList,
+                                option: classes.option
+                            }}
+                        />
                     </div>
-                    {/* <div className={classes.subTitle}>应用信息</div> */}
                     <div className={classes.kvContent}>
                         <KvItemFilter classes={classes} keyName="运行时类型" value={taskInfo.Driver} />
                         <KvItemFilter classes={classes} keyName="容器镜像" value={taskInfo.Config.image} />
@@ -210,7 +233,6 @@ class JobInfo extends Component {
                         <KvItemFilter classes={classes} keyName="启动参数" value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} />
                         <KvItemFilter classes={classes} keyName="环境变量" value={this.objToString(taskInfo.Env)} />
                         <KvItemFilter classes={classes} keyName="端口与服务" value={this.portDataProcess(taskInfo.ports)} />
-                        {/* 启动命令，环境变量和端口服务还没设置好数据 */}
                     </div>
                 </div>
             </div>

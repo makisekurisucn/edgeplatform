@@ -17,12 +17,13 @@ const styles = theme => ({
         flex: '2 1 auto',
         marginRight: '20px',
         maxWidth: '900px',
-        minWidth: '700px',
+        minWidth: '600px',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     otherStepItem: {
         // flex: '1 2 auto',
         width: '320px',
+        minWidth: '250px',
         marginRight: '20px',
         // maxWidth: '500px',
         // minWidth: '400px',
@@ -30,10 +31,12 @@ const styles = theme => ({
     },
     stepTitleContent: {
         height: '40px',
+        lineHeight: '40px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0px 15px 0px 24px',
+        // paddingLeft: '24px',
         backgroundColor: 'rgba(97, 139, 162, 0.10)',
         fontSize: '24px',
         fontWeight: 300,
@@ -53,25 +56,27 @@ const styles = theme => ({
         marginLeft: '-16px'
     },
     invalidNextButton: {
-        fontSize: '10px',
+        fontSize: '15px',
         fontWeight: 400,
         color: 'rgb(255, 255, 255)',
         backgroundColor: 'rgb(183, 183, 183)',
         cursor: 'pointer',
-        width: '61px',
-        height: '19px',
-        lineHeight: '19px',
+        width: '65px',
+        height: '100%',
+        marginRight: '-15px',
+        // lineHeight: '19px',
         textAlign: 'center'
     },
     validNextButton: {
-        fontSize: '10px',
+        fontSize: '15px',
         fontWeight: 400,
         color: 'rgb(255, 255, 255)',
         backgroundColor: 'rgb(75, 175, 126)',
         cursor: 'pointer',
-        width: '61px',
-        height: '19px',
-        lineHeight: '19px',
+        width: '65px',
+        height: '100%',
+        marginRight: '-15px',
+        // lineHeight: '19px',
         textAlign: 'center'
     },
     fixedHeight: {

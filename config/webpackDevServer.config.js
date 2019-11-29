@@ -86,14 +86,14 @@ module.exports = function(proxy, allowedHost) {
                 // target: 'http://134.209.9.106:5656'
                 proxyTimeout: 5 * 60 * 1000,
                 timeout: 5 * 60 * 1000,
-                target: 'http://10.10.101.130:4646'
+                target: 'http://10.1.11.52:4646'
                 // target: 'http://10.10.101.117:4646' 多region,无meta
             },
             '/api': {
                 // target: 'http://134.209.9.106:9999'
                 proxyTimeout: 5 * 60 * 1000,
                 timeout: 5 * 60 * 1000,
-                target: 'http://10.10.101.130:9998'
+                target: 'http://10.1.11.53:9090'
             }
         },
         before(app, server) {

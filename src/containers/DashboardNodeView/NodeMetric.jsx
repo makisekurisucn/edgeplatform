@@ -90,6 +90,8 @@ class NodeMetric extends Component {
                 getNodePrometheus(dispatch, nodeID, Datacenter);
             }, 300000)
             //暂时将刷新时间设为5分钟，等接到prometheus数据后再改成10s,且刷新时间要和api中的时间对应,确保每次取的点时间戳一致
+        } else {
+            clearTimeout(this.timeID);
         }
     }
 

@@ -10,6 +10,7 @@ import HighlightOffOutlined from '@material-ui/icons/HighlightOffOutlined';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 import ReportProblemOutlined from '@material-ui/icons/ReportProblemOutlined';
 import SpeakerNotesOutlined from '@material-ui/icons/SpeakerNotesOutlined';
+import { getAutoFormattedTime } from '../../utils/formatTime';
 
 const styles = theme => ({
     root: {
@@ -58,7 +59,16 @@ const styles = theme => ({
         fontWeight: 600
     },
     content: {
-        fontSize: '15px'
+        fontSize: '15px',
+        wordBreak: 'break-word',
+        // multi-line text overflow
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        display: '-webkit-box',
+        /* autoprefixer: off */
+        WebkitBoxOrient: 'vertical',
+        /* autoprefixer: on */
+        WebkitLineClamp: '2'
     },
     date: {
         fontSize: '13px',
@@ -162,8 +172,8 @@ class NotificationItem extends React.Component {
                     </div>
                     <div className={classes.main}>
                         <div className={classes.title}>{data.title}</div>
-                        <div className={classes.content}>{data.content}</div>
-                        <div className={classes.date}>{data.date}</div>
+                        <div className={classes.content} title={data.content}>{data.content}</div>
+                        <div className={classes.date}>{getAutoFormattedTime(data.date)}</div>
                     </div>
                 </div>
                 {/* <Close className={classes.iconClose} onClick={this.handleClick(data.key)} />

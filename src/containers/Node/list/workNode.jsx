@@ -54,7 +54,7 @@ const statusConvert = (status) => {
         return kvMap[status];
     }
 };
-const header = [{ name: "名称", key: "Name" }, { name: "IP地址", key: "Address"}, { name: "DC", key: "Datacenter" }, {name: "地点",key: "location"},{ name: "状态", key: "Status",convert: statusConvert }];
+const header = [{ name: "名称", key: "Name" }, { name: "IP地址", key: "Address"}, { name: "数据中心", key: "Datacenter" }, {name: "地点",key: "location"},{ name: "状态", key: "Status",convert: statusConvert }];
 const TableH = TableHoc(header);
 class SimpleTable extends Component {
     constructor(props) {

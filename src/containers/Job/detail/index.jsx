@@ -59,7 +59,7 @@ const tabList = [
         component: AllocationDistribution
     },
     {
-        name: '历史',
+        name: '版本历史',
         component: JobHistory
     }
 ];

@@ -9,6 +9,18 @@ function getPreciseTime(time) {
     return moment(time).format('YYYY/MM/DD HH:mm:ss');
 }
 
+function getAutoFormattedTime(time) {
+    let date = new Date(time);
+    let now = new Date();
+    if (now.getFullYear() !== date.getFullYear()) {
+        return moment(date).format('YYYY/MM/DD HH:mm:ss');
+    } else if (now.getMonth() !== date.getMonth() || now.getDate() !== date.getDate()) {
+        return moment(date).format('MM/DD HH:mm:ss');
+    } else {
+        return moment(date).format('HH:mm:ss');
+    }
+}
+
 function transformTimeFromStrToNum(timeStr) {
     if (typeof timeStr === 'string') {
         let duration = 0;
@@ -43,4 +55,4 @@ function transformTimeFromStrToNum(timeStr) {
     }
 }
 
-export { formatTime, getPreciseTime, transformTimeFromStrToNum };
+export { formatTime, getPreciseTime, transformTimeFromStrToNum, getAutoFormattedTime };

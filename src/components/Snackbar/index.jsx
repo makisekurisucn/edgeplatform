@@ -72,7 +72,7 @@ class MessageButtons extends Component {
         window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
         if (this.props.toCloseAll) {
         } else {
-            this.props.enqueueSnackbar(e.detail && e.detail.content, {
+            this.props.enqueueSnackbar(e.detail && e.detail.title, {
                 variant: e.detail.type,
                 // action: this.action
                 // action: (

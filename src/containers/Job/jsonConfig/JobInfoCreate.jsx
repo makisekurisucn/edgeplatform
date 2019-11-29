@@ -252,8 +252,8 @@ const stanzaList = [
         dataProcess: processWrap(numberProcess, 'MHz'),
         component: NumberInput,
         rules: {
-            step: 128,
-            maxValue: 512,
+            step: 100,
+            maxValue: '',
             minValue: 0,
             unit: 'MHz'
         }
@@ -265,7 +265,7 @@ const stanzaList = [
         component: NumberInput,
         rules: {
             step: 128,
-            maxValue: 1280,
+            maxValue: '',
             minValue: 0,
             unit: 'MB'
         }
@@ -422,14 +422,13 @@ class JobInfo extends Component {
 
         const style = {
             keyName: {
-                fontSize: '14px',
-                fontWeight: '300',
+                fontSize: '16px',
+                fontWeight: '400',
                 marginBottom: '3px'
             },
             value: {
-                paddingLeft: '9px',
-                fontSize: '16px',
-                fontWeight: '400',
+                fontSize: '14px',
+                fontWeight: '300',
                 whiteSpace: 'pre-line',
                 wordBreak: 'break-all'
             }

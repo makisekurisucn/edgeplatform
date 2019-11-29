@@ -43,7 +43,7 @@ const styles = theme => ({
         height: '29px',
         border: '2px solid #4BAF7E',
         color: '#4BAF7E',
-        lineHeight: '29px',
+        lineHeight: '30px',
         textAlign: 'center',
         fontSize: '18px',
         fontWeight: 400
@@ -71,7 +71,9 @@ const kvMap = {
     dead: '已停止',
     ready: '就绪',
     down: '已停止',
-    alive: '运行中'
+    alive: '运行中',
+    true: '是',
+    false: '否'
 }
 
 const colorMap = {

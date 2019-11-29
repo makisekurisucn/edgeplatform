@@ -12,8 +12,9 @@ class IndexRoute extends Component {
             <Switch>
                 {/* <Route exact path='/app' component={App}/> */}
                 <Route path='/console' component={Console} />
-                <Route path='/dashboard' component={Dashboard} />
-                <Redirect from="/" exact to="/dashboard" />
+                {/* <Route path='/dashboard' component={Dashboard} /> */}
+                {/* <Redirect from="/" exact to="/dashboard" /> */}
+                <Redirect from="/" exact to="/console" />
 
             </Switch>
         );

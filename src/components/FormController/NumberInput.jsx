@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
     root: {
         // width: '51%'
-        width: '135px'
+        width: '190px'
     },
     label: {
         fontSize: '16px',
@@ -14,132 +14,283 @@ const styles = theme => ({
         marginBottom: '10px',
         paddingLeft: '4px'
     },
-    numberArea: {
+    content: {
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
         height: '35px',
-        paddingLeft: '11px',
         color: 'rgb(75, 139, 175)',
-        lineHeight: '35px',
-        borderBottom: '1px solid #4B8BAF',
-        backgroundColor: 'rgba(255, 255, 255, 1)'
+        lineHeight: '35px'
     },
-    displayNum: {
-        width: '60px',
+    numberArea: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '2px solid rgba(97,139,162,0.8)',
+        borderRadius: '2px',
         height: '35px',
+        width: '100px',
         fontSize: '16px',
-        fontWeight: 400
+        fontWeight: 400,
+        margin: '0px 10px',
+        boxSizing: 'border-box'
     },
-    arrow: {
-        fontSize: '12px',
-        cursor: 'pointer',
-        height: '9px',
-        lineHeight: '9px',
+    sign: {
+        height: '35px',
+        width: '35px',
+        boxSizing: 'border-box',
+        border: '2px solid rgba(97,139,162,0.8)',
+        borderRadius: '5px',
+        lineHeight: '28px',
         textAlign: 'center',
-        margin: '2px 0px',
-        padding: '0px 3px',
-        backgroundColor: 'rgb(75, 139, 175)',
-        color: 'rgb(255, 255, 255)',
-        // fontFamily: 'arrow-down-sm'
-    },
-    buttonGruop: {
-        marginRight: '8px'
-    },
-    unit: {
-        width: '30px',
-        fontSize: '14px',
-        fontWeight: 300,
-        marginRight: '8px',
-        textAlign: 'center'
+        fontSize: '24px',
+        cursor: 'pointer',
+        //取消双击选中文本
+        MozUserSelect: 'none',
+        WebkitUserSelect: 'none',
+        MsUserSelect: 'none',
+        KhtmlUserSelect: 'none',
+        userSelect: 'none'
     }
 });
 
 
 
 
-function NumberInput(props) {
-    const { classes, className, title, rules = {}, defaultValue, data, name, saveData } = props;
-    const { step = 1, maxValue, minValue, required, unit } = rules;
-    let defaultValueWrap = Number.parseInt(defaultValue);
-    console.log('question number');
-    console.log(defaultValueWrap);
+// function NumberInput(props) {
+//     const { classes, className, title, rules = {}, defaultValue, data, name, saveData } = props;
+//     const { step = 1, maxValue, minValue, required, unit } = rules;
+//     let defaultValueWrap = Number.parseInt(defaultValue);
+//     console.log('question number');
+//     console.log(defaultValueWrap);
 
-    if (Object.is(NaN, defaultValueWrap)) {
-        if (typeof minValue === 'number') {
-            defaultValueWrap = minValue;
-        } else if (typeof maxValue === 'number') {
-            defaultValueWrap = maxValue;
-        } else {
-            defaultValueWrap = 0;
-        }
-    }
+//     if (Object.is(NaN, defaultValueWrap)) {
+//         if (typeof minValue === 'number') {
+//             defaultValueWrap = minValue;
+//         } else if (typeof maxValue === 'number') {
+//             defaultValueWrap = maxValue;
+//         } else {
+//             defaultValueWrap = 0;
+//         }
+//     }
 
-    const [displayNum, setDisplayNum] = useState(defaultValueWrap);
+//     const [displayNum, setDisplayNum] = useState(defaultValueWrap);
 
-    const handleClick = (stepValue) => (event) => {
-        let newNum = displayNum + stepValue;
-        if (typeof maxValue == 'number' && typeof minValue == 'number') {
-            if (displayNum > maxValue) {
-                newNum = maxValue;
-                setDisplayNum(newNum);
-            } else if (displayNum < minValue) {
-                newNum = minValue;
-                setDisplayNum(newNum);
-            } else if (newNum > maxValue || newNum < minValue) {
-                newNum = displayNum;
+//     const handleClick = (stepValue) => (event) => {
+//         let newNum = displayNum + stepValue;
+//         if (typeof maxValue == 'number' && displayNum > maxValue) {
+//             newNum = maxValue;
+//             setDisplayNum(newNum);
+//         } else if (typeof minValue == 'number' && displayNum < minValue) {
+//             newNum = minValue;
+//             setDisplayNum(newNum);
+//         } else if ((typeof maxValue == 'number' && newNum > maxValue) || (typeof minValue == 'number' && newNum < minValue)) {
+//             newNum = displayNum;
+//         } else {
+//             setDisplayNum(newNum);
+//         }
+//         if (saveData) {
+//             saveData(name, { isValid: true, data: newNum })
+//         }
+//     }
+
+//     useEffect(() => {
+//         if (saveData) {
+//             if (typeof maxValue == 'number' && typeof minValue == 'number') {
+//                 if (displayNum > maxValue || displayNum < minValue) {
+//                     console.log('false: ' + name)
+//                     saveData(name, { isValid: false, data: displayNum })
+//                 } else {
+//                     console.log('true: ' + name)
+//                     saveData(name, { isValid: true, data: displayNum })
+//                 }
+//             } else {
+//                 saveData(name, { isValid: true, data: displayNum })
+//             }
+//         }
+//     }, [])
+
+//     let classNameWrap = classes.root;
+//     if (className) {
+//         classNameWrap += ' ' + className;
+//     }
+
+//     return (
+//         <div className={classNameWrap}>
+//             <div className={classes.label}>
+//                 {required ? `*${title}` : title}
+//             </div>
+//             <div className={classes.content}>
+//                 <div className={classes.sign} onClick={handleClick(-1 * step)}>-</div>
+//                 <div className={classes.numberArea}>
+//                     <div>{displayNum}</div>
+//                     {
+//                         unit ? <div>{unit}</div> : null
+//                     }
+//                 </div>
+//                 <div className={classes.sign} onClick={handleClick(step)}>+</div>
+//             </div>
+//         </div>
+//     );
+// }
+
+class NumberInput extends React.Component {
+    constructor(props) {
+        super(props);
+
+
+        const { rules = {}, defaultValue } = props;
+        console.log('----------');
+        console.log(props.defaultValue)
+        const { maxValue, minValue } = rules;
+        let defaultValueWrap = Number.parseInt(defaultValue);
+        if (Object.is(NaN, defaultValueWrap)) {
+            if (typeof minValue === 'number') {
+                defaultValueWrap = minValue;
+            } else if (typeof maxValue === 'number') {
+                defaultValueWrap = maxValue;
             } else {
-                setDisplayNum(newNum);
+                defaultValueWrap = 0;
             }
         }
-        if (saveData) {
-            saveData(name, { isValid: true, data: newNum })
+
+        this.state = {
+            displayNum: defaultValueWrap
         }
+
+        this.timeID = null;
+        this.mouseDownStartTime = null;
+        this.speedStrategy = [{ wait: 0, speed: 1000 }, { wait: 3000, speed: 500 }, { wait: 5000, speed: 200 }, { wait: 7000, speed: 100 }];
+        this.speedIndex = 0;
     }
 
-    useEffect(() => {
+
+    componentDidMount() {
+        const { rules = {}, name, saveData } = this.props;
+        const { maxValue, minValue } = rules;
+        const displayNum = this.state.displayNum;
+
         if (saveData) {
             if (typeof maxValue == 'number' && typeof minValue == 'number') {
                 if (displayNum > maxValue || displayNum < minValue) {
-                    console.log('false: ' + name)
                     saveData(name, { isValid: false, data: displayNum })
                 } else {
-                    console.log('true: ' + name)
                     saveData(name, { isValid: true, data: displayNum })
                 }
             } else {
                 saveData(name, { isValid: true, data: displayNum })
             }
         }
-    }, [])
-
-    let classNameWrap = classes.root;
-    if (className) {
-        classNameWrap += ' ' + className;
     }
 
-    return (
-        <div className={classNameWrap}>
-            <div className={classes.label}>
-                {required ? `*${title}` : title}
-            </div>
-            <div className={classes.numberArea}>
-                <div className={classes.displayNum}>
-                    {displayNum}
-                </div>
+    submit = (stepValue) => {
+        console.log('    -----submit-------');
+        const { rules = {}, name, saveData } = this.props;
+        const { maxValue, minValue } = rules;
+        const displayNum = this.state.displayNum;
 
-                <div className={classes.buttonGruop}>
-                    <div className={'icon-arrow-up-sm' + ' ' + classes.arrow} onClick={handleClick(step)}></div>
-                    <div className={'icon-arrow-down-sm' + ' ' + classes.arrow} onClick={handleClick(-1 * step)}></div>
+        let newNum = displayNum + stepValue;
+        if (typeof maxValue == 'number' && displayNum > maxValue) {
+            newNum = maxValue;
+        } else if (typeof minValue == 'number' && displayNum < minValue) {
+            newNum = minValue;
+        } else if ((typeof maxValue == 'number' && newNum > maxValue) || (typeof minValue == 'number' && newNum < minValue)) {
+            newNum = displayNum;
+        }
+        this.setState({
+            displayNum: newNum
+        })
+        if (saveData) {
+            saveData(name, { isValid: true, data: newNum })
+        }
+    }
+
+    handleClick = (stepValue) => (event) => {
+        console.log('--------CLICK--------');
+        this.submit(stepValue);
+    }
+
+    speedup = (stepValue) => {
+        this.submit(stepValue);
+        if (this.speedIndex < this.speedStrategy.length - 1) {
+            if (Date.now() - this.mouseDownStartTime >= this.speedStrategy[this.speedIndex].wait) {
+                console.log(`    time is up to ${this.speedStrategy[this.speedIndex].wait}`);
+
+                console.log(`    stop timeID: ${this.timeID}`);
+                clearInterval(this.timeID);
+
+                this.speedIndex = this.speedIndex + 1;
+                console.log(`    new speed is: ${this.speedStrategy[this.speedIndex].speed}`);
+
+                this.timeID = setInterval(() => {
+                    this.speedup(stepValue)
+                }, this.speedStrategy[this.speedIndex].speed);
+                console.log(`    timeID: ${this.timeID}`);
+            } else {
+            }
+        }
+    }
+
+    handleMouseDown = (stepValue) => (event) => {
+        console.log('MOUSE DOWN----------------');
+        console.log('你按的是鼠标 ： ', `${event.buttons}`);
+        console.log('事件属性 ： ', event);
+        if (event.buttons !== 1) { return; }
+        this.mouseDownStartTime = Date.now();
+        console.log(`  start at: ${this.mouseDownStartTime}`);
+        this.submit(stepValue);
+
+        // this.speedup(stepValue);
+        this.timeID = setInterval(() => {
+            this.speedup(stepValue);
+        }, 1000);
+        console.log(`  timeID: ${this.timeID}`);
+    }
+
+    handleMouseUp = () => {
+        console.log('MOUSE UP------------------');
+        console.log(`  stop timeID: ${this.timeID}`);
+        this.speedIndex = 0;
+        clearInterval(this.timeID)
+    }
+
+    render() {
+        const { classes, className, title, rules = {} } = this.props;
+        const { step = 1, required, unit } = rules;
+        let displayNum = this.state.displayNum;
+
+        let classNameWrap = classes.root;
+        if (className) {
+            classNameWrap += ' ' + className;
+        }
+        return (
+            <div className={classNameWrap}>
+                <div className={classes.label}>
+                    {required ? `*${title}` : title}
                 </div>
-                {
-                    unit ? <div className={classes.unit}>{unit}</div> : null
-                }
-                {/* <div className={classes.unit}>
-                    {unit || null}
-                </div> */}
+                <div className={classes.content}>
+                    <div
+                        className={classes.sign}
+                        // onClick={this.handleClick(-1 * step)}
+                        onMouseDown={this.handleMouseDown(-1 * step)}
+                        onMouseUp={this.handleMouseUp}
+                    >-</div>
+                    <div className={classes.numberArea}>
+                        <div>{displayNum}</div>
+                        {
+                            unit ? <div>{unit}</div> : null
+                        }
+                    </div>
+                    <div
+                        className={classes.sign}
+                        // onClick={this.handleClick(step)}
+                        onMouseDown={this.handleMouseDown(step)}
+                        onMouseUp={this.handleMouseUp}
+                    >+</div>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
+
+
 export default withStyles(styles)(NumberInput);

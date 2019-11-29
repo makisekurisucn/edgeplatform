@@ -26,100 +26,6 @@ const styles = theme => ({
         width: '100%',
         overflowX: 'auto',
     },
-    table: {
-        minWidth: 700,
-    },
-    fab: {
-        margin: theme.spacing.unit,
-        position: "absolute",
-        right: 3 * theme.spacing.unit,
-        bottom: 3 * theme.spacing.unit,
-    },
-    headerContainer: {
-        padding: 16,
-
-    },
-    headerTtile: {
-        fontSize: 24,
-        height: 30,
-        lineHeight: "30px",
-        marginRight: 10
-    },
-    headerStatus: {
-        fontSize: 14,
-        color: blueGrey[50],
-        backgroundColor: blueGrey[200],
-        padding: "2px 10px",
-        borderRadius: 4
-    },
-    contentHeader: {
-        fontWeight: 'bold',
-        margin: 0
-    },
-    contentBody: {
-        textIndent: 50,
-    },
-    contentItem: {
-        marginBottom: 20,
-    },
-    bold: {
-        fontWeight: 'bold'
-    },
-    contentDivider: {
-        marginBottom: 20,
-        marginTop: 20
-    },
-    headerUnderline: {
-        marginTop: 10,
-        marginBottom: 10
-    },
-    taskItem: {
-        marginBottom: 20
-    },
-    taskItemName: {
-        textAlign: 'right'
-    },
-    large: {
-        fontSize: 20
-    },
-    groupName: {
-        color: lightBlue[800]
-    },
-    secondaryColor: {
-        color: theme.sec
-    },
-    historyHeader: {
-        marginRight: 20
-    },
-    statusList: {
-        fontSize: '1rem',
-        lineHeight: '1.75',
-        display: 'flex'
-
-    },
-    statusItem: {
-        width: 28,
-        height: 28,
-        borderRadius: '50%',
-        textAlign: 'center',
-        marginRight: 18,
-        cursor: 'pointer'
-    },
-    statusGrey: {
-        color: blueGrey[50],
-        backgroundColor: blueGrey[200],
-    },
-    statusGreen: {
-        color: lightGreen[50],
-        backgroundColor: lightGreen[700],
-    },
-    statusYellow: {
-        color: amber[50],
-        backgroundColor: amber[800],
-    },
-    statusSelected: {
-        transform: 'scale(1.2)'
-    },
     logWrap: {
         backgroundColor: blueGrey[900],
         height: 300,
@@ -133,13 +39,6 @@ const styles = theme => ({
         marginTop: 4,
         marginBottom: 4
     },
-    taskGroupWrap: {
-        backgroundColor: blueGrey[50]
-    },
-    driverStatus: {
-        fontSize: 12,
-        fontWeight: 'normal'
-    },
     noBoxShadow: {
         boxShadow: 'none'
     }
@@ -151,7 +50,7 @@ const kvMap = {
     running: '运行中'
 }
 
-class WorkNodeInfo extends Component {
+class EventInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -192,10 +91,10 @@ class WorkNodeInfo extends Component {
 
 
                     <div className={classes.logWrap}>
-                        {detail.Events && detail.Events.map((e, eIndex) => (
-                            <p className={classes.logContent} key={eIndex} >{e.Timestamp}: {e.Message}</p>
-                        ))
-
+                        {
+                            detail.Events && detail.Events.map((e, eIndex) => (
+                                <p className={classes.logContent} key={eIndex} >{e.Timestamp}: {e.Message}</p>
+                            ))
                         }
                     </div>
                 </TabContainer>
@@ -206,11 +105,11 @@ class WorkNodeInfo extends Component {
         );
     }
 }
-WorkNodeInfo.propTypes = {
+EventInfo.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
     return state.region;
 }
-export default connect(mapStateToProps)(withStyles(styles)(WorkNodeInfo));
+export default connect(mapStateToProps)(withStyles(styles)(EventInfo));

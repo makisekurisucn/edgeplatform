@@ -229,14 +229,14 @@ class WorkNodeInfo extends Component {
 
         const style = {
             keyName: {
-                fontSize: '14',
-                fontWeight: '300',
+                fontSize: '16px',
+                fontWeight: '400',
                 marginBottom: '3px'
             },
             value: {
-                paddingLeft: '8px',
-                fontSize: '16',
-                fontWeight: '400',
+                // paddingLeft: '8px',
+                fontSize: '14px',
+                fontWeight: '300',
                 whiteSpace: 'pre-line',
                 wordBreak: 'break-all'
             }

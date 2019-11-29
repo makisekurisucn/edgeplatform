@@ -189,7 +189,6 @@ class Dashboard extends Component {
         }
     }
     scrollListener = () => {
-        console.log('sss')
         const current = Date.now();
         if ((current - this.prevScroll) >= this.delay) {
             this.redrawMap();
@@ -203,9 +202,6 @@ class Dashboard extends Component {
         }
     }
     redrawMap = () => {
-        console.log('ddd')
-        console.log(this.mapInstance.getZoom())
-        console.log(this.mapInstance.getScale())
         if (this.mapInstance) {
             this.setState({
                 mapZoom: this.mapInstance.getZoom(),
@@ -238,8 +234,6 @@ class Dashboard extends Component {
     showList = (item, index) => {
         const { dispatch } = this.props;
         getNodeList(dispatch, item.region, item.Datacenter);
-        console.log(this.props)
-        console.log(this);
 
         this.setState({
             isDCListHidden: true,
@@ -259,8 +253,8 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         getWorkerDetail(dispatch, item.ID);
         getAllocationList(dispatch);
-        getNodePrometheus(dispatch, item.ID, item.Datacenter);
         if (this.state.nodeIndex !== index) {
+            getNodePrometheus(dispatch, item.ID, item.Datacenter);
             this.setState({
                 isNodeDetailHidden: isHidden,
                 nodeIndex: index,
@@ -302,7 +296,11 @@ class Dashboard extends Component {
     render() {
         const { classes, DClist, nodeWorkerDetail, regionCount } = this.props;
         const { list, nodelist, allRegionNodelist, DCInfoMap } = DClist;
-        const { detail } = nodeWorkerDetail;
+
+        let { detail } = nodeWorkerDetail;
+        if(this.state.isNodeDetailHidden){
+            detail={};
+        }
         const plugins = ['Scale', 'ControlBar'];
 
         const currentRegion = this.state.currentRegion;
@@ -313,7 +311,6 @@ class Dashboard extends Component {
         let DCListLongitude = 0, DCListLatitude = 0, searchListLongitude = 0, searchListLatitude = 0;
         let validDCNumber = 0, validSearchNumber = 0;
         let DCListCenter = {}, searchListCenter = {};
-        console.log(this.props);
 
 
         let wrappedNodelist = [];
@@ -332,8 +329,8 @@ class Dashboard extends Component {
         list.forEach((DC) => {
             const DCInfo = DCInfoMap[DC.region][DC.Datacenter];
             if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
-                DCListLongitude += parseInt(DCInfo.longitude);
-                DCListLatitude += parseInt(DCInfo.latitude);
+                DCListLongitude += parseFloat(DCInfo.longitude);
+                DCListLatitude += parseFloat(DCInfo.latitude);
                 validDCNumber++;
             }
             let isMatched = false;
@@ -344,7 +341,6 @@ class Dashboard extends Component {
                     region: DCInfo.region,
                     address: DCInfo.address
                 };
-                console.log(searchInfo)
                 for (let key in searchInfo) {
                     if (searchInfo[key].indexOf(this.state.inputValue) > -1) {
                         isMatched = true;
@@ -353,8 +349,8 @@ class Dashboard extends Component {
                 if (isMatched === true) {
                     searchList.push({ DC: DC, type: 'dc', DCInfo: DCInfo });
                     if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
-                        searchListLongitude += parseInt(DCInfo.longitude);
-                        searchListLatitude += parseInt(DCInfo.latitude);
+                        searchListLongitude += parseFloat(DCInfo.longitude);
+                        searchListLatitude += parseFloat(DCInfo.latitude);
                         validSearchNumber++;
                     }
                 }
@@ -379,8 +375,8 @@ class Dashboard extends Component {
             if (isMatched === true) {
                 searchList.push({ type: 'node', node, DCInfo });
                 if (DCInfo.longitude !== '未知' && DCInfo.latitude !== '未知') {
-                    searchListLongitude += parseInt(DCInfo.longitude);
-                    searchListLatitude += parseInt(DCInfo.latitude);
+                    searchListLongitude += parseFloat(DCInfo.longitude);
+                    searchListLatitude += parseFloat(DCInfo.latitude);
                     validSearchNumber++;
                 }
             }
@@ -399,7 +395,6 @@ class Dashboard extends Component {
         if (!this.state.isNodeListHidden) {
             radius = getRadius(DCInfo.range);
             center = getCenter(DCInfo.longitude, DCInfo.latitude);
-            // 
             const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
             if (screenRadius < 0.01) {
                 MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
@@ -410,16 +405,11 @@ class Dashboard extends Component {
                     <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                 </Map>;
             }
-            // 
-            // MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
-            //     <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
-            // </Map>;
         } else if (!this.state.isSearchListHidden) {
             if (this.state.nodeIndex > -1) {
                 const node = searchList[this.state.nodeIndex];
                 center = getCenter(node.DCInfo.longitude, node.DCInfo.latitude);
                 radius = getRadius(node.DCInfo.range);
-                // 
                 const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
                 if (screenRadius < 0.01) {
                     MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
@@ -430,25 +420,18 @@ class Dashboard extends Component {
                         <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                     </Map>;
                 }
-                // 
-                // MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || center} events={this.mapEvents}>
-                //     <Circle center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
-                // </Map>;
             } else {
                 MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={this.state.mapCenter || searchListCenter} events={this.mapEvents}>
                     {
                         searchList.map((item, index) => {
                             center = getCenter(item.DCInfo.longitude, item.DCInfo.latitude);
                             radius = getRadius(item.DCInfo.range);
-                            // 
                             const screenRadius = this.state.mapScale ? (radius / this.state.mapScale) : 1;
                             if (screenRadius < 0.01) {
                                 return <Marker key={index} position={center} />
                             } else {
                                 return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                             }
-                            // 
-                            // return <Circle key={index} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                         })
                     }
                 </Map>;
@@ -466,74 +449,10 @@ class Dashboard extends Component {
                         } else {
                             return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                         }
-                        // return <Circle key={item.Datacenter} center={center} style={mapCircleStyle.yellowCircle} radius={radius} />
                     })
                 }
             </Map>;
         }
-        //         MyMap = <Map viewMode="3D" mapStyle="fresh" useAMapUI="true" plugins={plugins} center={{ longitude: 115, latitude: 31 }}>
-        // {/* 最左三个，左侧为  先大后小    上方为  两个黄色同心圆   中间为  先小后大*/}
-        //                 <Circle center={{ longitude: 113, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 113, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-
-        //                 <Circle center={{ longitude: 110, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 110, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
-
-        //                 <Circle center={{ longitude: 113, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
-        //                 <Circle center={{ longitude: 113, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-
-
-        // {/* 红黄大小“ 同心圆 ”上方为：先红后黄  下方为：先黄后红 */}
-        //                 <Circle center={{ longitude: 116, latitude: 36 }} style={mapCircleStyle.grayCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 116, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-
-        //                 <Circle center={{ longitude: 116, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 116, latitude: 34 }} style={mapCircleStyle.grayCircle} radius={100000}/>
-
-
-        // {/* 红黄大小”不同“同心圆，红小黄大  上方为：先红后黄  下方为：先黄后红 */}
-        //                 <Circle center={{ longitude: 119, latitude: 36 }} style={mapCircleStyle.grayCircle} radius={50000}/>
-        //                 <Circle center={{ longitude: 119, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-
-        //                 <Circle center={{ longitude: 119, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 119, latitude: 34 }} style={mapCircleStyle.grayCircle} radius={50000}/>
-
-
-        // {/* 最右列，从上至下依次为   先绿（大）后黄（小）  先黄后绿   先绿后黄 */}
-        //                 <Circle center={{ longitude: 122, latitude: 36 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 122, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
-
-        //                 <Circle center={{ longitude: 122, latitude: 34 }} style={mapCircleStyle.yelowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 122, latitude: 34 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-
-        //                 <Circle center={{ longitude: 122, latitude: 32 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 122, latitude: 32 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-
-        //                 <Circle center={{ longitude: 125, latitude: 36 }} style={mapCircleStyle.yellowCircle} radius={50000}/>
-        //                 <Circle center={{ longitude: 125, latitude: 36 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-
-        //                 <Circle center={{ longitude: 125, latitude: 34 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 125, latitude: 34 }} style={mapCircleStyle.greenCircle} radius={50000}/>
-
-        //                 <Circle center={{ longitude: 125, latitude: 32 }} style={mapCircleStyle.greenCircle} radius={50000}/>
-        //                 <Circle center={{ longitude: 125, latitude: 32 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-
-
-        // {/* 中间行，分开三个  从左至右分别为  黄色  红色  绿色*/}
-        //                 <Circle center={{ longitude: 113, latitude: 32 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 116, latitude: 32 }} style={mapCircleStyle.grayCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 119, latitude: 32 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-
-
-        // {/* 最下行，部分重叠 */}
-        //                 <Circle center={{ longitude: 113.5, latitude: 30 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 115, latitude: 30 }} style={mapCircleStyle.grayCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 115.75, latitude: 28.8 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 116.5, latitude: 30 }} style={mapCircleStyle.yellowCircle} radius={100000}/>
-        //                 <Circle center={{ longitude: 118, latitude: 30 }} style={mapCircleStyle.greenCircle} radius={100000}/>
-
-
-        //             </Map>;
 
         return (
 
@@ -589,7 +508,6 @@ class Dashboard extends Component {
     }
 }
 function mapStateToProps(state, ownProps) {
-    console.log(state);
 
     return {
         DClist: state.DClist,

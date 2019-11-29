@@ -6,17 +6,17 @@ const styles = theme => ({
         height: 22,
         width: 85,
         boxSizing: 'border-box',
-        lineHeight: '22px',
+        // lineHeight: '22px',
         textAlign: 'center',
         padding: '0px 6px',
         fontSize: 12,
         color: "#EEF9FF",
         '&:hover': {
-            backgroundColor: 'rgba(97,139,162,0.8)',
+            backgroundColor: 'rgba(97,139,162,1)',
             '& $textArrow': {
                 transform: 'rotate(180deg)'
             },
-            '& $selectListWrap': {
+            '& $selectList': {
                 height: 'auto'
             }
         },
@@ -25,6 +25,7 @@ const styles = theme => ({
 
     },
     display: {
+        height: '100%',
         margin: 0
     },
     displayText: {
@@ -34,7 +35,7 @@ const styles = theme => ({
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        verticalAlign: 'bottom',
+        verticalAlign: 'middle',
         marginRight: '-10px'
     },
     textArrow: {
@@ -46,7 +47,7 @@ const styles = theme => ({
         verticalAlign: 'middle',
         transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
-    selectListWrap: {
+    selectList: {
         backgroundColor: 'rgba(97,139,162,0.8)',
         position: "absolute",
         zIndex: 10,
@@ -60,22 +61,12 @@ const styles = theme => ({
         overflow: 'hidden',
         //   height: 100,
         '& li:hover': {
-            backgroundColor: 'rgba(97,139,162,0.8)'
+            backgroundColor: 'rgba(97,139,162,1)'
         }
     },
     selected: {
-        backgroundColor: 'rgba(97,139,162,0.8)',
+        backgroundColor: 'rgba(97,139,162,1)',
         position: 'relative',
-        // '&:before': {
-        //     height: 22,
-        //     display: 'block',
-        //     width: 4,
-        //     backgroundColor: '#4B8BAF',
-        //     position: 'absolute',
-        //     top: 4,
-        //     left: 0,
-        //     content: "''"
-        // }
     },
     option: {
         padding: '0px 6px',
@@ -125,13 +116,41 @@ class SelectButton extends Component {
     }
 
     render() {
-        const { classes, className, value } = this.props;
+        const { classes, className, value, extendedClasses = {} } = this.props;
+
         const internalList = this.list;
         let display;
-        let classNameWrap = classes.root;
+        let classNameWrap = classes.root,
+            displayWrap = classes.display,
+            displayTextWrap = classes.displayText,
+            textArrowWrap = classes.textArrow,
+            selectListWrap = classes.selectList,
+            selectedWrap = classes.selected,
+            optionWrap = classes.option;
         if (className) {
             classNameWrap += ' ' + className;
         }
+        if (extendedClasses.display) {
+            displayWrap += ' ' + extendedClasses.display;
+        }
+        if (extendedClasses.displayText) {
+            displayTextWrap += ' ' + extendedClasses.displayText;
+        }
+        if (extendedClasses.textArrow) {
+            textArrowWrap += ' ' + extendedClasses.textArrow;
+        }
+        if (extendedClasses.selectList) {
+            selectListWrap += ' ' + extendedClasses.selectList;
+        }
+        if (extendedClasses.selected) {
+            selectedWrap += ' ' + extendedClasses.selected;
+        }
+        if (extendedClasses.option) {
+            optionWrap += ' ' + extendedClasses.option;
+        }
+
+
+
         internalList.forEach(item => {
             if (item.value === value) {
                 display = item.display;
@@ -139,17 +158,17 @@ class SelectButton extends Component {
         });
         return (
             <div className={classNameWrap}>
-                <p className={classes.display}>
-                    <span className={classes.displayText} title={display}>{display}</span>
-                    <ExpandMore className={classes.textArrow} />
-                </p>
-                <ul className={classes.selectListWrap}>
+                <div className={displayWrap}>
+                    <div className={displayTextWrap} title={display}>{display}</div>
+                    <ExpandMore className={textArrowWrap} />
+                </div>
+                <ul className={selectListWrap}>
                     {internalList && internalList.map((item, index) => {
                         if (value === item.value) {
-                            return <li key={item.value} className={classes.option + ' ' + classes.selected} title={item.display}>{item.display}</li>;
+                            return <li key={item.value} className={optionWrap + ' ' + selectedWrap} title={item.display}>{item.display}</li>;
                         }
                         else {
-                            return <li key={item.value} className={classes.option} title={item.display} onClick={this.clickHandler(index)} >{item.display}</li>;
+                            return <li key={item.value} className={optionWrap} title={item.display} onClick={this.clickHandler(index)} >{item.display}</li>;
                         }
                     })
 

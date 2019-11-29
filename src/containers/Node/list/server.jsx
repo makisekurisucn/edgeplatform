@@ -30,7 +30,7 @@ const styles = theme => ({
 
     },
 });
-const header = [{ name: "名称", key: "Name" }, { name: "Leader", key: "Leader", type: "bool" }, { name: "Region", key: "Region" }, { name: "DC", key: "Dc" }, { name: "地址", key: "Addr" }, { name: "状态", key: "Status" }];
+const header = [{ name: "名称", key: "Name" }, { name: "主控节点", key: "Leader", type: "bool" }, { name: "地域", key: "Region" }, { name: "数据中心", key: "Dc" }, { name: "地址", key: "Addr" }, { name: "状态", key: "Status" }];
 class SimpleTable extends Component {
     constructor(props) {
         super(props);

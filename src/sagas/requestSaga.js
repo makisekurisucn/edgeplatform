@@ -11,8 +11,9 @@ function* requestSaga(func, api, ...values) {
             data: {
                 key: date.valueOf(),
                 type: 'error',
-                title: '',
-                content: '',
+                // title: 'network error',
+                title: result.data.response.statusText,
+                content: result.data.msg,
                 date: date.valueOf()
             }
         })
