@@ -179,7 +179,6 @@ class JobInfo extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
-        console.log(taskInfo)
         return (
             <div className={classNameWrap}>
                 <div className={classes.subContent}>

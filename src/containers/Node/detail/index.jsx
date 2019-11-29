@@ -96,35 +96,9 @@ class WorkNodeDetail extends Component {
         // const { index, statusIndex } = this.state;
         let defaultCommand = {};
 
-        switch (detail.Status) {
-            case 'running':
-            case 'pending':
-                defaultCommand = {
-                    name: '停止',
-                    handleClick: () => { console.log('stop') } //待定
-                };
-                break;
-            default:
-                defaultCommand = {
-                    name: '启动',
-                    handleClick: () => { console.log('start') } //待定
-                };
-        }
-
-        const commandList = [
-            {
-                name: '编辑',
-                handleClick: () => { console.log('edit') } //待定
-            },
-            {
-                name: '删除',
-                handleClick: () => { console.log('delete') } //待定
-            }
-        ]
-
         return (
             <Paper className={classes.root}>
-                <AppMainUpper type='work_node_detail' status={kvMap[detail.Status] || detail.Status} data={{ defaultCommand, commandList, name: detail.Name }} />
+                <AppMainUpper type='work_node_detail' status={kvMap[detail.Status] || detail.Status} data={{ name: detail.Name }} />
                 <Tabs contentList={tabList} viewProps={detail} reducedHeight={163} className2={{ bg: classes.bgcolor, selected: classes.selected }} />
             </Paper>
         );
@@ -134,7 +108,6 @@ WorkNodeDetail.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return state.nodeWorkerDetail;
 }
 

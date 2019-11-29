@@ -92,11 +92,9 @@ class TaskMetric extends Component {
         const { dispatch } = this.props;
         if (this.props.data.alloc.ID) {
             clearTimeout(this.timeID);
-            console.log('clear')
             const allocID = this.props.data.alloc.ID;
             const taskName = this.props.data.taskName;
             const duration = this.state.duration;
-            console.log('set timeout')
             this.timeID = setTimeout(function () {
                 getTaskPrometheus(dispatch, allocID, taskName, duration);
             }, 300000)
@@ -107,9 +105,6 @@ class TaskMetric extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         const prevAlloc = this.props.data.alloc || {};
         const nextAlloc = nextProps.data.alloc || {};
-        console.log('-----------------')
-        console.log(prevAlloc)
-        console.log(nextAlloc)
         if (prevAlloc.ID !== nextAlloc.ID || this.props.data.taskName !== nextProps.data.taskName) {
             const { dispatch } = this.props;
 
@@ -175,8 +170,6 @@ class TaskMetric extends Component {
         const memoryResult = this.dataWrapper(memoryData, memoryConfig);
 
         const dataSourece = data.alloc.ID + ',' + data.taskName;
-        console.log('-----this is taskMetric------')
-        console.log(data)
 
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
@@ -200,7 +193,6 @@ TaskMetric.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return {
         PrometheusData: state.Prometheus.taskMetric
     }

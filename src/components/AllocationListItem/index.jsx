@@ -124,7 +124,6 @@ class AllocationListItem extends Component {
             titleWrap += ' ' + classes.selectedTitle;
             arrowWrap += ' ' + classes.selectedArrow;
         }
-        console.log(classNameWrap)
 
         return (
             <div className={classNameWrap} onClick={this.clickHandler(itemData, index)}>

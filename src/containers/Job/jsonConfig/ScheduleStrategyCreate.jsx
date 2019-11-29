@@ -195,7 +195,6 @@ class ScheduleStrategy extends Component {
     }
 
     render() {
-        console.log('schedule render');
         const { classes, className, stepPosition } = this.props;
 
         let rootWrap = classes.root;

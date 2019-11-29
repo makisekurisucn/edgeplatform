@@ -128,7 +128,6 @@ class Button extends Component {
                 display = item.display;
             }
         });
-        console.log(internalList)
         return (
             <div className={classes.root}>
                 <span className={classes.title}>{title}</span>

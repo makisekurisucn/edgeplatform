@@ -51,8 +51,6 @@ class FadeWrap extends Component {
             isHidden: this.props.isHidden,
             stage: 'finished'
         });
-        // console.log(this.state);
-        // console.log(this.props);
 
     }
     UNSAFE_componentWillReceiveProps(nextProp) {

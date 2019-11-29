@@ -93,15 +93,12 @@ function MultipleInput(props) {
     let valueInput = null, newInputItem = null;
 
     const addInputItem = () => {
-        console.log('done');
-        console.log(valueInput.value)
         // if (valueInput.value !== '') {
         let newInputList = [];
         inputList.forEach((inputItem, index) => {
             newInputList.push(inputItem);
         })
         newInputList.push({ value: valueInput.value });
-        console.log(newInputList)
         setInputList(newInputList);
         setPlusTimes(plusTimes + 1);
 
@@ -115,7 +112,6 @@ function MultipleInput(props) {
     }
 
     const removeInputItem = (removeIndex) => (event) => {
-        console.log('remove ')
         let newInputList = [];
         inputList.forEach((inputItem, index) => {
             if (index === removeIndex) {

@@ -134,7 +134,6 @@ class JobDetail extends Component {
                 defaultCommand = {
                     name: '停止',
                     handleClick: () => {
-                        console.log('stop')
                         detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count.toString() });
                         detailCopy.TaskGroups[0].Count = 0;
                         stopJob(this.props.dispatch, jobID, { Job: detailCopy });
@@ -145,7 +144,6 @@ class JobDetail extends Component {
                 defaultCommand = {
                     name: '启动',
                     handleClick: () => {
-                        console.log('start');
                         // detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count });
                         detailCopy.TaskGroups[0].Count = (detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount)) || detailCopy.TaskGroups[0].Count;
                         startJob(this.props.dispatch, jobID, { Job: detailCopy });
@@ -157,7 +155,6 @@ class JobDetail extends Component {
             {
                 name: '编辑',
                 handleClick: () => {
-                    console.log('edit');
                     this.props.history.push(`/console/jobs/${detail.ID}/edit`);
                 }
             },
@@ -168,7 +165,6 @@ class JobDetail extends Component {
                     agree={{
                         text: '确认',
                         func: () => {
-                            console.log('delete');
                             deleteJob(this.props.dispatch, detail.ID);
                             this.props.history.push(`/console/jobs/list`);
                         },
@@ -192,7 +188,6 @@ JobDetail.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return {
         detail: state.jobdetail.detail,
         jobHistory: state.jobdetail.history,

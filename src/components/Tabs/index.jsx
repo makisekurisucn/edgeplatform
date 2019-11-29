@@ -114,9 +114,7 @@ class Tabs extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
-        console.log(className2.bg);
         let UlclassName = classes.tabWrap + ' ' + (className2.bg || '');
-        console.log(UlclassName);
 
         return (
             <div className={classNameWrap}>

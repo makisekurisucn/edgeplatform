@@ -190,25 +190,19 @@ class WorkNodeInfo extends Component {
     }
 
     componentDidMount() {
-        console.log('did mount')
         const { dispatch, data } = this.props;
         resetNodeResources(dispatch);
-        console.log(this.props.ID)
         if (data && data.ID) {
             const { dispatch, data } = this.props;
             const { ID, Datacenter } = data;
-            console.log('mount request')
             getNodeResources(dispatch, ID, Datacenter)
         }
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        console.log('will receive props')
-        console.log(nextProps.data.ID)
         if (nextProps.data && nextProps.data.ID !== this.props.data.ID) {
             const { dispatch, data } = nextProps;
             const { ID, Datacenter } = data;
-            console.log('willreceive request')
             getNodeResources(dispatch, ID, Datacenter)
         }
     }

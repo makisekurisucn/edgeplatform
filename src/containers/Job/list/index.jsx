@@ -45,7 +45,6 @@ class SimpleTable extends Component {
         };
     }
     itemClick = data => {
-        // console.log(this);
         // if (data.key === 'Name') {
         this.props.history.push(`/console/jobs/detail/${data.item.Name}`);
         // }
@@ -61,7 +60,6 @@ class SimpleTable extends Component {
     }
     render() {
         const { classes, list, loading } = this.props;
-        console.log(list);
         return (
             <div className={classes.root}>
                 {/* <Paper> */}
@@ -82,8 +80,6 @@ SimpleTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state);
-    console.log(ownProps);
 
     return state.joblist;
 }

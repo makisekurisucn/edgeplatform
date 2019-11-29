@@ -166,7 +166,6 @@ class JobCreate extends Component {
                 task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
             })
         })
-        console.log(data)
         const { dispatch } = this.props;
         // data.Datacenters = ["xidoumen"];
         createJob(dispatch, { Job: data })
@@ -220,7 +219,6 @@ JobCreate.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return state.jobcreate;
 }
 

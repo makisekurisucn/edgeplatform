@@ -41,8 +41,6 @@ class RunningEvent extends Component {
         }
         let taskEvents = [];
         if (data.alloc.TaskStates) {
-            console.log('-------')
-            console.log(data.alloc.TaskStates[data.taskName].Events)
             let tmpArr=data.alloc.TaskStates[data.taskName].Events || [];
             tmpArr.forEach(event=>{
                 taskEvents.push(event);
@@ -51,7 +49,6 @@ class RunningEvent extends Component {
             // taskEvents = data.alloc.TaskStates[data.taskName].Events.reverse;
         }
         taskEvents=taskEvents.reverse();
-        console.log(taskEvents);
 
         return (
             <div className={classNameWrap}>

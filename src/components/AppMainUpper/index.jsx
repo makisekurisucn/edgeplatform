@@ -102,7 +102,6 @@ class AppMainUpper extends Component {
     }
 
     goTo = (link) => (event) => {
-        console.log(link);
         this.props.history.push(link);
 
     }

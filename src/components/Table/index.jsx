@@ -117,8 +117,6 @@ class SimpleTable extends Component {
     }
     render() {
         const { classes, header, list, className } = this.props;
-        console.log(header)
-        console.log(list);
         let tableBodyWrap = classes.tableBody;
         if (className) {
             tableBodyWrap = classes.tableBody + ' ' + className

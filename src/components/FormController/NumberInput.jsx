@@ -137,10 +137,7 @@ class NumberInput extends React.Component {
     constructor(props) {
         super(props);
 
-
         const { rules = {}, defaultValue } = props;
-        console.log('----------');
-        console.log(props.defaultValue)
         const { maxValue, minValue } = rules;
         let defaultValueWrap = Number.parseInt(defaultValue);
         if (Object.is(NaN, defaultValueWrap)) {
@@ -183,7 +180,6 @@ class NumberInput extends React.Component {
     }
 
     submit = (stepValue) => {
-        console.log('    -----submit-------');
         const { rules = {}, name, saveData } = this.props;
         const { maxValue, minValue } = rules;
         const displayNum = this.state.displayNum;
@@ -204,51 +200,37 @@ class NumberInput extends React.Component {
         }
     }
 
-    handleClick = (stepValue) => (event) => {
-        console.log('--------CLICK--------');
-        this.submit(stepValue);
-    }
-
     speedup = (stepValue) => {
         this.submit(stepValue);
         if (this.speedIndex < this.speedStrategy.length - 1) {
             if (Date.now() - this.mouseDownStartTime >= this.speedStrategy[this.speedIndex].wait) {
-                console.log(`    time is up to ${this.speedStrategy[this.speedIndex].wait}`);
-
-                console.log(`    stop timeID: ${this.timeID}`);
                 clearInterval(this.timeID);
-
                 this.speedIndex = this.speedIndex + 1;
-                console.log(`    new speed is: ${this.speedStrategy[this.speedIndex].speed}`);
 
                 this.timeID = setInterval(() => {
                     this.speedup(stepValue)
                 }, this.speedStrategy[this.speedIndex].speed);
-                console.log(`    timeID: ${this.timeID}`);
             } else {
             }
         }
     }
 
     handleMouseDown = (stepValue) => (event) => {
-        console.log('MOUSE DOWN----------------');
-        console.log('你按的是鼠标 ： ', `${event.buttons}`);
-        console.log('事件属性 ： ', event);
         if (event.buttons !== 1) { return; }
         this.mouseDownStartTime = Date.now();
-        console.log(`  start at: ${this.mouseDownStartTime}`);
         this.submit(stepValue);
 
-        // this.speedup(stepValue);
         this.timeID = setInterval(() => {
             this.speedup(stepValue);
         }, 1000);
-        console.log(`  timeID: ${this.timeID}`);
     }
 
     handleMouseUp = () => {
-        console.log('MOUSE UP------------------');
-        console.log(`  stop timeID: ${this.timeID}`);
+        this.speedIndex = 0;
+        clearInterval(this.timeID)
+    }
+
+    handleMouseLeave = () => {
         this.speedIndex = 0;
         clearInterval(this.timeID)
     }
@@ -270,9 +252,9 @@ class NumberInput extends React.Component {
                 <div className={classes.content}>
                     <div
                         className={classes.sign}
-                        // onClick={this.handleClick(-1 * step)}
                         onMouseDown={this.handleMouseDown(-1 * step)}
                         onMouseUp={this.handleMouseUp}
+                        onMouseLeave={this.handleMouseLeave}
                     >-</div>
                     <div className={classes.numberArea}>
                         <div>{displayNum}</div>
@@ -282,9 +264,9 @@ class NumberInput extends React.Component {
                     </div>
                     <div
                         className={classes.sign}
-                        // onClick={this.handleClick(step)}
                         onMouseDown={this.handleMouseDown(step)}
                         onMouseUp={this.handleMouseUp}
+                        onMouseLeave={this.handleMouseLeave}
                     >+</div>
                 </div>
             </div>

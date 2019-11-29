@@ -39,13 +39,11 @@ function AlertDialogSlide(props) {
     }
 
     function handleAgree() {
-        console.log('agree');
         agree.func && agree.func();
         setOpen(false);
     }
 
     function handleDisagree() {
-        console.log('disagree');
         disagree.func && disagree.func();
         setOpen(false);
     }

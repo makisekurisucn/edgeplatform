@@ -150,8 +150,6 @@ class NotificationItem extends React.Component {
     }
 
     render() {
-        console.log('item render');
-        console.log('item name ', this.props.data.title);
         const { classes, className, data } = this.props;
         let notificationType = data.type || 'default';
         let classNameWrap = classes.root + ' ' + classes[notificationType];

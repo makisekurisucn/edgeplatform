@@ -58,14 +58,11 @@ function NormalInput(props) {
             if (required) {
                 if (input.value === '') {
                     saveData(name, { isValid: false, data: input.value })
-                    console.log('false');
                 } else {
                     saveData(name, { isValid: true, data: input.value })
-                    console.log('true');
                 }
             } else {
                 saveData(name, { isValid: true, data: input.value })
-                console.log('true');
             }
         }
 
@@ -74,8 +71,6 @@ function NormalInput(props) {
 
     useEffect(() => {
         handleChange()
-        console.log('normal input');
-        console.log(input.value);
     }, [])
 
     let classNameWrap = classes.root;

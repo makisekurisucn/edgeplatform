@@ -64,7 +64,6 @@ class SimpleTable extends Component {
         };
     }
     itemClick = data => {
-        // console.log(this); 
         // if (data.key === 'Name') {
         this.props.history.push(`/console/node/worker/${data.item.ID}`);
         // }
@@ -90,8 +89,6 @@ SimpleTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state);
-    console.log(ownProps);
 
     return state.nodeWorkerList;
 }

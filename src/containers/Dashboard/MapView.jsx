@@ -171,16 +171,6 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         getDCList(dispatch);
 
-        // console.log(this.textInput);
-        // const { dispatch } = this.props;
-        // initCreateJob(dispatch);
-
-        // setInterval(()=>{
-        //     this.setState({
-        //         isNodeListHidden: !this.state.isNodeListHidden
-        //     });
-        // },2000)
-
     }
     componentWillUnmount() {
         if (this.mapInstance) {

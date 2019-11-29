@@ -130,7 +130,6 @@ const matchRouter = (current) => {
 
 class JobEdit extends Component {
     constructor(props) {
-        console.log('create constructor');
         super(props);
         this.state = {
             // titleIndex: 0,
@@ -209,7 +208,6 @@ class JobEdit extends Component {
         })
     }
     handleUpload = (dataName, dataSet, isAllCompleted) => {
-        console.log('isAllCompleted: ' + isAllCompleted)
         this.setState({
             // [dataName]: dataSet,
             isAllCompleted
@@ -251,8 +249,6 @@ JobEdit.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    console.log('vreate map state to props');
-    console.log(state)
     return {
         loading: state.jobdetail.loading,
         nativeDetail: state.jobdetail.nativeDetail

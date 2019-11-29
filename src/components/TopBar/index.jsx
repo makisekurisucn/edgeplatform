@@ -103,7 +103,6 @@ class TopBar extends Component {
     }
     render() {
         const { classes, barName, regionList, className } = this.props;
-        console.log(regionList)
         return (
             <div className={className + " " + classes.root}>
                 {/* <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">

@@ -4,7 +4,6 @@ const initialState = {
 };
 
 const workerListProcess = (nodeList) => {
-    console.log(nodeList);
     return nodeList;
 
 };

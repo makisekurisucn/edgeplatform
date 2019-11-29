@@ -187,7 +187,6 @@ class JobDetail extends Component {
     }
     render() {
         const { classes, detail, history, status } = this.props;
-        console.log(detail);
         const { index, statusIndex } = this.state;
         return (
             <Paper className={classes.root}>
@@ -540,7 +539,6 @@ JobDetail.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return state.nodeWorkerDetail;
 }
 

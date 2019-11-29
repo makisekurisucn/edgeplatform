@@ -147,8 +147,6 @@ class Notification extends React.Component {
 
     hideList = () => {
         if (this.state.isListDisplay === true) {
-            console.log('------------------');
-            console.log('on blur');
             //因onblur和onclick会有冲突，且onblur先触发，等到onclick时又设置列表为显示。因此暂时把onblur延迟执行，先执行onclick
             setTimeout(() => {
                 this.setState({

@@ -104,7 +104,6 @@ const stanzaList = [
 
 class BasicInfo extends Component {
     constructor(props) {
-        console.log('basicinfo create constructor');
         super(props);
         this.state = {
             isAllValid: false,
@@ -133,8 +132,6 @@ class BasicInfo extends Component {
 
 
     saveData = (name, result) => {
-        console.log(name);
-        console.log(result);
         if (this.dataSet) {
             switch (name) {
                 case JOB_NAME:
@@ -172,7 +169,6 @@ class BasicInfo extends Component {
 
 
     render() {
-        console.log('basicinfo render');
         const { classes, className, stepPosition, data } = this.props;
 
         let rootWrap = classes.root;

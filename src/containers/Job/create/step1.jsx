@@ -81,8 +81,6 @@ step1.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state);
-    console.log(ownProps);
 
     return state;
 }

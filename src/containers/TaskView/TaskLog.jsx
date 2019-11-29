@@ -139,9 +139,7 @@ class TaskLog extends Component {
             const prevTaskName = this.props.data.taskName;
             const nextAllocID = nextProps.data.alloc.ID;
             const nextTaskName = nextProps.data.taskName;
-            console.log('allocID and taskName existence')
             if (prevAllocID === nextAllocID && prevTaskName === nextTaskName) {
-                console.log('completely same')
             } else {
                 const { dispatch } = this.props;
                 const params = {
@@ -206,7 +204,6 @@ class TaskLog extends Component {
                     stdoutOffset: newOffset
                 })
                 getTaskLogs(dispatch, this.props.data.alloc.ID, stdoutParams);
-                console.log('stdout < 90')
             }
         } else if (this.state.isStdoutHidden === true && this.state.isStderrHidden === false) {
             if (this.stderrLog.scrollHeight > this.stderrLog.clientHeight && this.stderrLog.scrollTop < 90) {
@@ -224,7 +221,6 @@ class TaskLog extends Component {
                     stderrOffset: newOffset
                 })
                 getTaskLogs(dispatch, this.props.data.alloc.ID, stderrParams);
-                console.log('stderr < 90')
             }
         }
     }
@@ -237,7 +233,6 @@ class TaskLog extends Component {
         if (className) {
             classNameWrap += ' ' + className;
         }
-        // console.log(taskLogs)
         const selectedItem = classes.selectItem + ' ' + classes.selected;
 
         return (
@@ -267,17 +262,9 @@ TaskLog.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    console.log(state)
-    // return { taskLogs: state.Allocationlist.taskLogs }
     return {
         stdout: state.Allocationlist.taskLogs.stdout,
         stderr: state.Allocationlist.taskLogs.stderr
     }
-    // return {
-    //     taskLogs: {
-    //         stdout: state.Allocationlist.taskLogs.stdout,
-    //         stderr: state.Allocationlist.taskLogs.stderr
-    //     }
-    // }
 }
 export default connect(mapStateToProps)(withStyles(styles)(TaskLog));

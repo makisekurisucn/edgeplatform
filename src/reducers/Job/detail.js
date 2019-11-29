@@ -94,7 +94,6 @@ const jobDetailProcess = (detail) => {
 }
 
 const jobStatusProcess = (allocInfo) => {
-    console.log(allocInfo);
     let nodeInfo = {};
     let taskGroup = {};
     allocInfo.nodeList.forEach(node => {
@@ -121,7 +120,6 @@ const jobStatusProcess = (allocInfo) => {
     });
 
     let statusIndex = {};
-    console.log(taskGroup);
 
     // 重塑alloc 结构
     for (let tgname in taskGroup) {
@@ -159,10 +157,6 @@ const jobStatusProcess = (allocInfo) => {
         });
         taskGroup[tgname] = newTG;
     }
-    console.log({
-        status: { taskGroup, nodeInfo },
-        statusIndex: statusIndex
-    });
     if (allocInfo.status.length === 0) {
         return {
             status: { nodeInfo },

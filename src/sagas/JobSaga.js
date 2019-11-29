@@ -74,25 +74,10 @@ function* createJob(action) {
 
 function* editJob(action) {
     let res = yield* requestSaga(call, edit, action.id, action.data);
-    //can delete
-    // if (!res.error) {
-    //     console.log('edit success');
-    //     yield put({
-    //         type: 'JOB_DETAIL_SAGA',
-    //         data: action.id
-    //     })
-    // }
-
 }
 
 function* deleteJob(action) {
-    console.log('delete saga')
     let res = yield* requestSaga(call, purge, action.data);
-    //can delete
-    // if (!res.error) {
-    //     console.log('delete success')
-    //     yield* getJoblist();
-    // }
 }
 
 function* getJobDetail(action) {

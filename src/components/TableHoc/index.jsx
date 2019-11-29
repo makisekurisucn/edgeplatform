@@ -77,8 +77,6 @@ const table = (header) => {
         }
         render() {
             const { classes, list, className } = this.props;
-            console.log(header)
-            console.log(list);
             let tableBodyWrap = classes.tableBody;
             if (className) {
                 tableBodyWrap = classes.tableBody + ' ' + className
@@ -93,23 +91,23 @@ const table = (header) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {list.map((row,index) => (
+                        {list.map((row, index) => (
                             <TableRow className={tableBodyWrap} key={index}>
                                 {header.map((head) => {
-                                    if(head.type && head.type === "component"){
+                                    if (head.type && head.type === "component") {
                                         const thisComp = head.component;
-                                        return <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > 
-                                            <thisComp {...row[head.key]}  />
-                                        </TableCell>  
+                                        return <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} >
+                                            <thisComp {...row[head.key]} />
+                                        </TableCell>
                                     }
-                                    else{
+                                    else {
                                         const convert = head.convert || ((value) => value);
                                         return <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {
                                             convert(row[head.key])
                                         }</TableCell>
                                     }
-                                    
-                                    
+
+
                                     // <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>
                                 })}
                             </TableRow>
@@ -119,7 +117,7 @@ const table = (header) => {
                         }
                     </TableBody>
                 </Table>
-    
+
             );
         }
     }
@@ -132,8 +130,8 @@ const table = (header) => {
         header: [],
         list: [],
     };
-    
-    return withStyles(styles)(SimpleTable);    
+
+    return withStyles(styles)(SimpleTable);
 }
 
 

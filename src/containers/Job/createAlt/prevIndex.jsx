@@ -62,7 +62,6 @@ class JobCreate extends Component {
         initCreateJob(dispatch);
     }
     handleChange = () => p => {
-        console.log(p);
         if (p.jsObject) {
             this.setState({
                 json: p.jsObject
@@ -126,7 +125,6 @@ JobCreate.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return state.jobcreate;
 }
 

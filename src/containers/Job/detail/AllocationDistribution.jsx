@@ -139,10 +139,6 @@ class AllocationDistribution extends Component {
     }
 
     componentDidUpdate() {
-        // console.log('did update')
-        // console.log(this.props.isHidden)
-        // console.log('canupdate: '+this.state.canUpdata)
-        // console.log('height: '+this.rootDiv.clientHeight)
         if (this.props.isHidden === false) {
             if (this.mapDiv.clientHeight > 0 && this.state.canUpdata === true) {
                 this.setState({
@@ -180,9 +176,6 @@ class AllocationDistribution extends Component {
     }
 
     redrawMap = () => {
-        console.log('ddd')
-        console.log(this.mapInstance.getZoom())
-        console.log(this.mapInstance.getScale())
         if (this.mapInstance) {
             this.setState({
                 mapZoom: this.mapInstance.getZoom(),

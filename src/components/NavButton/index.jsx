@@ -62,7 +62,6 @@ class Button extends Component {
             selected: false
         };
         this.unlisten = props.history.listen((location) => {
-            console.log(location.pathname);
             this.setState({
                 selected: hasRouter(location.pathname, props.link)
             });
@@ -89,7 +88,6 @@ class Button extends Component {
     }
 
     goTo = (link) => (event) => {
-        console.log(link);
         // if (!this.state.selected) {
         this.props.history.push(link);
         // }
@@ -104,7 +102,6 @@ class Button extends Component {
         else {
             classNameWrap = classes.root + ' ' + (className.buttonRoot || '');
         }
-        console.log(this.props)
 
         return (
             <div className={classNameWrap} onClick={this.goTo(link)}>

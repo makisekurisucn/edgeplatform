@@ -85,7 +85,6 @@ const styles = theme => ({
 });
 class ProcessManage extends Component {
     constructor(props) {
-        console.log('processManage constructor');
         super(props);
         this.state = {
             currentStep: 0,

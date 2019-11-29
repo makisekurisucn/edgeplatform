@@ -192,7 +192,6 @@ class JobDetail extends Component {
     }
     render() {
         const { classes, match, detail, history, status } = this.props;
-        console.log(status);
         const { taskGroup, nodeInfo } = status;
         const { index, statusIndex } = this.state;
         return (

@@ -91,22 +91,7 @@ class NodeView extends Component {
         this.state = {
         };
     }
-    // componentWillMount() {
 
-    //   this.setState({
-    //     isHidden: true,
-    //     animateStarted: false,
-    //     animateFinished: false
-    //   });
-    //   console.log('hello');
-    // }
-    // componentWillReceiveProps(nextProp) {
-    //     console.log(nextProp)
-    // }
-
-    // componentDidUpdate(){
-
-    // }
     render() {
         const { classes, className, children, detail, region, Datacenter, DCInfoMap } = this.props;
         // const { isHidden, stage} = this.state;

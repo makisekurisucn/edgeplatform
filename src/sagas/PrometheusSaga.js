@@ -62,7 +62,6 @@ function* getTaskResources(action) {
             resources[list[i].name] = valuesArr !== undefined ? valuesArr[valuesArr.length - 1][1] : 0;
         }
     }
-    console.log(resources)
     yield put({
         type: "PROMETHEUS_UPDATE_NODERESOURCES",
         data: resources || {}
