@@ -219,14 +219,14 @@ class JobHistory extends Component {
 
     portDataProcess = (port_Map = [], networks = []) => {
         let ports = {}, resArr = [];
-        port_Map.forEach(portItem => {
+        port_Map && port_Map.forEach(portItem => {
             for (let key in portItem) {
                 ports[key] = {
                     originPort: portItem[key]
                 };
             }
         })
-        networks.forEach(nw => {
+        networks && networks.forEach(nw => {
             if (nw.DynamicPorts) {
                 nw.DynamicPorts.forEach(nwdp => {
                     if (ports[nwdp.Label]) {

@@ -17,6 +17,9 @@ const styles = theme => ({
     selectList: {
         height: 24,
         width: '100%'
+    },
+    fontColor: {
+        color: 'rgb(116, 116, 116)'
     }
 });
 const CPUConfig = {
@@ -181,8 +184,8 @@ class TaskMetric extends Component {
         return (
             <div className={classNameWrap}>
                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'33px'}></Select>
-                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={dataSourece} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={dataSourece} />
+                <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={dataSourece} extendedCSS={{ title: classes.fontColor, current: classes.fontColor }} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={dataSourece} extendedCSS={{ title: classes.fontColor, current: classes.fontColor }} />
             </div>
         );
     }

@@ -2,11 +2,47 @@
 import { handleRequest } from '../utils/handleRequest';
 
 
-function list(postId) {
+function list(allocId) {
     return handleRequest({
         url: `/v1/allocations`,
         options: {
             method: 'GET'
+        },
+        customizedConf: {
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function detail(allocId) {
+    return handleRequest({
+        url: `/v1/allocation/${allocId}`,
+        options: {
+            method: 'GET'
+        },
+        customizedConf: {
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function stopAlloc(allocId) {
+    return handleRequest({
+        url: `/v1/allocation/${allocId}/stop`,
+        options: {
+            method: 'POST'
+        },
+        customizedConf: {
+            expectedDataType: 'json'
+        }
+    });
+}
+
+function restartAlloc(allocId) {
+    return handleRequest({
+        url: `/v1/client/allocation/${allocId}/restart`,
+        options: {
+            method: 'POST'
         },
         customizedConf: {
             expectedDataType: 'json'
@@ -36,4 +72,4 @@ function taskLogs(id, params) {
     });
 }
 
-export { list, taskLogs };
+export { list, detail, taskLogs, stopAlloc, restartAlloc };

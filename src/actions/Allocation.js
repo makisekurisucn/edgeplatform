@@ -4,6 +4,13 @@ const getAllocationList = (dispatch) => {
     });
 }
 
+const getAllocationDetail = (dispatch, id) => {
+    dispatch({
+        type: 'ALLOCATION_GETALLOCATIONDETAIL_SAGA',
+        id: id
+    });
+}
+
 const getTaskLogs = (dispatch, id, params) => {
     dispatch({
         type: 'ALLOCATION_GETTASKLOGS_SAGA',
@@ -20,5 +27,19 @@ const getBothTaskLogs = (dispatch, id, params) => {
     })
 }
 
+const stopAllocation = (dispatch, id) => {
+    dispatch({
+        type: 'ALLOCATION_STOPALLOCATION_SAGA',
+        id: id
+    })
+}
 
-export { getAllocationList, getTaskLogs, getBothTaskLogs };
+const restartAllocation = (dispatch, id) => {
+    dispatch({
+        type: 'ALLOCATION_RESTARTALLOCATION_SAGA',
+        id: id
+    })
+}
+
+
+export { getAllocationList, getAllocationDetail, getTaskLogs, getBothTaskLogs, stopAllocation, restartAllocation };

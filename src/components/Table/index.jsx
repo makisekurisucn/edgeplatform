@@ -134,12 +134,26 @@ class SimpleTable extends Component {
                     {list.map((row) => (
                         <TableRow className={tableBodyWrap} key={row.ID ? row.ID : row.Name}>
                             {header.map((head) => {
-                                if (head.key === 'Status') {
-                                    return <TableCell align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} >
-                                        <span className={classes.status + ' ' + classes[colorMap[this.processItem(head, row)]]}>{kvMap[this.processItem(head, row)] || this.processItem(head, row)}</span>
-                                    </TableCell>
+                                if (head.key === 'Status' || head.key.toLowerCase().indexOf('status') > -1) {
+                                    return (
+                                        <TableCell align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} >
+                                            <span
+                                                className={classes.status + ' ' + classes[colorMap[this.processItem(head, row)]] + ' ' + head.classes}
+                                            >
+                                                {kvMap[this.processItem(head, row)] || this.processItem(head, row)}
+                                            </span>
+                                        </TableCell>
+                                    )
                                 } else {
-                                    return <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>
+                                    return (
+                                        <TableCell
+                                            className={classes.tableCell + ' ' + head.classes}
+                                            align="center" key={row[head.key]}
+                                            onClick={this.clickHandler(row, head.key)}
+                                        >
+                                            {kvMap[this.processItem(head, row)] || this.processItem(head, row)}
+                                        </TableCell>
+                                    )
                                 }
                                 // <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>
                             })}

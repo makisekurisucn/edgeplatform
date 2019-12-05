@@ -148,7 +148,7 @@ function getTaskMemoryUtilization(allocID, taskName, duration) {
     const result = transformTime(duration);
 
     return handleRequest({
-        url: `/api/v1/query_range?query=nomad_client_allocs_memory_kernel_usage{alloc_id='${allocID}',task='${taskName}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
+        url: `/api/v1/query_range?query=nomad_client_allocs_memory_rss{alloc_id='${allocID}',task='${taskName}'}&start=${result.start/1000}&end=${result.end/1000}&step=${result.step}`,
         options: {
             method: 'GET'
         },

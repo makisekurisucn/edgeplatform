@@ -32,7 +32,7 @@ const styles = theme => ({
         fontSize: 12,
         // color: '#EEF9FF',
         fontWeight: 400,
-        padding: '16px 1px 16px 16px',
+        padding: '7px 1px 7px 16px',
         boxSizing: 'border-box',
         wordBreak: 'break-word'
     }

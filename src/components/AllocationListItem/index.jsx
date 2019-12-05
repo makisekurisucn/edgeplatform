@@ -17,7 +17,8 @@ const styles = theme => ({
         '&:hover': {
             backgroundColor: 'rgba(0,0,0,0.12)'
         },
-        color: '#EEF9FF',
+        // color: '#EEF9FF',
+        color: 'rgb(116, 116, 116)',
         fontSize: 12,
         backgroundColor: 'rgba(216,216,216,0.11)'
     },
@@ -35,8 +36,8 @@ const styles = theme => ({
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        backgroundColor: 'rgb(105,105,105)'
-
+        backgroundColor: 'rgb(105,105,105)',
+        color: '#EEF9FF'
     },
     date: {
         fontWeight: 300,

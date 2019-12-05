@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { getTaskLogs, getBothTaskLogs } from '../../actions/Allocation';
 import FixedHeight from '../../components/FixedHeight';
 import Select from '../../components/Select/HorizontalButton';
-import FadeWrap from '../../components/FadeWrap';
 
 const styles = theme => ({
     root: {
@@ -21,9 +20,10 @@ const styles = theme => ({
     },
     logContent: {
         // marginBottom: 30,
+        height: '150px',
         color: '#EEF9FF',
         border: '1px solid rgba(113,113,113,1)',
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
         fontSize: 12,
         fontWeight: 300,
         boxSizing: 'border-box',
@@ -239,19 +239,17 @@ class TaskLog extends Component {
             <div className={classNameWrap}>
                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData}></Select>
                 <div className={classes.logContent}>
-                    <FixedHeight className={classes.fixedHeight} reducedHeight={423}>
-                        <FadeWrap className={classes.fadeWrap} isHidden={this.state.isStdoutHidden} from="left" to="left">
-                            <div className={classes.logText} ref={ele => this.stdoutLog = ele}>
-                                {stdout}
-                            </div>
-                        </FadeWrap>
-                        <FadeWrap className={classes.fadeWrap} isHidden={this.state.isStderrHidden} from="right" to="right">
-                            <div className={classes.logText} ref={ele => this.stderrLog = ele}>
-                                {stderr}
-                            </div>
-                        </FadeWrap>
-                    </FixedHeight>
-
+                    {/* <FixedHeight className={classes.fixedHeight} reducedHeight={423}> */}
+                    <div style={{ height: '100%', display: `${this.state.isStdoutHidden ? 'none' : 'block'}` }}>
+                        <div className={classes.logText} ref={ele => this.stdoutLog = ele}>
+                            {stdout}
+                        </div>
+                    </div>
+                    <div style={{ height: '100%', display: `${this.state.isStderrHidden ? 'none' : 'block'}` }}>
+                        <div className={classes.logText} ref={ele => this.stderrLog = ele}>
+                            {stderr}
+                        </div>
+                    </div>
                 </div>
             </div>
         );

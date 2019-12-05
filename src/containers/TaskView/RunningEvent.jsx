@@ -16,13 +16,17 @@ const styles = theme => ({
     },
     eventItem: {
         // marginBottom: 30,
-        color: '#EEF9FF'
+        color: 'rgb(0, 0, 0)',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)'
     },
     arrow: {
         fontSize: '19px',
-        marginBottom: '-3px',
-        color: '#EEF9FF',
+        // marginBottom: '-3px',
+        color: 'rgb(0, 0, 0)',
         paddingLeft: '56px'
+    },
+    marginBottom: {
+        marginBottom: '-4px'
     }
 });
 class RunningEvent extends Component {
@@ -41,24 +45,24 @@ class RunningEvent extends Component {
         }
         let taskEvents = [];
         if (data.alloc.TaskStates) {
-            let tmpArr=data.alloc.TaskStates[data.taskName].Events || [];
-            tmpArr.forEach(event=>{
+            let tmpArr = data.alloc.TaskStates[data.taskName].Events || [];
+            tmpArr.forEach(event => {
                 taskEvents.push(event);
             })
 
             // taskEvents = data.alloc.TaskStates[data.taskName].Events.reverse;
         }
-        taskEvents=taskEvents.reverse();
+        taskEvents = taskEvents.reverse();
 
         return (
             <div className={classNameWrap}>
                 {
                     taskEvents.map((event, index) => {
                         if (index === (taskEvents.length - 1)) {
-                            return <EventItem date={formatTime(event.Time)} event={event.DisplayMessage} key={index} />
+                            return <EventItem className={classes.eventItem} date={formatTime(event.Time)} event={event.DisplayMessage} key={index} />
                         } else {
-                            return <div key={index}>
-                                <EventItem date={formatTime(event.Time)} event={event.DisplayMessage} />
+                            return <div className={classes.marginBottom} key={index}>
+                                <EventItem className={classes.eventItem} date={formatTime(event.Time)} event={event.DisplayMessage} />
                                 <KeyboardArrowUp className={classes.arrow}></KeyboardArrowUp>
                             </div>
 

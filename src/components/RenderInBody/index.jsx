@@ -68,7 +68,7 @@ class RenderInProps extends Component {
     }
 
     _renderLayer = () => {
-        ReactDOM.render(this.props.children, this.popup, this.props.callback || function () { console.log('default callback'); });
+        ReactDOM.render(this.props.children, this.popup, this.props.callback || function () { });
         // ReactDOM.render(this.props.children, this.popup);
     }
 

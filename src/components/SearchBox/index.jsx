@@ -18,7 +18,7 @@ const styles = theme => ({
         width: "100%",
         position: 'absolute',
         zIndex: 100,
-        backgroundColor: 'rgba(22,22,22,0.8)',
+        // backgroundColor: 'rgba(22,22,22,0.8)',
         boxShadow: '1px 1px 6px #ababab',
         boxSizing: 'border-box',
         // top: 24,
@@ -41,7 +41,7 @@ const styles = theme => ({
         margin: 'auto',
         right: 10,
         zIndex: 100,
-        color: '#EEF9FF',
+        color: 'rgb(0, 0, 0)',
         fontSize: 30,
         cursor: 'pointer',
         '&:hover': {

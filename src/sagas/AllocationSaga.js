@@ -1,5 +1,5 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-import { list, taskLogs } from "../apis/allocation";
+import { list, taskLogs, stopAlloc, restartAlloc } from "../apis/allocation";
 import { setRegion } from '../utils/handleRequest';
 import { requestSaga } from './requestSaga';
 
@@ -16,6 +16,34 @@ function* getAllocationlist(action) {
         });
     }
 
+}
+
+function* stopAllocation(action) {
+    let result = yield* requestSaga(call, stopAlloc, action.id);
+
+    if (!result.error) {
+        console.log('---stop success---');
+        // yield put({
+        //     type: "ALLOCATION_UPDATE_ALLOCATIONLIST",
+        //     data: {
+        //         list: allocationlist || []
+        //     }
+        // });
+    }
+}
+
+function* restartAllocation(action) {
+    let result = yield* requestSaga(call, restartAlloc, action.id);
+
+    if (!result.error) {
+        console.log('---restart success---');
+        // yield put({
+        //     type: "ALLOCATION_UPDATE_ALLOCATIONLIST",
+        //     data: {
+        //         list: allocationlist || []
+        //     }
+        // });
+    }
 }
 
 function* getTaskLogs(action) {
@@ -56,6 +84,8 @@ function* detailSaga() {
     yield takeLatest('ALLOCATION_GETALLOCATIONLIST_SAGA', getAllocationlist);
     yield takeLatest('ALLOCATION_GETTASKLOGS_SAGA', getTaskLogs);
     yield takeLatest('ALLOCATION_GETBOTHTASKLOGS_SAGA', getBothTaskLogs);
+    yield takeLatest('ALLOCATION_STOPALLOCATION_SAGA', stopAllocation);
+    yield takeLatest('ALLOCATION_RESTARTALLOCATION_SAGA', restartAllocation);
 }
 
 export default detailSaga;

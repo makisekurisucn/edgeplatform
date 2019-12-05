@@ -2,6 +2,11 @@ import { request } from './request';
 
 let currentRegion = '';
 let crossRegionRequest = '';
+let regionList = [];
+
+function setRegionList(list) {
+    regionList = JSON.parse(JSON.stringify(list));
+}
 
 function getRegion() {
     return currentRegion;
@@ -13,7 +18,7 @@ function getcrossRegionRequest() {
 
 function setRegion(region) {
     currentRegion = region;
-    if (currentRegion === '' || currentRegion === null || currentRegion === undefined) {
+    if (currentRegion === '' || currentRegion === null || currentRegion === undefined || regionList.indexOf(region) === -1) {
         crossRegionRequest = '';
     } else {
         // crossRegionRequest = "?region=" + currentRegion;
@@ -34,4 +39,4 @@ function handleRequest({ url, options, customizedConf, callback }) {
 
 
 
-export { handleRequest, setRegion, getRegion };
+export { handleRequest, setRegion, getRegion, setRegionList };
