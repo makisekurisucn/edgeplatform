@@ -19,7 +19,7 @@ function* getJoblist(action) {
 }
 
 function* getBlockingJoblist(action) {
-    if (action.command === 'stop') {
+    if (action.command === 'stop' && blockingListConstructor) {
         //终止所有blocking请求
         blockingListConstructor.abort();
         // blockingListConstructor = null;
@@ -113,7 +113,7 @@ function* getJobDetail(action) {
 }
 
 function* getBlockingJobDetail(action) {
-    if (action.command === 'stop') {
+    if (action.command === 'stop' && blockingDetailConstructor) {
         blockingDetailConstructor.abort();
         // blockingDetailConstructor = null;
     } else if (action.command === 'start') {
@@ -201,7 +201,7 @@ function* getJobStatus(action) {
 
 
 function* getBlockingAllocList(action) {
-    if (action.command === 'stop') {
+    if (action.command === 'stop' && blockingAllocListConstructor) {
         blockingAllocListConstructor.abort();
         // blockingAllocListConstructor = null;
     } else if (action.command === 'start') {

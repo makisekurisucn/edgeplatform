@@ -31,7 +31,7 @@ function* getAllocationDetail(action) {
 }
 
 function* getBlockingAllocDetail(action) {
-    if (action.command === 'stop') {
+    if (action.command === 'stop' && blockingDetailConstructor) {
         blockingDetailConstructor.abort();
         // blockingDetailConstructor = null;
     } else if (action.command === 'start') {

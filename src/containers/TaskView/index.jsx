@@ -254,9 +254,9 @@ const styles = theme => ({
         left: '2px',
         transform: 'scale(0.8)'
     },
-    // selectList: {
+    selectList: {
 
-    // },
+    },
     // option: {
 
     // },
@@ -431,7 +431,7 @@ class TaskView extends Component {
                                     displayText: classes.displayText,
                                     expandMore: classes.expandMore,
                                     expandMoreArrow: classes.expandMoreArrow,
-                                    // selectList: classes.selectList,
+                                    selectList: classes.selectList,
                                     // option: classes.option
                                 }}
                             />

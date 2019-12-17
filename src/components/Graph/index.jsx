@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/line';
 
 
 
@@ -77,10 +78,13 @@ class Graph extends Component {
     }
 
     initGraph = () => {
+        console.log('in initGraph');
         const values = this.props.values
         const config = this.props.config;
         if (this.ID) {
+            console.log('in if');
             let myChart = echarts.init(this.ID);
+            console.log('after init,before getOption');
             let options = getOption(values, config);
             myChart.setOption(options);
             myChart.resize({ width: this.ID.clientWidth });
