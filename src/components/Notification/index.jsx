@@ -1,9 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import NotificationsNone from '@material-ui/icons/NotificationsNone';
-import { addNotification } from '../../actions/Notification';
 import RenderInBody from '../RenderInBody';
 import NotificationList from './NotificationList';
 
@@ -46,7 +44,7 @@ const styles = theme => ({
             height: '6px',
             position: 'absolute',
             top: '16px',
-            right: '7px',
+            right: '16px',
             display: 'inline-block',
             backgroundColor: '#ff0000',
             borderRadius: '50%'
@@ -72,7 +70,6 @@ const styles = theme => ({
     },
     toLeftTop: {
         transform: 'translateY(-100%)'
-        // transform: 'translate(-100%,-100%)'
     }
 });
 
@@ -153,9 +150,6 @@ class Notification extends React.Component {
                     isListDisplay: false
                 })
             }, 100);
-            // this.setState({
-            //     isListDisplay: false
-            // })
         }
     }
 
@@ -187,7 +181,6 @@ class Notification extends React.Component {
                         </div>
                         <div className={numberAreaClassName}>
                             <div className={numberClassName} style={{ transform: `translateY(-${Math.min(count, 100) * 100}%)` }}>{countList}</div>
-                            {/* <div className={classes.count}>{count + 1}</div> */}
                         </div>
                     </div>
                     <RenderInBody>

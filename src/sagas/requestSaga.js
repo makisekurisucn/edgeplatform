@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
+import { put } from 'redux-saga/effects';
 
 
 function* requestSaga(func, api, ...values) {
@@ -11,7 +11,7 @@ function* requestSaga(func, api, ...values) {
                 key: date.valueOf(),
                 type: 'error',
                 // title: 'network error',
-                title: result.data.response.statusText,
+                title: result.data.response && result.data.response.statusText,
                 content: result.data.msg,
                 date: date.valueOf()
             }

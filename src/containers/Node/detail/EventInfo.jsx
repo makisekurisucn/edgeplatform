@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
-import { blueGrey, lightGreen, amber, lightBlue } from '@material-ui/core/colors';
+import { blueGrey } from '@material-ui/core/colors';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -44,12 +44,6 @@ const styles = theme => ({
     }
 });
 
-const kvMap = {
-    pending: '启动中',
-    service: '服务',
-    running: '运行中'
-}
-
 class EventInfo extends Component {
     constructor(props) {
         super(props);
@@ -73,23 +67,8 @@ class EventInfo extends Component {
         }
 
         return (
-            <Paper className={classes.root} classes={{ elevation2: classes.noBoxShadow }}>
-                {/* <Typography component="div">
-                    <Grid container className={classes.headerContainer} alignItems="center">
-                        <Grid className={classes.headerTtile}>{detail.Name}</Grid>
-                        <Grid className={`${classes.headerStatus} ${detail.Status === "ready" ? classes.statusGreen : null} ${detail.Status === "pending" ? classes.statusYellow : null}`}>{detail.Status}</Grid>
-                    </Grid>
-                </Typography> */}
-                {/* <AppBar position="static">
-                    <Tabs value={index} onChange={this.handleChange}>
-                        <Tab label="基本信息" />
-                        <Tab label="事件信息" />
-                    </Tabs>
-                </AppBar> */}
-
+            <Paper className={classNameWrap} classes={{ elevation2: classes.noBoxShadow }}>
                 <TabContainer>
-
-
                     <div className={classes.logWrap}>
                         {
                             detail.Events && detail.Events.map((e, eIndex) => (
@@ -98,9 +77,6 @@ class EventInfo extends Component {
                         }
                     </div>
                 </TabContainer>
-
-
-
             </Paper>
         );
     }
@@ -109,7 +85,7 @@ EventInfo.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
     return state.region;
 }
 export default connect(mapStateToProps)(withStyles(styles)(EventInfo));

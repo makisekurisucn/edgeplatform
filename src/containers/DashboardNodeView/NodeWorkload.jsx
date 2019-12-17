@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import AppCard from '../../components/AppCard';
 import { setRegion } from '../../utils/handleRequest';
-// import Tabs from '../../components/Tabs';
+
 const styles = theme => ({
     root: {
         padding: 10
@@ -29,8 +29,7 @@ class NodeWorkload extends Component {
     }
 
     render() {
-        const { classes, className, children, data, list } = this.props;
-        // const { isHidden, stage} = this.state;
+        const { classes, className, data, list } = this.props;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
@@ -62,6 +61,8 @@ class NodeWorkload extends Component {
                                 runningTaskNumber
                             }
                             return <AppCard className={classes.marginBottom10} data={wrappedData} onItemClick={this.turnToJobDetail} key={item.ID} />
+                        } else {
+                            return null;
                         }
                     })
                 }

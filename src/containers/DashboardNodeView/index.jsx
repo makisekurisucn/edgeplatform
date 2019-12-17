@@ -93,8 +93,7 @@ class NodeView extends Component {
     }
 
     render() {
-        const { classes, className, children, detail, region, Datacenter, DCInfoMap } = this.props;
-        // const { isHidden, stage} = this.state;
+        const { classes, className, detail, region, Datacenter, DCInfoMap } = this.props;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;

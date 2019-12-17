@@ -176,12 +176,6 @@ const styles = theme => ({
     },
 });
 
-const kvMap = {
-    pending: '启动中',
-    service: '服务',
-    running: '运行中'
-}
-
 class WorkNodeInfo extends Component {
     constructor(props) {
         super(props);

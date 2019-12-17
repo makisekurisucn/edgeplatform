@@ -25,6 +25,9 @@ const styles = theme => ({
         color: '#0C567F',
         display: 'flex',
         justifyContent: 'space-between',
+        backgroundColor: '#eeeeee'
+    },
+    colorWrap: {
         backgroundColor: '#F5F6F6'
     },
     leftContent: {
@@ -109,7 +112,7 @@ class AppMainUpper extends Component {
         this.props.history.goBack();
     }
     render() {
-        const { classes, className, type, status, data = {}, statusColor } = this.props;
+        const { classes, type, status, data = {}, statusColor } = this.props;
 
 
         let myAppMainUpper;
@@ -136,7 +139,7 @@ class AppMainUpper extends Component {
                 </div>;
                 break;
             case 'work_node_detail':
-                myAppMainUpper = <div className={classes.root2}>
+                myAppMainUpper = <div className={classes.root2 + ' ' + classes.colorWrap}>
                     <div className={classes.title}>
                         <ArrowBackIos className={classes.arrow2} onClick={this.goBack} />
                         <div className={classes.jobApp}>{data.name}</div>

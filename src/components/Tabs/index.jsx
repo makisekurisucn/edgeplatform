@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import FadeWrap from '../../components/FadeWrap';
 import FixedHeight from '../../components/FixedHeight';
-// import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 
 const styles = theme => ({
     root: {
@@ -19,10 +18,8 @@ const styles = theme => ({
         fontSize: '14px',
         height: 32,
         lineHeight: '32px',
-        display: 'flex',
-        // disp
+        display: 'flex'
     },
-
     tabWrap1: {
         backgroundColor: 'rgba(75,139,175,0.7)',
         color: '#4B8BAF',//'#EEF9FF',
@@ -32,11 +29,7 @@ const styles = theme => ({
         display: 'flex',
         //下边框阴影
         boxShadow: '0px 0px 0px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)'
-        // disp
     },
-
-
-
     tabItem: {
         width: 120,
         textAlign: 'center',
@@ -61,13 +54,9 @@ const styles = theme => ({
     },
 
     tabContentWrap: {
-        position: 'relative',
-        // height: 600
+        position: 'relative'
     },
     itemWrap: {
-        // position: 'absolute',
-        // width: '100%',
-        // top: '0px'
         height: 0,
         overflow: 'visible'
     }
@@ -106,7 +95,7 @@ class Tabs extends Component {
 
     }
     render() {
-        const { classes, className, contentList, index, viewProps, reducedHeight, tabWrapColor, className2 = {} } = this.props;
+        const { classes, className, contentList, viewProps, reducedHeight, className2 = {} } = this.props;
         const currentIndex = this.state.index;
         const prevIndex = this.state.prevIndex;
         let classNameWrap = classes.root;
@@ -118,11 +107,10 @@ class Tabs extends Component {
 
         return (
             <div className={classNameWrap}>
-                {/* <ul className={classes.tabWrap} style={tabWrapColor ? { backgroundColor: tabWrapColor} : {}}> */}
                 <ul className={UlclassName}>
                     {
                         tabList.map((item, index) => {
-                            let cls = classes.tabItem;///
+                            let cls = classes.tabItem;
                             if (index === currentIndex) {
                                 cls += ' ' + classes.tabSelected + ' ' + (className2.selected || '');
                             }
@@ -156,7 +144,6 @@ class Tabs extends Component {
                         }
                     </div>
                 </FixedHeight>
-
             </div>
         );
     }

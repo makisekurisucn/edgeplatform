@@ -77,7 +77,4 @@ RunningEvent.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
-    return state.region;
-}
-export default connect(mapStateToProps)(withStyles(styles)(RunningEvent));
+export default connect()(withStyles(styles)(RunningEvent));

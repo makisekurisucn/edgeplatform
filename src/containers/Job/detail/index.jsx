@@ -14,10 +14,6 @@ import JobHistory from './JobHistory';
 import Confirm from '../../../components/Dialog/Confirm';
 
 
-
-
-// import { isAbsolute } from 'path';
-
 const styles = theme => ({
     root: {
         width: '100%',
@@ -27,7 +23,7 @@ const styles = theme => ({
     bgcolor: {
         position: 'relative',
         zIndex: 100,
-        backgroundColor: '#F5F6F6',
+        backgroundColor: '#eeeeee',
         color: '#4B8BAF',//'#fff',
         fontSize: '18px',
         //下边框阴影
@@ -45,8 +41,6 @@ const styles = theme => ({
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis'
     }
-
-
 });
 
 const tabList = [
@@ -123,10 +117,11 @@ class JobDetail extends Component {
     }
 
     render() {
-        const { classes, detail, jobHistory, status, allocationList, nativeDetail } = this.props;
+        const { classes, detail, jobHistory, status, nativeDetail } = this.props;
         const jobID = this.props.match.params.id;
         const detailCopy = JSON.parse(JSON.stringify(nativeDetail))
         let defaultCommand = {};
+
 
         switch (detail.Status) {
             case 'running':
@@ -144,7 +139,6 @@ class JobDetail extends Component {
                 defaultCommand = {
                     name: '启动',
                     handleClick: () => {
-                        // detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count });
                         detailCopy.TaskGroups[0].Count = (detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount)) || detailCopy.TaskGroups[0].Count;
                         startJob(this.props.dispatch, jobID, { Job: detailCopy });
                     }
@@ -179,7 +173,7 @@ class JobDetail extends Component {
         return (
             <Paper className={classes.root}>
                 <AppMainUpper type='job_detail' status={kvMap[detail.Status] || detail.Status} statusColor={colorMap[detail.Status] || ''} data={{ defaultCommand, commandList, name: detail.Name }} />
-                <Tabs contentList={tabList} viewProps={{ detail, status, allocationList, jobHistory }} reducedHeight={163} className2={{ bg: classes.bgcolor, selected: classes.selected }} />       {/* tabWrapColor='rgb(96,139,162)'  */}
+                <Tabs contentList={tabList} viewProps={{ ID: jobID, detail, status, jobHistory }} reducedHeight={163} className2={{ bg: classes.bgcolor, selected: classes.selected }} />       {/* tabWrapColor='rgb(96,139,162)'  */}
             </Paper>
         );
     }
@@ -191,7 +185,6 @@ function mapStateToProps(state, ownProps) {
     return {
         detail: state.jobdetail.detail,
         jobHistory: state.jobdetail.history,
-        allocationList: state.jobdetail.allocationList,
         status: state.jobdetail.status,
         nativeDetail: state.jobdetail.nativeDetail
     };

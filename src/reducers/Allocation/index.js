@@ -1,5 +1,6 @@
 const initialState = {
     list: [],
+    detail: {},
     taskLogs: {
         stdout: '',
         stderr: ''
@@ -17,10 +18,11 @@ const taskLogsProcess = (state, data) => {
 }
 
 const AllocationRedu = (state = initialState, action) => {
-    // alert(action.type);
     switch (action.type) {
         case 'ALLOCATION_UPDATE_ALLOCATIONLIST':
             return Object.assign({}, state, { list: action.data.list });
+        case 'ALLOCATION_UPDATE_ALLOCATIONDETAIL':
+            return Object.assign({}, state, { detail: action.data.detail });
         case 'ALLOCATION_UPDATE_TASKLOGS':
             return Object.assign({}, state, { taskLogs: taskLogsProcess(state, action.data) });
         default:

@@ -166,7 +166,7 @@ class TaskMetric extends Component {
     }
 
     render() {
-        const { classes, className, children, data, PrometheusData } = this.props;
+        const { classes, className, data, PrometheusData } = this.props;
         const { CPUData, memoryData } = PrometheusData;
 
         const CPUResult = this.dataWrapper(CPUData, CPUConfig);
@@ -174,7 +174,6 @@ class TaskMetric extends Component {
 
         const dataSourece = data.alloc.ID + ',' + data.taskName;
 
-        // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;

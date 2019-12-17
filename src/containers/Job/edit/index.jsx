@@ -24,12 +24,9 @@ const styles = theme => ({
         height: 50,
         boxSizing: 'border-box',
         lineHeight: '50px',
-        // textAlign: 'center',
         fontSize: 20,
         fontWeight: 'normal',
-        // borderBottom: '1px solid rgb(149,163,170)',
         color: 'rgb(76,92,102)',
-        // position: 'relative',
         backgroundColor: 'rgb(231,231,231)',
         display: 'flex',
         justifyContent: 'space-between'
@@ -41,10 +38,7 @@ const styles = theme => ({
     processArea: {
         width: '40%',
         minWidth: '320px',
-        // maxWidth: '480px',
-        margin: '0px 14px',
-        // display: 'flex',
-        // justifyContent: 'space-between'
+        margin: '0px 14px'
     },
     step: {
         fontSize: '16px',
@@ -62,22 +56,15 @@ const styles = theme => ({
         verticalAlign: 'middle',
         padding: '0px 2px 0px 19px',
         cursor: 'pointer'
-        // height: 49
-        // lineHeight: '60px'
     },
     arrowForward: {
         height: '50px',
         color: 'rgb(151, 151, 151)',
         fontSize: 15,
-        verticalAlign: 'middle',
-        // padding: '0px 2px 0px 19px',
-        // cursor: 'pointer'
-        // height: 49
-        // lineHeight: '60px'
+        verticalAlign: 'middle'
     },
     createButton: {
         float: 'right',
-        // backgroundColor: 'rgb(75,139,175)',
         backgroundColor: 'rgb(183,183,183)',
         width: '128px',
         minWidth: '128px',
@@ -132,11 +119,7 @@ class JobEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // titleIndex: 0,
             stepIndex: 0,
-            // basicInfoData: {},
-            // jobInfoData: {},
-            // scheduleStrategyData: {},
             isAllCompleted: false,
             data: {
                 ID: '',
@@ -209,12 +192,11 @@ class JobEdit extends Component {
     }
     handleUpload = (dataName, dataSet, isAllCompleted) => {
         this.setState({
-            // [dataName]: dataSet,
             isAllCompleted
         })
     }
     render() {
-        const { classes, className, loading } = this.props;
+        const { classes, loading } = this.props;
 
         return (
             <Paper className={classes.root}>

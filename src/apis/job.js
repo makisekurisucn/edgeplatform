@@ -1,7 +1,5 @@
 // import { request } from '../utils/request';
 import { handleRequest } from '../utils/handleRequest';
-import { request } from '../utils/request';
-
 
 function list(postId) {
     return handleRequest({
@@ -92,6 +90,20 @@ function status(data) {
     });
 }
 
+function blockingStatus(data, { index = 0, wait = '2m' } = {}, { signal } = {}) {
+    return handleRequest({
+        url: `/v1/job/${data}/allocations?index=${index}&wait=${wait}`,
+        options: {
+            method: 'GET',
+            signal
+        },
+        customizedConf: {
+            expectedDataType: 'json',
+            canIgnoreError: true
+        }
+    });
+}
+
 function edit(id, data) {
     return handleRequest({
         url: `/v1/job/${id}`,
@@ -125,6 +137,7 @@ export {
     blockingDetail,
     history,
     status,
+    blockingStatus,
     edit,
     purge
 };

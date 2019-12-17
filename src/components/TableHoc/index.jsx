@@ -6,7 +6,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-// import { formatTime } from '../../utils/formatTime';
 
 
 const styles = theme => ({
@@ -46,16 +45,6 @@ const styles = theme => ({
         fontWeight: 400
     }
 });
-
-const kvMap = {
-    service: '服务',
-    pending: '启动中',
-    running: '运行中',
-    dead: '已停止',
-    ready: '就绪',
-    down: '已停止',
-    alive: '运行中'
-}
 
 
 const table = (header) => {
@@ -106,9 +95,6 @@ const table = (header) => {
                                             convert(row[head.key])
                                         }</TableCell>
                                     }
-
-
-                                    // <TableCell className={classes.tableCell} align="center" key={row[head.key]} onClick={this.clickHandler(row, head.key)} > {kvMap[this.processItem(head, row)] || this.processItem(head, row)}</TableCell>
                                 })}
                             </TableRow>
                         ))}

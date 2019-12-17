@@ -211,6 +211,7 @@ class JobInfo extends Component {
                         <div>应用信息</div>
                         <Select
                             className={classes.SelectButton}
+                            title={'任务'}
                             list={taskList} value={taskInfo.Name}
                             valueKey={'Name'} displayKey={'Name'}
                             onSelected={this.selectTask}

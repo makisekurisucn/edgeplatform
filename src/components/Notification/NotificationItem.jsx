@@ -1,10 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { deleteNotification } from '../../actions/Notification';
 import Close from '@material-ui/icons/Close';
-// import CheckCircle from '@material-ui/icons/CheckCircle';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import CheckCircleOutlineOutlined from '@material-ui/icons/CheckCircleOutlineOutlined';
 import HighlightOffOutlined from '@material-ui/icons/HighlightOffOutlined';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
@@ -26,7 +22,6 @@ const styles = theme => ({
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         boxSizing: 'border-box',
-        // width: '278px',
         height: '100%',
         padding: '11px 24px 11px 7px',
         cursor: 'default',
@@ -40,7 +35,6 @@ const styles = theme => ({
     deleteAnimation: {
         height: '0px',
         overflow: 'hidden',
-        // margin: '0px',
         margin: '0px 10px 0px 10px',
         transition: 'transform .3s cubic-bezier(0.17, 0.49, 0.3, 0.9), height .3s ease .3s, margin .3s ease .3s',
         transform: 'translateX(110%)'
@@ -135,8 +129,6 @@ class NotificationItem extends React.Component {
     }
 
     handleClose = (key) => (event) => {
-        // const { dispatch } = this.props;
-        // deleteNotification(dispatch, key);
         this.setState({
             isToDelete: true
         });
@@ -145,7 +137,6 @@ class NotificationItem extends React.Component {
             setTimeout(() => {
                 this.props.handleClose(key);
             }, 700);
-            // this.props.handleClose(key)
         }
     }
 
@@ -174,15 +165,6 @@ class NotificationItem extends React.Component {
                         <div className={classes.date}>{getAutoFormattedTime(data.date)}</div>
                     </div>
                 </div>
-                {/* <Close className={classes.iconClose} onClick={this.handleClick(data.key)} />
-                <div>
-                    <Icon className={classes.iconType} />
-                </div>
-                <div className={classes.main}>
-                    <div className={classes.title}>{data.title}</div>
-                    <div className={classes.content}>{data.content}</div>
-                    <div className={classes.date}>{data.date}</div>
-                </div> */}
             </div>
 
         );

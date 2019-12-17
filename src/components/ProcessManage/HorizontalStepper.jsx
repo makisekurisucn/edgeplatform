@@ -7,7 +7,6 @@ import StepLabel from '@material-ui/core/StepLabel';
 
 const styles = theme => ({
     root: {
-        // width: '51%'
         width: '100%',
         height: '100%'
     },
@@ -21,7 +20,6 @@ const styles = theme => ({
         color: 'rgb(97, 139, 162) !important'
     },
     defaultColor: {
-        // color: 'red'
     },
     completedColor: {
         color: 'rgb(97, 139, 162) !important'
@@ -31,7 +29,7 @@ const styles = theme => ({
 
 
 function HorizontalStepper(props) {
-    const { classes, className, steps, stepIndex } = props;
+    const { classes, steps, stepIndex } = props;
 
     return (
         <div className={classes.root}>

@@ -1,50 +1,15 @@
-import React, { useState, useEffect, Component } from 'react';
+import { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 
 const styles = theme => ({
     root: {
-        top: '0px',
-        top: '0px',
-        top: '0px',
         top: '0px',
         position: 'fixed',
         zIndex: '1200',
         visibility: 'hidden' //子元素需要设置visibility:visible才能显示
     }
 });
-
-// function RenderInProps(props) {
-//     // const { list = initialList, classes } = props;
-//     const { classes } = props;
-//     const [popup, setPopup] = useState(document.createElement('div'));
-
-//     const _renderLayer = () => {
-//         console.log('in the renderLayer function');
-//         ReactDOM.render(props.children, popup);
-//         console.log('rerender completed');
-//     }
-
-//     useEffect(() => {
-//         document.body.appendChild(popup);
-//         console.log('the one-time effect is running');
-//         function unmountComponent() {
-//             ReactDOM.unmountComponentAtNode(popup);
-//             document.body.remove(popup);
-//             console.log('unmount RenderInProps');
-//         }
-//         return unmountComponent;
-//     }, [])
-
-//     useEffect(() => {
-//         console.log('rerender the renderInProps');
-//         console.timeEnd('show list');
-//         _renderLayer();
-//     })
-
-//     return null;
-// }
 
 class RenderInProps extends Component {
     constructor(props) {
@@ -69,7 +34,6 @@ class RenderInProps extends Component {
 
     _renderLayer = () => {
         ReactDOM.render(this.props.children, this.popup, this.props.callback || function () { });
-        // ReactDOM.render(this.props.children, this.popup);
     }
 
     render() {

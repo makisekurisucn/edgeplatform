@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import NormalInput from '../../../components/FormController/NormalInput';
-import NormalSelect from '../../../components/FormController/NormalSelect';
-import KvInput from '../../../components/FormController/MultipleKvInput';
 import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
 import KvItem from '../../../components/KvItem';
@@ -17,6 +14,10 @@ const styles = theme => ({
         top: 0,
         left: 0,
         opacity: 1,
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        boxSizing: 'border-box',
         padding: '27px 14%'
     },
     prevRoot: {
@@ -32,7 +33,6 @@ const styles = theme => ({
     kvItem: {
         marginBottom: 25,
         color: 'rgb(116, 116, 116)'
-        // paddingLeft: '24px'
     },
     hidden: {
         overflow: 'hidden',
@@ -47,27 +47,9 @@ const JOB_DATACENTERS = "Job-Datacenters",
 
 const DISPLAY = 'display', UPLOAD = 'upload';
 
-const kvMap = {};
-
 function processWrap(func, ...values) {
     return function (data, usingType) {
         return func(data, usingType, values);
-    }
-}
-
-function multipleKVProcess(kvData = [], usingType) {
-    if (usingType === DISPLAY) {
-        let resArr = [];
-        kvData.forEach((item) => {
-            resArr.push(`${item.key}=${item.value}`);
-        })
-        return resArr.join('\n');
-    } else if (usingType === UPLOAD) {
-        let resObj = {};
-        kvData.forEach((item) => {
-            resObj[item.key] = item.value;
-        })
-        return resObj;
     }
 }
 
@@ -99,14 +81,6 @@ function numberProcess(data, usingType, unit = '') {
     }
 }
 
-function normalProcess(data, usingType) {
-    if (usingType === DISPLAY) {
-        return kvMap[data] || data;
-    } else if (usingType === UPLOAD) {
-        return data;
-    }
-}
-
 const stanzaList = [
     {
         name: TASKGROUPS_COUNT,
@@ -123,7 +97,6 @@ const stanzaList = [
     {
         name: JOB_DATACENTERS,
         title: '数据中心',
-        // options: drives,
         dataProcess: processWrap(multipleValueProcess),
         component: MultipleInput,
         rules: {
@@ -151,10 +124,7 @@ class ScheduleStrategy extends Component {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
-            // let newDataSet = Object.assign({}, this.state);
-            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
                 this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
         }
@@ -195,7 +165,7 @@ class ScheduleStrategy extends Component {
     }
 
     render() {
-        const { classes, className, stepPosition } = this.props;
+        const { classes, stepPosition } = this.props;
 
         let rootWrap = classes.root;
         if (stepPosition === 1) {

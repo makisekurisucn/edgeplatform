@@ -354,6 +354,7 @@ class JobHistory extends Component {
                         <Select
                             className={classes.SelectButton}
                             list={taskGroup.Tasks || []}
+                            title={'任务'}
                             value={taskInfo.Name}
                             valueKey={'Name'}
                             displayKey={'Name'}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes, { func } from 'prop-types';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import NormalInput from '../../../components/FormController/NormalInput';
 import NormalSelect from '../../../components/FormController/NormalSelect';
@@ -7,6 +7,7 @@ import KvInput from '../../../components/FormController/MultipleKvInput';
 import MultipleInput from '../../../components/FormController/MultipleInput';
 import NumberInput from '../../../components/FormController/NumberInput';
 import PortMapInput from '../../../components/FormController/PortMapInput';
+import RestartPolicy from '../../../components/FormController/RestartPolicy';
 import KvItem from '../../../components/KvItem';
 import CoveredKvItem from '../../../components/KvItem/CoveredKvItem';
 import FadeWrap from '../../../components/FadeWrap';
@@ -18,6 +19,10 @@ const styles = theme => ({
         top: 0,
         left: 0,
         opacity: 1,
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        boxSizing: 'border-box',
         padding: '27px 14%'
     },
     prevRoot: {
@@ -33,7 +38,6 @@ const styles = theme => ({
     kvItem: {
         marginBottom: 25,
         color: 'rgb(116, 116, 116)'
-        // paddingLeft: '24px'
     },
     hidden: {
         overflow: 'hidden',
@@ -174,7 +178,7 @@ function portMappingProcess(data = [], usingType) {
             }]
         };
         data.forEach((item, index) => {
-            const portLabel = `port${index}`;
+            const portLabel = item.Label || `port${index}`;
             if (item.mapping.value === DynamicPorts) {
                 resObj.port_map.push({ [portLabel]: item.LValue });
                 resObj.Services.push({ Name: portLabel, PortLabel: portLabel });
@@ -200,10 +204,10 @@ function reversePortMappingProcess({ services = [], portMap = [], networks = [] 
     })
     networks && networks.forEach((network) => {
         network.DynamicPorts && network.DynamicPorts.forEach((dynamicPort) => {
-            resArr.push({ LValue: labelMap[dynamicPort.Label], RValue: '', mapping: { value: 'DynamicPorts', display: '随机映射' } })
+            resArr.push({ LValue: labelMap[dynamicPort.Label], RValue: '', mapping: { value: 'DynamicPorts', display: '随机映射' }, Label: dynamicPort.Label })
         })
         network.ReservedPorts && network.ReservedPorts.forEach((reservedPort) => {
-            resArr.push({ LValue: labelMap[reservedPort.Label], RValue: reservedPort.Value, mapping: { value: 'ReservedPorts', display: '静态映射' } })
+            resArr.push({ LValue: labelMap[reservedPort.Label], RValue: reservedPort.Value, mapping: { value: 'ReservedPorts', display: '静态映射' }, Label: reservedPort.Label })
         })
     })
     return resArr;
@@ -348,10 +352,7 @@ class JobInfo extends Component {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
-            // let newDataSet = Object.assign({}, this.state);
-            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
                 this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
         }
@@ -402,7 +403,6 @@ class JobInfo extends Component {
                 }
             }
             if (props.updateData && props.dataName) {
-                // props.updateData(props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
                 props.updateData(props.dataName, undefined, newIsAllValid);
             }
             return {
@@ -413,7 +413,7 @@ class JobInfo extends Component {
     }
 
     render() {
-        const { classes, className, stepPosition } = this.props;
+        const { classes, stepPosition } = this.props;
 
         let rootWrap = classes.root;
         if (stepPosition === 1) {
@@ -475,6 +475,7 @@ class JobInfo extends Component {
                                 )
                             })
                         }
+                        <RestartPolicy title={'重启策略'} />
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>

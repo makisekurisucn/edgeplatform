@@ -18,11 +18,6 @@ import { getAllocationList } from '../../actions/Allocation';
 import { getNodePrometheus } from '../../actions/Prometheus';
 
 
-
-// import Drawer from '@material-ui/core/Drawer';
-// import Grid from '@material-ui/core/Grid';
-// import logo from './logo.svg';
-// import './App.css';
 const styles = {
     dashboard: {
         width: '100%',
@@ -288,8 +283,8 @@ class Dashboard extends Component {
         const { list, nodelist, allRegionNodelist, DCInfoMap } = DClist;
 
         let { detail } = nodeWorkerDetail;
-        if(this.state.isNodeDetailHidden){
-            detail={};
+        if (this.state.isNodeDetailHidden) {
+            detail = {};
         }
         const plugins = ['Scale', 'ControlBar'];
 
@@ -477,6 +472,8 @@ class Dashboard extends Component {
                                         return <ListItem type='dc' itemData={item.DCInfo} region={item.DC.region} Datacenter={item.DC.Datacenter} index={index} onClick={this.showList} key={index} />
                                     } else if (item.type === 'node') {
                                         return <ListItem type='search_node' itemData={{ ...item.DCInfo, name: item.node.name, ID: item.node.ID }} region={item.node.region} Datacenter={item.node.Datacenter} index={index} onClick={this.showDetail} key={index} selected={index === this.state.nodeIndex} />
+                                    } else {
+                                        return null;
                                     }
                                 })
                             }

@@ -87,25 +87,46 @@ class CommandSet extends Component {
     }
 
     render() {
-        const { classes, className, defaultCommand, commandList } = this.props;
-        let classNameWrap = classes.root;
+        const { classes, className, defaultCommand, commandList, extendedClasses = {} } = this.props;
+        let classNameWrap = classes.root,
+            displayTextWrap = classes.displayText,
+            expandMoreWrap = classes.expandMore,
+            expandMoreArrowWrap = classes.expandMoreArrow,
+            selectListWrap = classes.selectList,
+            optionWrap = classes.option;
+
         if (className) {
             classNameWrap += ' ' + className;
+        }
+        if (extendedClasses.displayText) {
+            displayTextWrap += ' ' + extendedClasses.displayText;
+        }
+        if (extendedClasses.expandMore) {
+            expandMoreWrap += ' ' + extendedClasses.expandMore;
+        }
+        if (extendedClasses.expandMoreArrow) {
+            expandMoreArrowWrap += ' ' + extendedClasses.expandMoreArrow;
+        }
+        if (extendedClasses.selectList) {
+            selectListWrap += ' ' + extendedClasses.selectList;
+        }
+        if (extendedClasses.option) {
+            optionWrap += ' ' + extendedClasses.option;
         }
 
         return (
             <div className={classNameWrap}>
-                <div className={classes.displayText} onClick={defaultCommand.handleClick} title={defaultCommand.name}>
+                <div className={displayTextWrap} onClick={defaultCommand.handleClick} title={defaultCommand.name}>
                     {
                         defaultCommand.component || defaultCommand.name
                     }
                 </div>
-                <div className={classes.expandMore}>
-                    <ExpandMore className={classes.expandMoreArrow} ></ExpandMore>
-                    <ul className={classes.selectList}>
+                <div className={expandMoreWrap}>
+                    <ExpandMore className={expandMoreArrowWrap} ></ExpandMore>
+                    <ul className={selectListWrap}>
                         {
                             commandList.map((item, index) => {
-                                return <li className={classes.option} onClick={item.handleClick} key={item.name} title={item.name}>
+                                return <li className={optionWrap} onClick={item.handleClick} key={item.name} title={item.name}>
                                     {
                                         item.component || item.name
                                     }

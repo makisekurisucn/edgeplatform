@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-        // width: '51%'
         width: '300px'
     },
     label: {
@@ -35,7 +34,6 @@ const styles = theme => ({
     input: {
         boxSizing: 'border-box',
         borderWidth: '0px',
-        // borderBottom: '1px solid rgba(178, 178, 178, 0.3)',
         backgroundColor: 'inherit',
         width: '85%',
         height: '35px',
@@ -84,7 +82,7 @@ const styles = theme => ({
 
 
 function MultipleInput(props) {
-    const { classes, className, title, hint = '请输入文本', defaultValue = [], rules = {}, data, name, saveData } = props;
+    const { classes, className, title, hint = '请输入文本', defaultValue = [], rules = {}, name, saveData } = props;
     const { required } = rules;
 
     const [inputList, setInputList] = useState(defaultValue || []);

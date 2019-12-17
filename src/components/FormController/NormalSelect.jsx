@@ -4,7 +4,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
     root: {
-        // width: '51%'
         width: '300px'
     },
     label: {
@@ -16,7 +15,6 @@ const styles = theme => ({
         paddingLeft: '4px'
     },
     selectArea: {
-        // padding: '0px 4px',
         fontSize: 12,
         color: "rgb(75, 139, 175)",
         cursor: 'pointer',
@@ -42,12 +40,9 @@ const styles = theme => ({
     textArrow: {
         height: '35px',
         fontSize: '29px',
-        position: 'relative',
-        // verticalAlign: 'middle',
-        // transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+        position: 'relative'
     },
     optionList: {
-        // backgroundColor: 'rgba(97,139,162,0.8)',
         position: "absolute",
         zIndex: 10,
         padding: 0,
@@ -57,7 +52,6 @@ const styles = theme => ({
         left: 0,
         top: 36,
         boxSizing: 'border-box',
-        // padding: '0px 4px',
         transition: 'height 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         overflow: 'hidden',
         fontSize: '16px',
@@ -87,7 +81,7 @@ const styles = theme => ({
 
 
 function NormalSelect(props) {
-    const { classes, className, title, defaultValue, rules = {}, options = [], data, name, saveData } = props;
+    const { classes, className, title, defaultValue, rules = {}, options = [], name, saveData } = props;
     const { required } = rules;
 
     let defaultIndex = 0;
@@ -126,7 +120,6 @@ function NormalSelect(props) {
     const handleFocus = () => {
         // arrow.style.transform = 'rotate(180deg)';
         // optionList.style.height = 'auto';
-
     }
 
     const handleBlur = () => {

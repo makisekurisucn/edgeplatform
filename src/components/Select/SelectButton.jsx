@@ -6,23 +6,33 @@ const styles = theme => ({
         height: 22,
         width: 85,
         boxSizing: 'border-box',
-        // lineHeight: '22px',
         textAlign: 'center',
         padding: '0px 6px',
         fontSize: 12,
         color: "#EEF9FF",
         '&:hover': {
-            backgroundColor: 'rgba(97,139,162,1)',
+            backgroundColor: 'rgb(97, 139, 162)',
             '& $textArrow': {
                 transform: 'rotate(180deg)'
             },
             '& $selectList': {
                 height: 'auto'
+            },
+            '& $title': {
+                color: '#EEF9FF'
             }
         },
         cursor: 'pointer',
         position: 'relative',
 
+    },
+    title: {
+        position: 'absolute',
+        left: '0px',
+        fontSize: '12px',
+        fontWeight: '300',
+        transform: 'scale(0.9)',
+        color: '#858585'
     },
     display: {
         height: '100%',
@@ -48,7 +58,7 @@ const styles = theme => ({
         transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     selectList: {
-        backgroundColor: 'rgba(97,139,162,0.8)',
+        backgroundColor: 'rgb(129, 162, 181)',
         position: "absolute",
         zIndex: 10,
         padding: 0,
@@ -59,13 +69,12 @@ const styles = theme => ({
         top: 22,
         transition: 'height 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         overflow: 'hidden',
-        //   height: 100,
         '& li:hover': {
-            backgroundColor: 'rgba(97,139,162,1)'
+            backgroundColor: 'rgb(97, 139, 162)'
         }
     },
     selected: {
-        backgroundColor: 'rgba(97,139,162,1)',
+        backgroundColor: 'rgb(97, 139, 162)',
         position: 'relative',
     },
     option: {
@@ -116,7 +125,7 @@ class SelectButton extends Component {
     }
 
     render() {
-        const { classes, className, value, extendedClasses = {} } = this.props;
+        const { classes, className, value, extendedClasses = {}, title } = this.props;
 
         const internalList = this.list;
         let display;
@@ -149,8 +158,6 @@ class SelectButton extends Component {
             optionWrap += ' ' + extendedClasses.option;
         }
 
-
-
         internalList.forEach(item => {
             if (item.value === value) {
                 display = item.display;
@@ -158,6 +165,9 @@ class SelectButton extends Component {
         });
         return (
             <div className={classNameWrap}>
+                {
+                    title ? <div className={classes.title}>任务</div> : null
+                }
                 <div className={displayWrap}>
                     <div className={displayTextWrap} title={display}>{display}</div>
                     <ExpandMore className={textArrowWrap} />

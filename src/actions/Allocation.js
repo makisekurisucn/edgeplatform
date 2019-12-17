@@ -11,6 +11,22 @@ const getAllocationDetail = (dispatch, id) => {
     });
 }
 
+const startBlockingAllocDetail = (dispatch, id, wait) => {
+    dispatch({
+        type: 'ALLOCATION_BLOCKINGALLOCDETAIL_SAGA',
+        id: id,
+        command: 'start',
+        wait
+    });
+}
+const stopBlockingAllocDetail = (dispatch, id) => {
+    dispatch({
+        type: 'ALLOCATION_BLOCKINGALLOCDETAIL_SAGA',
+        id: id,
+        command: 'stop'
+    });
+}
+
 const getTaskLogs = (dispatch, id, params) => {
     dispatch({
         type: 'ALLOCATION_GETTASKLOGS_SAGA',
@@ -42,4 +58,13 @@ const restartAllocation = (dispatch, id) => {
 }
 
 
-export { getAllocationList, getAllocationDetail, getTaskLogs, getBothTaskLogs, stopAllocation, restartAllocation };
+export {
+    getAllocationList,
+    getAllocationDetail,
+    startBlockingAllocDetail,
+    stopBlockingAllocDetail,
+    getTaskLogs,
+    getBothTaskLogs,
+    stopAllocation,
+    restartAllocation
+};

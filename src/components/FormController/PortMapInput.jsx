@@ -5,7 +5,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
     root: {
-        // width: '51%'
         width: '300px'
     },
     label: {
@@ -89,8 +88,6 @@ const styles = theme => ({
         height: '35px'
     },
     selectArea: {
-        // padding: '0px 4px',
-        // fontSize: 12,
         width: '79px',
         height: '20px',
         lineHeight: '20px',
@@ -125,12 +122,9 @@ const styles = theme => ({
     textArrow: {
         height: '20px',
         fontSize: '16px',
-        position: 'relative',
-        // verticalAlign: 'middle',
-        // transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+        position: 'relative'
     },
     optionList: {
-        // backgroundColor: 'rgba(97,139,162,0.8)',
         position: "absolute",
         zIndex: 10,
         padding: 0,
@@ -140,7 +134,6 @@ const styles = theme => ({
         left: 0,
         top: 20,
         boxSizing: 'border-box',
-        // padding: '0px 4px',
         transition: 'height 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         overflow: 'hidden',
         fontSize: '14px',
@@ -174,7 +167,7 @@ const options = [
 ]
 
 function PortMapInput(props) {
-    const { classes, className, title, hint = {}, rules = {}, defaultValue, data, name, saveData } = props;
+    const { classes, className, title, hint = {}, rules = {}, defaultValue, name, saveData } = props;
     const { required } = rules;
     const { LHint = '', RHint = '' } = hint;
 

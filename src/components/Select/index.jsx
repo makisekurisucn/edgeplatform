@@ -60,7 +60,6 @@ const styles = theme => ({
         top: 60,
         transition: 'height 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         overflow: 'hidden',
-        //   height: 100,
         '& li:hover': {
             backgroundColor: 'rgba(38,46,47,0.82)'
         }
@@ -120,7 +119,7 @@ class Button extends Component {
     }
 
     render() {
-        const { classes, title, list, valueKey, displayKey, value } = this.props;
+        const { classes, title, list, value } = this.props;
         const internalList = this.list;
         let display;
         internalList.forEach(item => {
@@ -136,17 +135,16 @@ class Button extends Component {
                     <ExpandMore className={classes.textArrow} />
                 </p>
                 <ul className={classes.selectListWrap}>
-                    {internalList && internalList.map((item, index) => {
-                        if (value === item.value) {
-                            return <li key={item.value} className={classes.selected}>{item.display}</li>;
-                        }
-                        else {
-                            return <li key={item.value} onClick={this.clickHandler(list[index])} >{item.display}</li>;
-                        }
-                    })
-
+                    {
+                        internalList && internalList.map((item, index) => {
+                            if (value === item.value) {
+                                return <li key={item.value} className={classes.selected}>{item.display}</li>;
+                            }
+                            else {
+                                return <li key={item.value} onClick={this.clickHandler(list[index])} >{item.display}</li>;
+                            }
+                        })
                     }
-
                 </ul>
             </div>
         );

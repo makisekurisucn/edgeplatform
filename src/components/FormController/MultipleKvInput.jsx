@@ -94,7 +94,7 @@ const styles = theme => ({
 
 
 function MultipleKvInput(props) {
-    const { classes, className, title, hint = {}, defaultValue, rules = {}, data, name, saveData } = props;
+    const { classes, className, title, hint = {}, defaultValue, rules = {}, name, saveData } = props;
     const { required } = rules;
     const { keyHint = 'Key', valueHint = 'Value' } = hint;
 

@@ -7,7 +7,8 @@ import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import ProcessManage from '../../../components/ProcessManage';
 import HorizontalStepper from '../../../components/ProcessManage/HorizontalStepper';
 import FixedHeight from '../../../components/FixedHeight';
-import { createJob, initCreateJob } from '../../../actions/Job';
+import { createJob } from '../../../actions/Job';
+import { getRegion } from '../../../utils/handleRequest'
 import BasicInfo from '../jsonConfig/BasicInfoCreate';
 import JobInfo from '../jsonConfig/JobInfoCreate';
 import ScheduleStrategy from '../jsonConfig/ScheduleStrategyCreate';
@@ -23,12 +24,9 @@ const styles = theme => ({
         height: 50,
         boxSizing: 'border-box',
         lineHeight: '50px',
-        // textAlign: 'center',
         fontSize: 20,
         fontWeight: 'normal',
-        // borderBottom: '1px solid rgb(149,163,170)',
         color: 'rgb(76,92,102)',
-        // position: 'relative',
         backgroundColor: 'rgb(231,231,231)',
         display: 'flex',
         justifyContent: 'space-between'
@@ -40,10 +38,7 @@ const styles = theme => ({
     processArea: {
         width: '40%',
         minWidth: '320px',
-        // maxWidth: '480px',
-        margin: '0px 14px',
-        // display: 'flex',
-        // justifyContent: 'space-between'
+        margin: '0px 14px'
     },
     step: {
         fontSize: '16px',
@@ -61,22 +56,15 @@ const styles = theme => ({
         verticalAlign: 'middle',
         padding: '0px 2px 0px 19px',
         cursor: 'pointer'
-        // height: 49
-        // lineHeight: '60px'
     },
     arrowForward: {
         height: '50px',
         color: 'rgb(151, 151, 151)',
         fontSize: 15,
-        verticalAlign: 'middle',
-        // padding: '0px 2px 0px 19px',
-        // cursor: 'pointer'
-        // height: 49
-        // lineHeight: '60px'
+        verticalAlign: 'middle'
     },
     createButton: {
         float: 'right',
-        // backgroundColor: 'rgb(75,139,175)',
         backgroundColor: 'rgb(183,183,183)',
         width: '128px',
         minWidth: '128px',
@@ -119,7 +107,6 @@ class JobCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // titleIndex: 0,
             stepIndex: 0,
             basicInfoData: {},
             jobInfoData: {},
@@ -158,8 +145,10 @@ class JobCreate extends Component {
     }
 
     createJob = () => {
+        const region = getRegion();
         let data = this.state.data;
         const jobName = data.Name;
+        data.Region = region;
         data.TaskGroups.forEach((taskGroup, gIndex) => {
             taskGroup.Name = taskGroup.Name || `${jobName}-group${gIndex}`;
             taskGroup.Tasks.forEach((task, tIndex) => {
@@ -167,7 +156,6 @@ class JobCreate extends Component {
             })
         })
         const { dispatch } = this.props;
-        // data.Datacenters = ["xidoumen"];
         createJob(dispatch, { Job: data })
         this.props.history.push(`/console/jobs/list`);
     }
@@ -186,7 +174,7 @@ class JobCreate extends Component {
         })
     }
     render() {
-        const { classes, className } = this.props;
+        const { classes } = this.props;
 
         return (
             <Paper className={classes.root}>

@@ -22,6 +22,7 @@ const styles = theme => ({
     textWrap: {
         height: 32,
         lineHeight: '32px',
+        position: 'relative',
         display: 'flex',
         padding: '0px 10px',
         justifyContent: 'space-between'
@@ -39,10 +40,17 @@ const styles = theme => ({
         fontSize: 20,
         fontWeight: 600,
         color: '#EEF9FF',
-        maxWidth: '20%',
+        maxWidth: '25%',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis'
+    },
+    absoluteCenter: {
+        display: 'inline',
+        width: '50%',
+        position: 'absolute',
+        left: '50%',
+        transform: 'translateX(-50%)'
     },
     selectList: {
         height: 32,
@@ -100,7 +108,7 @@ class WrappedGraph extends Component {
                     <span className={titleStyleWrap}>{config.title}</span>
                     {
                         selectList.length > 1 ?
-                            <div style={{ display: 'inline', width: '50%' }}>
+                            <div className={classes.absoluteCenter}>
                                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData} maxWidth={'65px'}></Select>
                             </div> : null
                     }

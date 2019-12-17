@@ -1,4 +1,3 @@
-// import { request } from '../utils/request';
 import { handleRequest } from '../utils/handleRequest';
 
 
@@ -22,6 +21,20 @@ function detail(allocId) {
         },
         customizedConf: {
             expectedDataType: 'json'
+        }
+    });
+}
+
+function blockingDetail(allocId, { index = 0, wait = '2m' } = {}, { signal } = {}) {
+    return handleRequest({
+        url: `/v1/allocation/${allocId}?index=${index}&wait=${wait}`,
+        options: {
+            method: 'GET',
+            signal
+        },
+        customizedConf: {
+            expectedDataType: 'json',
+            canIgnoreError: true
         }
     });
 }
@@ -72,4 +85,4 @@ function taskLogs(id, params) {
     });
 }
 
-export { list, detail, taskLogs, stopAlloc, restartAlloc };
+export { list, detail, taskLogs, stopAlloc, restartAlloc, blockingDetail };

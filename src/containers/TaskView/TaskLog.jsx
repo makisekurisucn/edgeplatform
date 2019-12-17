@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { getTaskLogs, getBothTaskLogs } from '../../actions/Allocation';
-import FixedHeight from '../../components/FixedHeight';
 import Select from '../../components/Select/HorizontalButton';
 
 const styles = theme => ({
@@ -19,8 +18,7 @@ const styles = theme => ({
         width: '100%'
     },
     logContent: {
-        // marginBottom: 30,
-        height: '150px',
+        height: '215px',
         color: '#EEF9FF',
         border: '1px solid rgba(113,113,113,1)',
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -228,18 +226,15 @@ class TaskLog extends Component {
 
     render() {
         const { classes, className, stdout, stderr } = this.props;
-        // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root;
         if (className) {
             classNameWrap += ' ' + className;
         }
-        const selectedItem = classes.selectItem + ' ' + classes.selected;
 
         return (
             <div className={classNameWrap}>
                 <Select className={classes.selectList} selectList={selectList} selectedIndex={this.state.selectedIndex} onClick={this.selectData}></Select>
                 <div className={classes.logContent}>
-                    {/* <FixedHeight className={classes.fixedHeight} reducedHeight={423}> */}
                     <div style={{ height: '100%', display: `${this.state.isStdoutHidden ? 'none' : 'block'}` }}>
                         <div className={classes.logText} ref={ele => this.stdoutLog = ele}>
                             {stdout}

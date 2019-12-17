@@ -5,14 +5,14 @@ const getJobList = (dispatch) => {
 }
 const startBlockingJobList = (dispatch, wait) => {
     dispatch({
-        type: 'JOB_BLOcKINGJOBLIST_SAGA',
+        type: 'JOB_BLOCKINGJOBLIST_SAGA',
         command: 'start',
         wait
     });
 }
 const stopBlockingJobList = (dispatch) => {
     dispatch({
-        type: 'JOB_BLOcKINGJOBLIST_SAGA',
+        type: 'JOB_BLOCKINGJOBLIST_SAGA',
         command: 'stop'
     });
 }
@@ -35,7 +35,7 @@ const getJobDetail = (dispatch, id) => {
 }
 const startBlockingJobDetail = (dispatch, id, wait) => {
     dispatch({
-        type: 'JOB_BLOcKINGJOBDETAIL_SAGA',
+        type: 'JOB_BLOCKINGJOBDETAIL_SAGA',
         data: id,
         command: 'start',
         wait
@@ -43,7 +43,22 @@ const startBlockingJobDetail = (dispatch, id, wait) => {
 }
 const stopBlockingJobDetail = (dispatch, id) => {
     dispatch({
-        type: 'JOB_BLOcKINGJOBDETAIL_SAGA',
+        type: 'JOB_BLOCKINGJOBDETAIL_SAGA',
+        data: id,
+        command: 'stop'
+    });
+}
+const startBlockingJobStatus = (dispatch, id, wait) => {
+    dispatch({
+        type: 'JOB_BLOCKINGJOBSTATUS_SAGA',
+        data: id,
+        command: 'start',
+        wait
+    });
+}
+const stopBlockingJobStatus = (dispatch, id) => {
+    dispatch({
+        type: 'JOB_BLOCKINGJOBSTATUS_SAGA',
         data: id,
         command: 'stop'
     });
@@ -89,6 +104,8 @@ export {
     getJobDetail,
     startBlockingJobDetail,
     stopBlockingJobDetail,
+    startBlockingJobStatus,
+    stopBlockingJobStatus,
     resetStatus,
     stopJob,
     startJob,

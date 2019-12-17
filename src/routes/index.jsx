@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Switch, Route, HashRouter, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 // import  Dashboard from '../../containers/Dashboard'
 import Console from '../containers/Console'
-import Dashboard from '../containers/Dashboard'
+// import Dashboard from '../containers/Dashboard'
 
 
 class IndexRoute extends Component {

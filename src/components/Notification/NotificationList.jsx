@@ -1,12 +1,8 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 import { deleteNotification } from '../../actions/Notification';
 import EmptyList from './EmptyList';
 import NotificationItem from './NotificationItem';
-//delete
-import { addNotification } from '../../actions/Notification';
 
 const styles = theme => ({
     root: {

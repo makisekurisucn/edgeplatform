@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Tabs from '../../../components/Tabs';
 import Paper from '@material-ui/core/Paper';
-// import { getJobDetail, resetStatus } from '../../../actions/Job';
-// import { getDCList } from '../../../actions/DC';
 import { getWorkerDetail, resetStatus } from '../../../actions/Node';
 import { setRegion, getRegion } from '../../../utils/handleRequest';
 import AppMainUpper from '../../../components/AppMainUpper';
@@ -68,33 +66,16 @@ class WorkNodeDetail extends Component {
     componentDidMount() {
         const currentRegion = getRegion();
         setRegion(currentRegion);
-        // const { dispatch } = this.props;
-        // // resetStatus(dispatch);
-        // let id = this.props.match.params.id;
-        // // getJobDetail(dispatch, id);
-        // // getDCList(dispatch);
-        setRegion(currentRegion);
 
         const { dispatch } = this.props;
         resetStatus(dispatch);
         let id = this.props.match.params.id;
         getWorkerDetail(dispatch, id);
     }
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        // if (nextProps.statusIndex) {
-        //     this.setState({
-        //         statusIndex: nextProps.statusIndex
-        //     });
-        // }
-
-    }
 
 
     render() {
         const { classes, detail } = this.props;
-
-        // const { index, statusIndex } = this.state;
-        let defaultCommand = {};
 
         return (
             <Paper className={classes.root}>

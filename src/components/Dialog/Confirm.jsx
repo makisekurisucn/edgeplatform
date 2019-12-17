@@ -26,7 +26,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function AlertDialogSlide(props) {
     const { classes } = props;
-    const { dialogTitle, dialogContent, agree = {}, disagree = {}, component } = props;
+    const { dialogTitle, dialogContent, agree = {}, disagree = {} } = props;
 
     const [open, setOpen] = useState(false);
 

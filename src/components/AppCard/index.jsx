@@ -6,9 +6,7 @@ import { formatTime } from '../../utils/formatTime';
 
 const styles = theme => ({
     root: {
-
         height: 74,
-        // width: '100%',
         boxSizing: 'border-box',
         border: '1px solid rgba(151,151,151,0.49)',
         backgroundColor: 'rgba(216,216,216,0.11)',
@@ -87,13 +85,6 @@ class AppCard extends Component {
         this.state = {
 
         };
-    }
-    //   componentWillMount() {
-    //     const { dispatch } = this.props;
-    //     getRegionList(dispatch);
-    //   }
-    UNSAFE_componentWillReceiveProps(nextProp) {
-
     }
 
     handleClick = () => {

@@ -14,6 +14,10 @@ const styles = theme => ({
         top: 0,
         left: 0,
         opacity: 1,
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        boxSizing: 'border-box',
         padding: '27px 14%'
     },
     prevRoot: {
@@ -29,7 +33,6 @@ const styles = theme => ({
     kvItem: {
         marginBottom: 25,
         color: 'rgb(116, 116, 116)'
-        // paddingLeft: '24px'
     },
     hidden: {
         overflow: 'hidden',
@@ -121,10 +124,7 @@ class BasicInfo extends Component {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.stepPosition === 0 && this.props.stepPosition !== 0) {
-            // let newDataSet = Object.assign({}, this.state);
-            // delete newDataSet.isAllValid;
             if (this.props.updateData && this.props.dataName) {
-                // this.props.updateData(this.props.dataName, newDataSet, this.state.isAllValid);
                 this.props.updateData(this.props.dataName, undefined, this.state.isAllValid);
             }
         }
@@ -156,7 +156,6 @@ class BasicInfo extends Component {
                 }
             }
             if (props.updateData && props.dataName) {
-                // props.updateData(props.dataName, Object.assign({}, this.dataSet), newIsAllValid);
                 props.updateData(props.dataName, undefined, newIsAllValid);
             }
 
@@ -169,7 +168,7 @@ class BasicInfo extends Component {
 
 
     render() {
-        const { classes, className, stepPosition, data } = this.props;
+        const { classes, stepPosition, data } = this.props;
 
         let rootWrap = classes.root;
         if (stepPosition === 1) {
@@ -202,6 +201,7 @@ class BasicInfo extends Component {
                             stanzaList.map((item) => {
                                 let value = item.dataProcess(dataSet[item.name].data, DISPLAY);
                                 if (value === '' || value === undefined) {
+                                    return null;
                                 } else {
                                     return (
                                         <KvItem key={item.name} keyName={item.title} className={classes.kvItem} value={value} style={style} />

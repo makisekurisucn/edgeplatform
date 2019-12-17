@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-        // width: '51%'
         width: '300px'
     },
     label: {
@@ -33,14 +32,11 @@ const styles = theme => ({
             outline: 'none'
         }
     }
-
 });
 
 
-
-
 function NormalInput(props) {
-    const { classes, className, title, hint, defaultValue = '', rules = {}, data, name, saveData } = props;
+    const { classes, className, title, hint, defaultValue = '', rules = {}, name, saveData } = props;
     const { required, disabled } = rules;
     let inputArea = null, input = null;
 
@@ -65,8 +61,6 @@ function NormalInput(props) {
                 saveData(name, { isValid: true, data: input.value })
             }
         }
-
-        // saveData(name, { isValid: true, data: input.value })
     }
 
     useEffect(() => {

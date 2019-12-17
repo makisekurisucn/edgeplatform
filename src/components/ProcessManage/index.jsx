@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import FixedHeight from '../../components/FixedHeight';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-// import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 
 const styles = theme => ({
     root: {
@@ -21,12 +20,9 @@ const styles = theme => ({
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     otherStepItem: {
-        // flex: '1 2 auto',
         width: '320px',
         minWidth: '250px',
         marginRight: '20px',
-        // maxWidth: '500px',
-        // minWidth: '400px',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
     },
     stepTitleContent: {
@@ -36,7 +32,6 @@ const styles = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0px 15px 0px 24px',
-        // paddingLeft: '24px',
         backgroundColor: 'rgba(97, 139, 162, 0.10)',
         fontSize: '24px',
         fontWeight: 300,
@@ -46,8 +41,9 @@ const styles = theme => ({
     stepMainContent: {
         backgroundColor: 'rgba(68, 105, 128, 0.02)',
         height: '100%',
-        overflowY: 'auto',
-        overflowX: 'hidden'
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        paddingTop: '5px'
     },
     arrowBack: {
         cursor: 'pointer',
@@ -64,7 +60,6 @@ const styles = theme => ({
         width: '65px',
         height: '100%',
         marginRight: '-15px',
-        // lineHeight: '19px',
         textAlign: 'center'
     },
     validNextButton: {
@@ -76,7 +71,6 @@ const styles = theme => ({
         width: '65px',
         height: '100%',
         marginRight: '-15px',
-        // lineHeight: '19px',
         textAlign: 'center'
     },
     fixedHeight: {
@@ -116,7 +110,7 @@ class ProcessManage extends Component {
     }
 
     render() {
-        const { classes, className, stepList = [], currentStep, reducedHeight, data, uploadData } = this.props;
+        const { classes, className, stepList = [], data } = this.props;
 
         let classNameWrap = classes.root;
         if (className) {
@@ -145,14 +139,6 @@ class ProcessManage extends Component {
                                     </div>
                                     <FixedHeight className={classes.fixedHeight} reducedHeight={200}>
                                         <div className={classes.stepMainContent}>
-                                            {/* {
-                                                `s\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\ns\n
-                                                
-                                                s
-                                                
-                                                ss
-                                                `
-                                            } */}
                                             <step.component data={data} dataName={step.dataName} updateData={this.updataData} stepPosition={0} />
                                         </div>
                                     </FixedHeight>

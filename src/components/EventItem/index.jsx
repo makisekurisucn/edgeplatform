@@ -27,7 +27,7 @@ const styles = theme => ({
     },
     event: {
         display: 'table-cell',
-        width: '354px',
+        width: '340px',
         lineHeight: '16px',
         fontSize: 12,
         // color: '#EEF9FF',
