@@ -85,6 +85,12 @@ class SubmitToken extends Component {
     render() {
         const { classes, tokenStatus } = this.props;
         const { hasToken, isTokenValid } = tokenStatus;
+        let isTokenWrong;
+        if (hasToken === true && isTokenValid === false) {
+            isTokenWrong = true;
+        } else {
+            isTokenWrong = false;
+        }
 
         return (
             <div className={classes.root}>
@@ -100,7 +106,7 @@ class SubmitToken extends Component {
                             placeholder={'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}
                         />
                         {
-                            hasToken && <div className={classes.warning}>输入的 Token 有误</div>
+                            isTokenWrong ? <div className={classes.warning}>输入的 Token 有误</div> : null
                         }
                     </div>
                     <div className={classes.btn} onClick={this.handleSubmit}>提交Token</div>

@@ -10,6 +10,8 @@ from nginx:latest
 
 MAINTAINER linc lg@harmonycloud.cn
 COPY --from=node /node/build /usr/share/nginx/html
+COPY edgeplatform/config/localhost.crt /root
+COPY edgeplatform/config/localhost.key /root
 COPY edgeplatform/config/default.conf /etc/nginx/conf.d/default.conf
 COPY edgeplatform/config/upstream.conf /etc/nginx/conf.d/upstream.conf
 # CMD ['/bin/bash','-c','nginx -g "deamon off;"']
