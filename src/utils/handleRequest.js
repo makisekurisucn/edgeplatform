@@ -1,4 +1,5 @@
 import { request } from './request';
+import { _X_Nomad_Token } from './static';
 
 let currentRegion = '';
 let crossRegionRequest = '';
@@ -27,8 +28,10 @@ function setRegion(region) {
 }
 
 function handleRequest({ url, options, customizedConf, callback }) {
-    let token = { 'X-Nomad-Token': 'c5172544-9f25-8b2a-96a3-c713154191cd' };
-    // url = url + getcrossRegionRequest();
+    let token = {};
+    if (localStorage.getItem(_X_Nomad_Token)) {
+        token = { 'X-Nomad-Token': localStorage.getItem(_X_Nomad_Token) };
+    }
     if (getcrossRegionRequest() !== '') {
         url = url + (url.indexOf('?') > -1 ? '&' : '?') + getcrossRegionRequest();
     }

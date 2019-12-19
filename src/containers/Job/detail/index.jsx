@@ -49,7 +49,11 @@ const tabList = [
         component: JobInfo
     },
     {
-        name: '实例分布',
+        name: '实例列表',
+        func: function () {
+            const event = new CustomEvent('refreshListState');
+            window.dispatchEvent(event);
+        },
         component: AllocationDistribution
     },
     {
@@ -127,7 +131,7 @@ class JobDetail extends Component {
             case 'running':
             case 'pending':
                 defaultCommand = {
-                    name: '停止',
+                    name: '停止应用',
                     handleClick: () => {
                         detailCopy.Meta = Object.assign({}, detailCopy.Meta, { realCount: detailCopy.TaskGroups[0].Count.toString() });
                         detailCopy.TaskGroups[0].Count = 0;
@@ -137,7 +141,7 @@ class JobDetail extends Component {
                 break;
             default:
                 defaultCommand = {
-                    name: '启动',
+                    name: '启动应用',
                     handleClick: () => {
                         detailCopy.TaskGroups[0].Count = (detailCopy.Meta && Number.parseInt(detailCopy.Meta.realCount)) || detailCopy.TaskGroups[0].Count;
                         startJob(this.props.dispatch, jobID, { Job: detailCopy });
@@ -147,15 +151,15 @@ class JobDetail extends Component {
 
         const commandList = [
             {
-                name: '编辑',
+                name: '编辑应用',
                 handleClick: () => {
                     this.props.history.push(`/console/jobs/${detail.ID}/edit`);
                 }
             },
             {
-                name: '删除',
+                name: '删除应用',
                 component: <Confirm
-                    render={(clickOpen) => (<div className={classes.delete} onClick={clickOpen}>删除</div>)}
+                    render={(clickOpen) => (<div className={classes.delete} onClick={clickOpen}>删除应用</div>)}
                     agree={{
                         text: '确认',
                         func: () => {

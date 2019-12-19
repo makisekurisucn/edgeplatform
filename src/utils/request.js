@@ -60,12 +60,11 @@ function request({ url, options, customizedConf, callback }) {
             }
             return data;
         }).catch((err) => {
-            if(err.name === 'AbortError'){
-            }
-            if (!customizedConf.canIgnoreError) {
+            if (customizedConf.canIgnoreError) {
                 // alert('发送fetch失败' + JSON.stringify(err.msg) + ',方法名：' + url); //需要后续改进
+                return { error: true, data: err, canIgnoreError: true };
             }
-            return { error: true, data: err };
+            return { error: true, data: err, canIgnoreError: false };
 
         });
 }

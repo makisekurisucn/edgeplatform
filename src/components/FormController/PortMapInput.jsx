@@ -95,7 +95,7 @@ const styles = theme => ({
         cursor: 'pointer',
         position: 'relative',
         outline: 'none',
-        backgroundColor: 'rgba(97,139,162,0.8)'
+        backgroundColor: 'rgb(129, 162, 181)'
 
     },
     displayArea: {

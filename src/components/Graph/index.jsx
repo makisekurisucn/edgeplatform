@@ -78,13 +78,10 @@ class Graph extends Component {
     }
 
     initGraph = () => {
-        console.log('in initGraph');
         const values = this.props.values
         const config = this.props.config;
         if (this.ID) {
-            console.log('in if');
             let myChart = echarts.init(this.ID);
-            console.log('after init,before getOption');
             let options = getOption(values, config);
             myChart.setOption(options);
             myChart.resize({ width: this.ID.clientWidth });

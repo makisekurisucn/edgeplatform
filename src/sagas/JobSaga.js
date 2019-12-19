@@ -29,6 +29,10 @@ function* getBlockingJoblist(action) {
         const signal = blockingListConstructor.signal;
 
         const initialResponse = yield* requestSaga(call, list);
+        if (!initialResponse._getHeaders) {
+            console.log('blocking has no nomad-index, should be stop');
+            return;
+        }
         let X_Nomad_Index = initialResponse._getHeaders()['X-Nomad-Index'];
         while (true) {
             let blockingJoblist = yield* requestSaga(call, blockingList, { index: X_Nomad_Index, wait: action.wait }, { signal });
@@ -121,6 +125,10 @@ function* getBlockingJobDetail(action) {
         const signal = blockingDetailConstructor.signal;
 
         const initialResponse = yield* requestSaga(call, detail, action.data);
+        if (!initialResponse._getHeaders) {
+            console.log('blocking has no nomad-index, should be stop');
+            return;
+        }
         let X_Nomad_Index = initialResponse._getHeaders()['X-Nomad-Index'];
         while (true) {
             let blockingJobDetail = yield* requestSaga(call, blockingDetail, action.data, { index: X_Nomad_Index, wait: action.wait }, { signal });
@@ -209,6 +217,10 @@ function* getBlockingAllocList(action) {
         const signal = blockingAllocListConstructor.signal;
 
         const initialResponse = yield* requestSaga(call, status, action.data);
+        if (!initialResponse._getHeaders) {
+            console.log('blocking has no nomad-index, should be stop');
+            return;
+        }
         let X_Nomad_Index = initialResponse._getHeaders()['X-Nomad-Index'];
         while (true) {
             let blockingAlloclist = yield* requestSaga(call, blockingStatus, action.data, { index: X_Nomad_Index, wait: action.wait }, { signal });

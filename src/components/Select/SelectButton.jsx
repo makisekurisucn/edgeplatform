@@ -32,7 +32,8 @@ const styles = theme => ({
         fontSize: '12px',
         fontWeight: '300',
         transform: 'scale(0.9)',
-        color: '#858585'
+        color: 'rgba(194, 197, 199, 0.8)',
+        paddingLeft: '3px'
     },
     display: {
         height: '100%',
@@ -166,7 +167,7 @@ class SelectButton extends Component {
         return (
             <div className={classNameWrap}>
                 {
-                    title ? <div className={classes.title}>任务</div> : null
+                    title ? <div className={classes.title}>{title}</div> : null
                 }
                 <div className={displayWrap}>
                     <div className={displayTextWrap} title={display}>{display}</div>

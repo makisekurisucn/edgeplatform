@@ -39,6 +39,10 @@ function* getBlockingAllocDetail(action) {
         const signal = blockingDetailConstructor.signal;
 
         const initialResponse = yield* requestSaga(call, detail, action.id);
+        if (!initialResponse._getHeaders) {
+            console.log('blocking has no nomad-index, should be stop');
+            return;
+        }
         let X_Nomad_Index = initialResponse._getHeaders()['X-Nomad-Index'];
         if (!initialResponse.error) {
             yield put({

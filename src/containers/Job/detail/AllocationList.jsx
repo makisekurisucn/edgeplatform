@@ -4,21 +4,17 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '../../../components/Table';
 import { formatTime } from '../../../utils/formatTime';
-import Loading from '../../../components/Loading';
 import SearchBox from '../../../components/SearchBox';
 import { setRegion } from '../../../utils/handleRequest';
 import Command from '../../../components/Select/CommandSet';
-import Confirm from '../../../components/Dialog/Confirm';
 import { stopAllocation, restartAllocation } from '../../../actions/Allocation';
 import { startBlockingJobStatus, stopBlockingJobStatus, } from '../../../actions/Job';
 
 
 const styles = theme => ({
     root: {
-        // width: '100%',
         overflowX: 'auto',
-        // padding: '20px 10px'
-        padding: '30px',
+        padding: '30px'
     },
     breadcrumb: {
         display: 'flex',
@@ -47,8 +43,7 @@ const styles = theme => ({
     statusOverview: {
         display: 'flex',
         alignItems: 'flex-end',
-        height: '30px',
-        // lineHeight: '30px'
+        height: '30px'
     },
     statusSign: {
         marginRight: '40px',
@@ -66,17 +61,17 @@ const styles = theme => ({
     },
     statusRunning: {
         '&:after': {
-            backgroundColor: '#4BAF7E',
+            backgroundColor: '#4BAF7E'
         }
     },
     statusPending: {
         '&:after': {
-            backgroundColor: '#AF954B',
+            backgroundColor: '#AF954B'
         }
     },
     statusComplete: {
         '&:after': {
-            backgroundColor: '#9a9999',
+            backgroundColor: '#9a9999'
         }
     },
     searchWrap: {
@@ -179,14 +174,14 @@ class SimpleTable extends Component {
         const { dispatch } = this.props;
         return {
             defaultCommand: {
-                name: '停止',
+                name: '停止实例',
                 handleClick: () => {
                     stopAllocation(dispatch, allocID)
                 }
             },
             commandList: [
                 {
-                    name: '重启',
+                    name: '重启实例',
                     handleClick: () => {
                         restartAllocation(dispatch, allocID);
                     }
@@ -227,10 +222,8 @@ class SimpleTable extends Component {
     }
 
     render() {
-        const { classes, data, loading, DCInfoMap, nodelist, allocationList } = this.props;
-        // const { detail: jobDetail, allocationList } = data;
+        const { classes, data, DCInfoMap, nodelist, allocationList } = this.props;
         const { detail: jobDetail } = data;
-        // const allocationList = JSON.parse(JSON.stringify(data.allocationList));
 
 
         let runningAllocNumber = 0, completeAllocNumber = 0, pendingAllocNumber = 0
@@ -338,9 +331,9 @@ class SimpleTable extends Component {
         return (
             <div className={classes.root}>
                 {/* 面包屑 */}
-                <div className={classes.breadcrumb}>
+                {/* <div className={classes.breadcrumb}>
                     <div className={classes.currentLabel}>实例列表</div>
-                </div>
+                </div> */}
                 {/* 面包屑 */}
                 <div className={classes.aboveTable}>
                     <div className={classes.statusOverview}>
@@ -351,11 +344,9 @@ class SimpleTable extends Component {
                     <SearchBox className={classes.searchWrap} onSearch={this.handleSearch} />
                 </div>
 
-                {/* <Loading loading={loading}> */}
                 <div className={classes.tableWrap}>
                     <Table header={this.header} list={searchList} onItemClick={this.itemClick} className={classes.tableBody} />
                 </div>
-                {/* </Loading> */}
             </div>
         );
     }

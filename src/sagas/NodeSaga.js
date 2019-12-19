@@ -7,29 +7,25 @@ import { requestSaga } from './requestSaga';
 function* getNodeServerlist(action) {
 
     let list = yield* requestSaga(call, getServerList);
-    if (!list.error) {
-        yield put({
-            type: "NODE_UPDATE_SERVERLIST",
-            data: {
-                list: list || []
-            }
-        });
-    }
+    yield put({
+        type: "NODE_UPDATE_SERVERLIST",
+        data: {
+            list: list.error ? [] : list || []
+        }
+    });
 }
 
 function* getNodeWorkerlist(action) {
 
     let workerList = yield* requestSaga(call, getWorkerList);
-    if (!workerList.error) {
-        yield put({
-            type: "NODE_UPDATE_WORKERLIST",
-            data: {
-                list: workerList || []
-            }
-        });
-        for (let node of workerList) {
-            yield fork(getNodeWorkerAdditional, node.ID, workerList);
+    yield put({
+        type: "NODE_UPDATE_WORKERLIST",
+        data: {
+            list: workerList.error ? [] : workerList || []
         }
+    });
+    for (let node of workerList) {
+        yield fork(getNodeWorkerAdditional, node.ID, workerList);
     }
 }
 

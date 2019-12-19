@@ -48,7 +48,7 @@ const jobTypes = [
     },
     {
         value: 'batch',
-        display: '任务'
+        display: '一次性任务'
     }
     // {
     //     value: 'system',
@@ -63,7 +63,7 @@ const JOB_NAME = "Job-Name",
 
 const kvMap = {
     service: '服务',
-    batch: '任务'
+    batch: '一次性任务'
     // system: '系统'
 }
 

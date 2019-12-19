@@ -8,7 +8,6 @@ import TaskMetric from './TaskMetric';
 import TaskLog from './TaskLog';
 import Select from '../../components/Select/SelectButton';
 import KvItem from '../../components/KvItem';
-import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import Command from '../../components/Select/CommandSet';
 import { stopAllocation, restartAllocation, stopBlockingAllocDetail } from '../../actions/Allocation';
 
@@ -34,7 +33,7 @@ const styles = theme => ({
         margin: '0px 7px'
     },
     prevLabel: {
-        cursor: 'pointer'
+        // cursor: 'pointer'
     },
     currentLabel: {
         color: '#609',
@@ -151,42 +150,6 @@ const styles = theme => ({
             backgroundColor: '#ABABAB',
         }
     },
-
-
-
-
-
-
-    // appHeader: {
-    //     width: '100%',
-    //     minWidth: '1100px',
-    //     height: 50,
-    //     paddingLeft: '16px',
-    //     boxSizing: 'border-box',
-    //     display: 'flex',
-    //     alignItems: 'center',
-    //     justifyContent: 'space-between',
-    //     color: 'rgb(116, 116, 116)',
-    //     boxShadow: '1px 1px 6px #ababab',
-    //     marginBottom: '20px'
-    // },
-    // headerName: {
-    //     display: 'flex',
-    //     alignItems: 'center',
-    //     lineHeight: '50px'
-    // },
-    // status: {
-    //     display: 'inline-block',
-    //     width: '75px',
-    //     height: '27px',
-    //     border: '2px solid #4BAF7E',
-    //     color: '#4BAF7E',
-    //     lineHeight: '27px',
-    //     textAlign: 'center',
-    //     fontSize: '18px',
-    //     fontWeight: 400,
-    //     marginRight: '20px'
-    // },
     mainTitle: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -196,46 +159,14 @@ const styles = theme => ({
         fontSize: '20px',
         color: 'rgb(116, 116, 116)'
     },
-    // link: {
-    //     color: 'rgb(44,99,130)',
-    //     backgroundColor: 'rgb(213, 214, 214)',
-    //     padding: '2px 4px',
-    //     position: 'relative',
-    //     float: 'right',
-    //     cursor: 'pointer'
-    // },
-    // address: {
-    //     fontSize: '17px',
-    //     fontWeight: 400,
-    //     maxWidth: '480px',
-    //     overflow: 'hidden',
-    //     whiteSpace: 'nowrap',
-    //     textOverflow: 'ellipsis',
-    //     marginRight: '34px'
-    // },
-    // workNode: {
-    //     minWidth: '100px',
-    //     fontSize: '17px',
-    //     fontWeight: '400',
-    //     marginRight: '10px'
-    // },
     command: {
         position: 'relative',
         height: '25px',
-        width: '55px',
+        width: '76px',
         lineHeight: '25px',
         fontSize: '13px',
         color: '#EEF9FF'
     },
-    // selectButton: {
-    //     height: '100%',
-    //     width: '140px',
-    //     fontSize: '18px',
-    //     fontWeight: '400',
-    //     verticalAlign: 'middle',
-    //     backgroundColor: 'rgba(97,139,162,0.8)',
-    //     boxShadow: '1px 1px 6px #ababab'
-    // },
     displayText: {
         padding: '0px 10px',
         marginRight: '-20px'
@@ -251,26 +182,15 @@ const styles = theme => ({
         }
     },
     expandMoreArrow: {
-        left: '2px',
+        left: '4px',
         transform: 'scale(0.8)'
     },
     selectList: {
 
     },
-    // option: {
-
-    // },
-    // arrowBack: {
-    //     color: '#979797',
-    //     fontSize: 29,
-    //     cursor: 'pointer',
-    //     height: '50px'
-    // },
     allocDetail: {
         padding: '15px'
     },
-
-
     taskDetail: {
         display: 'flex',
         padding: '15px'
@@ -371,24 +291,20 @@ class TaskView extends Component {
         }
 
         let taskList = [];
-        // let status = '';
         for (let taskName in alloc.TaskStates) {
             taskList.push(taskName)
         }
         taskList.sort();
-        // if (alloc.TaskStates) {
-        //     status = statusMap[alloc.TaskStates[list[this.state.currentTaskIndex]].State]
-        // }
 
         const defaultCommand = {
-            name: '停止',
+            name: '停止实例',
             handleClick: () => {
                 stopAllocation(dispatch, alloc.ID)
             }
         };
         const commandList = [
             {
-                name: '重启',
+                name: '重启实例',
                 handleClick: () => {
                     restartAllocation(dispatch, alloc.ID);
                 }
@@ -413,12 +329,12 @@ class TaskView extends Component {
             <div className={classNameWrap}>
                 {/* 面包屑 */}
                 <div className={classes.breadcrumb}>
-                    <div className={classes.prevLabel} onClick={this.handleBack}>实例列表</div>
+                    {/* <div className={classes.prevLabel} onClick={this.handleBack}>实例列表</div>
                     <div className={classes.splitLine}>/</div>
-                    <div className={classes.currentLabel}>实例详情</div>
+                    <div className={classes.currentLabel}>实例详情</div> */}
+                    <div className={classes.prevLabel}>实例详情</div>
                 </div>
                 {/* 面包屑 */}
-                {/* 外层添加的div，不用面包屑就把这层div删掉，给root加上flex内容 */}
                 <div className={classes.labelContent}>
                     <div className={classes.boxShadow + ' ' + classes.allocArea}>
                         <div className={classes.mainTitle}>
@@ -431,8 +347,7 @@ class TaskView extends Component {
                                     displayText: classes.displayText,
                                     expandMore: classes.expandMore,
                                     expandMoreArrow: classes.expandMoreArrow,
-                                    selectList: classes.selectList,
-                                    // option: classes.option
+                                    selectList: classes.selectList
                                 }}
                             />
                         </div>
@@ -507,68 +422,6 @@ class TaskView extends Component {
                         </div>
                     </div>
                 </div>
-                {/* 外层div */}
-
-
-
-
-                {/* <div className={classes.appHeader}>
-                    <div className={classes.flex}>
-                        <div className={classes.headerName}>
-                            <ArrowBackIos className={classes.arrowBack} onClick={this.handleArrowBack} />
-                            <p className={classes.mainTitle} title={getAllocationName(alloc.Name)}>{getAllocationName(alloc.Name)}</p>
-
-                            <span className={classes.status}>{status}</span>
-
-                        </div>
-                        <Command className={classes.command} defaultCommand={defaultCommand} commandList={commandList} />
-                    </div>
-                    <div className={classes.address} title={DCInfo.address}>
-                        {`地址：${DCInfo.address} ( ${DCInfo.region} - ${DCInfo.DC} )`}
-                    </div>
-                    <div className={classes.workNode}>
-                        {`工作节点：`}
-                        <div className={classes.link} onClick={this.turnToNodeDetail}>{extraData.NodeName}</div>
-                    </div>
-                    <Select
-                        className={classes.selectButton}
-                        title={'任务'}
-                        list={list}
-                        value={list[this.state.currentTaskIndex]}
-                        onSelected={this.selectTask}
-                        extendedClasses={{
-                            displayText: classes.displayText,
-                            textArrow: classes.textArrow,
-                            selectList: classes.selectList,
-                            option: classes.option
-                        }}
-                    />
-                </div>
-                <div className={classes.mainContent}>
-                    <div className={classes.breadcrumb}>{`${getAllocationName(alloc.Name)} / ${list[this.state.currentTaskIndex]}`}</div>
-                    <div className={classes.taskDetail}>
-                        <div className={classes.flexLeft}>
-                            <div className={classes.marginBottom}>
-                                <div className={classes.contentTitle}>运行事件</div>
-                                <div className={classes.runningEvent}>
-                                    <RunningEvent className={classes.overflow} data={{ alloc, region, taskName: list[this.state.currentTaskIndex] }} />
-                                </div>
-                            </div>
-                            <div className={classes.taskLog}>
-                                <div className={classes.contentTitle}>应用日志</div>
-                                <div className={classes.taskLog}>
-                                    <TaskLog data={{ alloc, region, taskName: list[this.state.currentTaskIndex] }} />
-                                </div>
-                            </div>
-                        </div>
-                        <div className={classes.flexRight}>
-                            <div className={classes.contentTitle}>监控</div>
-                            <div className={classes.taskMetric}>
-                                <TaskMetric data={{ alloc, region, taskName: list[this.state.currentTaskIndex] }} />
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
             </div>
         );
     }

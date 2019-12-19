@@ -138,7 +138,8 @@ class JobCreate extends Component {
                                 ReservedPorts: []
                             }]
                         }
-                    }]
+                    }],
+                    RestartPolicy: {}
                 }]
             }
         };
@@ -150,9 +151,11 @@ class JobCreate extends Component {
         const jobName = data.Name;
         data.Region = region;
         data.TaskGroups.forEach((taskGroup, gIndex) => {
-            taskGroup.Name = taskGroup.Name || `${jobName}-group${gIndex}`;
+            // taskGroup.Name = taskGroup.Name || `${jobName}-group${gIndex}`;
+            taskGroup.Name = taskGroup.Name || `${jobName}`;
             taskGroup.Tasks.forEach((task, tIndex) => {
-                task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
+                task.Name = task.Name || `task${tIndex}`;
+                // task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
             })
         })
         const { dispatch } = this.props;

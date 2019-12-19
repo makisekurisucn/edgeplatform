@@ -5,7 +5,8 @@ import nodeSaga from './NodeSaga';
 import regionSaga from './RegionSaga';
 import DCSaga from './DCSaga';
 import AllocationSaga from './AllocationSaga';
-import PrometheusSaga from './PrometheusSaga'
+import PrometheusSaga from './PrometheusSaga';
+import TokenSaga from './TokenSaga';
 export default function* rootSagas() {
     yield all([
         call(jobSaga),
@@ -13,6 +14,7 @@ export default function* rootSagas() {
         call(regionSaga),
         call(DCSaga),
         call(AllocationSaga),
-        call(PrometheusSaga)
+        call(PrometheusSaga),
+        call(TokenSaga)
     ])
 }

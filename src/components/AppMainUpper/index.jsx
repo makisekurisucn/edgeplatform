@@ -85,11 +85,11 @@ const styles = theme => ({
     },
     select: {
         top: 18,
-        height: '35px',
+        height: '37px',
         position: 'relative',
         right: '10px',
         fontSize: 18,
-        lineHeight: '35px'
+        lineHeight: '37px'
     },
     commandSet: {
         color: '#EEF9FF'

@@ -83,12 +83,15 @@ class Tabs extends Component {
             index: currentIndex
         });
     }
-    switchTab = (index) => (event) => {
+    switchTab = (item, index) => (event) => {
         if (index !== this.state.index) {
             this.setState({
                 index: index,
                 prevIndex: this.state.index
             });
+        }
+        if (item.func) {
+            item.func();
         }
     }
     componentDidUpdate() {
@@ -114,7 +117,7 @@ class Tabs extends Component {
                             if (index === currentIndex) {
                                 cls += ' ' + classes.tabSelected + ' ' + (className2.selected || '');
                             }
-                            return <li className={cls} key={item.name} onClick={this.switchTab(index)}>{item.name}</li>
+                            return <li className={cls} key={item.name} onClick={this.switchTab(item, index)}>{item.name}</li>
                         })
                     }
                 </ul>

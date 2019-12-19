@@ -202,6 +202,6 @@ class Notification extends React.Component {
 
 
 function mapStateToProps(state, ownProps) {
-    return state.notification;
+    return state.Notification;
 }
 export default connect(mapStateToProps)(withStyles(styles)(Notification));

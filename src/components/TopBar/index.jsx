@@ -4,10 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Notification from '../Notification';
-import { getRegionList } from '../../actions/Region'
-import TopButton from '../NavButton'
-import Select from '../Select'
-import { setRegion } from '../../utils/handleRequest'
+import { getRegionList } from '../../actions/Region';
+import { deleteToken } from '../../actions/Token';
+import TopButton from '../NavButton';
+import Select from '../Select';
+import { setRegion } from '../../utils/handleRequest';
 
 const styles = theme => ({
     root: {
@@ -65,6 +66,18 @@ const styles = theme => ({
         fontSize: 18
 
     },
+    logout: {
+        height: '60px',
+        width: '70px',
+        lineHeight: '60px',
+        textAlign: 'center',
+        fontSize: '18px',
+        color: '#EEF9FF',
+        cursor: 'pointer',
+        '&:hover': {
+            backgroundColor: "#262E2F"
+        }
+    },
     selected: {
         height: 4,
         backgroundColor: '#4B8BAF',
@@ -101,6 +114,11 @@ class TopBar extends Component {
         });
         setRegion(region);
     }
+    logout = () => {
+        const { dispatch } = this.props;
+        deleteToken(dispatch);
+        window.location.reload();
+    }
     render() {
         const { classes, barName, regionList, className } = this.props;
         return (
@@ -125,6 +143,7 @@ class TopBar extends Component {
                         // displayKey="regionName" 
                         value={this.state.currentRegion}
                         onSelected={this.selectRegion} ></Select>
+                    <div className={classes.logout} onClick={this.logout}>登出</div>
                     <Notification />
                 </div>
             </div>
@@ -137,6 +156,10 @@ TopBar.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    return state.region;
+    return {
+        hasToken: state.Token.hasToken,
+        isTokenValid: state.Token.isTokenValid,
+        regionList: state.region.regionList
+    };
 }
 export default connect(mapStateToProps)(withStyles(styles)(TopBar));

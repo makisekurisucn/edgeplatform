@@ -151,15 +151,15 @@ const styles = theme => ({
     },
     leftContent: {
         flex: '0 0 auto',
-        minWidth: '400px',
+        minWidth: '380px',
         maxWidth: '520px',
         // width: '27%',
         marginRight: '35px'
     },
     rightContent: {
         // flex: 'auto',
-        minWidth: '792px',
-        maxWidth: '792px',
+        minWidth: '790px',
+        maxWidth: '790px',
         // width: '27%',
         marginRight: '35px'
     },

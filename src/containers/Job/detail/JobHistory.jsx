@@ -13,7 +13,8 @@ const styles = theme => ({
         top: '0',
         left: 0,
         opacity: 1,
-        padding: '38px 34px',
+        // padding: '38px 34px',
+        padding: '19px 52px',
         color: 'rgb(116, 116, 116)',
         display: 'flex'
     },
@@ -186,7 +187,13 @@ class JobHistory extends Component {
         })
     ]
 
-    selectVersion = (index) => (event) => {
+    // selectVersion = (index) => (event) => {
+    //     this.setState({
+    //         selectedVersionIndex: index,
+    //         selectedTaskIndex: 0
+    //     })
+    // }
+    selectVersion = (index) => {
         this.setState({
             selectedVersionIndex: index,
             selectedTaskIndex: 0
@@ -304,7 +311,7 @@ class JobHistory extends Component {
 
         return (
             <div className={classNameWrap}>
-                <div className={classes.versionList}>
+                {/* <div className={classes.versionList}>
                     {
                         versionList.map((version, index) => {
                             return (
@@ -324,10 +331,27 @@ class JobHistory extends Component {
 
                         })
                     }
-                </div>
+                </div> */}
                 <div className={classes.subContent}>
                     <div>
-                        <div className={classes.subTitle}>基本信息</div>
+                        <div className={classes.subTitle}>
+                            <div>基本信息</div>
+                            <Select
+                                className={classes.SelectButton}
+                                list={versionList || []}
+                                title={'版本'}
+                                value={versionList[this.state.selectedVersionIndex] && versionList[this.state.selectedVersionIndex].display}
+                                valueKey={'display'}
+                                displayKey={'display'}
+                                onSelected={this.selectVersion}
+                                extendedClasses={{
+                                    displayText: classes.displayText,
+                                    textArrow: classes.textArrow,
+                                    selectList: classes.selectList,
+                                    option: classes.option
+                                }}
+                            />
+                        </div>
                         <div className={classes.kvContent}>
                             <HandleDiff classes={classes} keyName="类型" value={kvMap[currentVersion.Type] || currentVersion.Type} prevValue={kvMap[prevVersion.Type] || prevVersion.Type} />
                             <HandleDiff classes={classes} keyName="更改时间" value={formatTime(currentVersion.SubmitTime)} toDiff={false} />

@@ -147,7 +147,8 @@ class JobEdit extends Component {
                                 ReservedPorts: []
                             }]
                         }
-                    }]
+                    }],
+                    RestartPolicy: {}
                 }]
             }
         };
@@ -172,9 +173,11 @@ class JobEdit extends Component {
         let data = this.state.data;
         const jobName = data.Name;
         data.TaskGroups.forEach((taskGroup, gIndex) => {
-            taskGroup.Name = taskGroup.Name || `${jobName}-group${gIndex}`;
+            // taskGroup.Name = taskGroup.Name || `${jobName}-group${gIndex}`;
+            taskGroup.Name = taskGroup.Name || `${jobName}`;
             taskGroup.Tasks.forEach((task, tIndex) => {
-                task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
+                // task.Name = task.Name || `${taskGroup.Name}-task${tIndex}`;
+                task.Name = task.Name || `task${tIndex}`;
             })
         })
         const { dispatch } = this.props;

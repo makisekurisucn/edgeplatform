@@ -43,6 +43,9 @@ const styles = theme => ({
         overflow: 'hidden',
         boxSizing: 'border-box',
         height: '100%'
+    },
+    paddingBottom: {
+        paddingBottom: '40px'
     }
 });
 
@@ -92,7 +95,8 @@ const TASKS_DRIVER = "Tasks-Driver",
     PORTMAPPING = "PortMapping",
     TASKS_CONFIG_COMMAND = "Tasks-Config-command",
     TASKS_CONFIG_ARGS = "Tasks-Config-args",
-    TASKS_ENV = "Tasks-Env";
+    TASKS_ENV = "Tasks-Env",
+    RESTARTPOLICY = 'RestartPolicy';
 
 const DISPLAY = 'display', UPLOAD = 'upload', DynamicPorts = 'DynamicPorts', ReservedPorts = 'ReservedPorts';
 
@@ -105,12 +109,80 @@ const kvMap = {
     rkt: 'Rkt',
     lxc: 'Lxc',
     Singularity: 'Singularity',
-    "jail-task-driver": 'Jailtask driver'
+    "jail-task-driver": 'Jailtask driver',
+    h: '小时',
+    m: '分钟',
+    s: '秒'
 }
 
 function processWrap(func, ...values) {
     return function (data, usingType) {
         return func(data, usingType, values);
+    }
+}
+
+function timeUnitProcess(time, unit) {
+    const rate = 1000000000;
+    if (time === '') {
+        return undefined;
+    }
+    switch (unit) {
+        case 'h':
+            return time * 3600 * rate;
+        case 'm':
+            return time * 60 * rate;
+        case 's':
+            return time * rate;
+        default:
+            return '';
+    }
+}
+
+function policyProcess(data = {}, usingType) {
+    if (usingType === DISPLAY) {
+        if (data.Attempts === '' && data.Delay === '' && data.Interval === '') {
+            return ''
+        } else if (data.Attempts <= 0) {
+            return '不重启'
+        } else {
+            const Attempts = data.Attempts ? data.Attempts : 2;
+            const Interval = data.Interval ? data.Interval + kvMap[data.IntervalUnit] : '30分钟';
+            const Delay = data.Delay ? data.Delay + kvMap[data.DelayUnit] : '15秒';
+            return `${Interval}内重启${Attempts}次，间隔${Delay}`;
+        }
+    } else if (usingType === UPLOAD) {
+        return {
+            Attempts: data.Attempts === '' ? undefined : data.Attempts,
+            Delay: timeUnitProcess(data.Delay, data.DelayUnit),
+            Interval: timeUnitProcess(data.Interval, data.IntervalUnit),
+            Mode: "fail"
+        }
+    }
+}
+
+function setTimeUnit(time) {
+    const timeWrap = time / 1000000000;
+    if (time === '' || time === undefined) {
+        return ['', 'h'];
+    }
+    if (timeWrap > 3600) {
+        return [timeWrap / 3600, 'h'];
+    } else if (timeWrap > 60) {
+        return [timeWrap / 60, 'm'];
+    } else {
+        return [timeWrap, 's'];
+    }
+}
+
+function reversePolicyProcess(data = {}) {
+    const [Interval, IntervalUnit] = setTimeUnit(data.Interval);
+    const [Delay, DelayUnit] = setTimeUnit(data.Delay);
+    return {
+        Attempts: data.Attempts,
+        Interval,
+        IntervalUnit,
+        Delay,
+        DelayUnit
     }
 }
 
@@ -302,6 +374,13 @@ const stanzaList = [
         dataProcess: processWrap(multipleKVProcess),
         component: KvInput,
         rules: {}
+    },
+    {
+        name: RESTARTPOLICY,
+        title: '重启策略',
+        dataProcess: processWrap(policyProcess),
+        component: RestartPolicy,
+        rules: {}
     }
 ]
 
@@ -345,6 +424,10 @@ class JobInfo extends Component {
             [TASKS_ENV]: {
                 isValid: false,
                 data: reverseMultipleKVProcess(props.data.json.TaskGroups[0].Tasks[0].Env)
+            },
+            [RESTARTPOLICY]: {
+                isValid: false,
+                data: reversePolicyProcess(props.data.json.TaskGroups[0].RestartPolicy)
             }
         };
         this.dataSet = props.data.json
@@ -388,6 +471,8 @@ class JobInfo extends Component {
                 case TASKS_ENV:
                     this.dataSet.TaskGroups[0].Tasks[0].Env = multipleKVProcess(result.data, UPLOAD);
                     break;
+                case RESTARTPOLICY:
+                    this.dataSet.TaskGroups[0].RestartPolicy = policyProcess(result.data, UPLOAD);
                 default: ;
             }
         }
@@ -457,7 +542,7 @@ class JobInfo extends Component {
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>
-                    <FadeWrap isHidden={stepPosition !== 0} from={'right'} to={'left'}>
+                    <FadeWrap className={classes.paddingBottom} isHidden={stepPosition !== 0} from={'right'} to={'left'}>
                         {
                             stanzaList.map((item, index) => {
                                 return (
@@ -475,7 +560,6 @@ class JobInfo extends Component {
                                 )
                             })
                         }
-                        <RestartPolicy title={'重启策略'} />
                     </FadeWrap>
                 </div>
                 <div style={{ height: 0 }}>

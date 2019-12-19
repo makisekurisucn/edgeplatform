@@ -2,17 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { formatTime } from '../../../utils/formatTime';
-import { Map, Marker, Circle } from 'react-amap';
-import FixedHeight from '../../../components/FixedHeight';
-import SearchBox from '../../../components/SearchBox';
-import ListItem from '../../../components/AllocationListItem';
-import EmptyListItem from '../../../components/DashboardListItem/EmptyListItem';
-import FadeWrap from '../../../components/FadeWrap';
 import TaskView from '../../TaskView';
 import AllocationList from './AllocationList';
 import { getWorkerList } from '../../../actions/Node';
-import { getAllocationDetail, startBlockingAllocDetail, stopBlockingAllocDetail } from '../../../actions/Allocation';
+import { startBlockingAllocDetail, stopBlockingAllocDetail } from '../../../actions/Allocation';
 
 const styles = theme => ({
     root: {
@@ -33,7 +26,6 @@ const styles = theme => ({
         width: 256,
         left: 8,
         top: 54,
-        // backgroundColor: 'rgba(22,22,22,0.8)',
         boxShadow: '1px 1px 6px #ababab'
     },
     detailWrap: {
@@ -42,9 +34,7 @@ const styles = theme => ({
         top: 10,
         left: 278,
         boxShadow: '1px 1px 6px #ababab'
-    },
-
-
+    }
 });
 
 class AllocationDistribution extends Component {
@@ -62,6 +52,20 @@ class AllocationDistribution extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
         getWorkerList(dispatch);
+        window.addEventListener('refreshListState', this.refresh);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('refreshListState', this.refresh);
+    }
+
+    refresh = () => {
+        this.setState({
+            isAllocListHidden: false,
+            extraData: {},
+            alloc: {},
+            allocID: null
+        })
     }
 
     switchComponent = (data) => {
@@ -69,7 +73,6 @@ class AllocationDistribution extends Component {
         const { allocationList, dispatch } = this.props
         if (isAllocListHidden === true) {
             const allocID = extraData.ID;
-            // getAllocationDetail(dispatch, allocID);
             startBlockingAllocDetail(dispatch, allocID, '2m');
             let alloc = {};
             allocationList.forEach(item => {
@@ -103,9 +106,7 @@ class AllocationDistribution extends Component {
     }
 
     render() {
-        const { classes, className, data, allocationList, DCInfoMap, nodelist } = this.props;
-        const { ID, detail: jobDetail, status } = data;
-
+        const { classes, data, allocationList, DCInfoMap, nodelist } = this.props;
 
         return (
             <div className={classes.root}>
@@ -113,7 +114,6 @@ class AllocationDistribution extends Component {
                     <AllocationList data={{ allocationList, ...data }} DCInfoMap={DCInfoMap} nodelist={nodelist} switchComponent={this.switchComponent} />
                 </div>
                 <div style={{ width: '100%', display: `${this.state.isAllocListHidden ? 'block' : 'none'}` }}>
-                    {/* <TaskView extraData={this.state.extraData} allocID={this.state.allocID} alloc={this.state.alloc} switchComponent={this.switchComponent} /> */}
                     <TaskView extraData={this.state.extraData} allocID={this.state.allocID} switchComponent={this.switchComponent} />
                 </div>
             </div>

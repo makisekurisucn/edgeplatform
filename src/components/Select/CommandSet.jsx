@@ -6,7 +6,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 const styles = theme => ({
     root: {
         height: '100%',
-        width: '87px',
+        width: '111px',
         boxSizing: 'border-box',
         // justifyContent: 'center',
         backgroundColor: '#4BAF7E',
@@ -59,7 +59,7 @@ const styles = theme => ({
     },
     displayText: {
         // marginRight: '-20px',
-        marginRight: '-42px',
+        marginRight: '-39px',
         width: '100%',
         maxWidth: '100%',
         padding: '0px 18px',
