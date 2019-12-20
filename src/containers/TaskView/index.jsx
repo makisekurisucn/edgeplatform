@@ -119,6 +119,12 @@ const styles = theme => ({
             backgroundColor: 'rgb(238, 238, 238)'
         }
     },
+    taskName: {
+        maxWidth: '45px',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
+    },
     selectedItem: {
         backgroundColor: 'rgb(238, 238, 238)'
     },
@@ -381,7 +387,7 @@ class TaskView extends Component {
                                                         key={taskName}
                                                         onClick={this.selectTask(index)}
                                                     >
-                                                        <div>{taskName}</div>
+                                                        <div className={classes.taskName} title={taskName}>{taskName}</div>
                                                         <div>{formatTime(CreateTime)}</div>
                                                         <div className={classes.statusSign + ' ' + classes[state]}>{statusMap[state]}</div>
                                                     </div>

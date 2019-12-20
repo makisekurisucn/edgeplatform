@@ -394,8 +394,8 @@ class JobHistory extends Component {
                     <div className={classes.kvContent}>
                         <HandleDiff classes={classes} keyName="运行时类型" value={taskInfo.Driver} prevValue={prevTaskInfo.Driver} />
                         <HandleDiff classes={classes} keyName="容器镜像" value={taskInfo.Config.image} prevValue={prevTaskInfo.Config.image} />
-                        <HandleDiff classes={classes} keyName="CPU" value={taskInfo.Resources.CPU} prevValue={prevTaskInfo.Resources.CPU} />
-                        <HandleDiff classes={classes} keyName="内存" value={taskInfo.Resources.MemoryMB} prevValue={prevTaskInfo.Resources.MemoryMB} />
+                        <HandleDiff classes={classes} keyName="CPU" value={taskInfo.Resources.CPU + 'MHz'} prevValue={prevTaskInfo.Resources.CPU + 'MHz'} />
+                        <HandleDiff classes={classes} keyName="内存" value={taskInfo.Resources.MemoryMB + 'MB'} prevValue={prevTaskInfo.Resources.MemoryMB + 'MB'} />
                         <HandleDiff classes={classes} keyName="实例数" value={taskGroup.Count} prevValue={prevTaskGroup.Count} />
                         <HandleDiff classes={classes} keyName="启动命令" value={taskInfo.Config.command} prevValue={prevTaskInfo.Config.command} />
                         <HandleDiff classes={classes} keyName="启动参数" value={this.arrToString(taskInfo.Config.args)} prevValue={this.arrToString(prevTaskInfo.Config.args)} />

@@ -40,36 +40,40 @@ const CPUConfig = {
 const diskConfig = {
     name: 'disk',
     title: '磁盘',
-    unit: 'GB',
-    dataWrap: (data) => {
-        return (parseFloat(data) / 1024 / 1024 / 1024).toFixed(3);
+    unit: 'MB',
+    dataWrap: (data, total) => {
+        return (parseFloat(data) / 1024 / 1024 / total * 100).toFixed(2);
     },
     option: {
         tooltip: {
-            formatter: '时间 : {b0}<br/>{a0} : {c0} GB'
+            formatter: '时间 : {b0}<br/>{a0} : {c0} %'
         },
         yAxis: {
             type: 'value',
             boundaryGap: [0, '100%'],
-            show: false
+            show: false,
+            min: 0,
+            max: 100
         }
     }
 }
 const memoryConfig = {
     name: 'memory',
     title: '内存',
-    unit: 'GB',
-    dataWrap: (data) => {
-        return (parseFloat(data) / 1024 / 1024 / 1024).toFixed(3);
+    unit: 'MB',
+    dataWrap: (data, total) => {
+        return (parseFloat(data) / 1024 / 1024 / total * 100).toFixed(2);
     },
     option: {
         tooltip: {
-            formatter: '时间 : {b0}<br/>{a0} : {c0} GB'
+            formatter: '时间 : {b0}<br/>{a0} : {c0} %'
         },
         yAxis: {
             type: 'value',
             boundaryGap: [0, '100%'],
-            show: false
+            show: false,
+            min: 0,
+            max: 100
         }
     }
 }
@@ -117,7 +121,7 @@ class MetricInfo extends Component {
         }
     }
 
-    dataWrapper = (results, config) => {
+    dataWrapper = (results, config, total) => {
         let metricData = [];
 
         if (results.length > 0) {
@@ -130,7 +134,7 @@ class MetricInfo extends Component {
                 for (let i = 0; i < prevValues.length; i++) {
                     let dateString = getPreciseTime(prevValues[i][0] * 1000);
                     values.date.push(dateString);
-                    values.data.push(config.dataWrap(prevValues[i][1]));
+                    values.data.push(config.dataWrap(prevValues[i][1], total));
                 }
                 metricData.push({
                     name: result.metric[config.name],
@@ -149,9 +153,11 @@ class MetricInfo extends Component {
         const { classes, className, data, PrometheusData } = this.props;
         const { CPUData, diskData, memoryData } = PrometheusData;
 
+        const diskTotal = data.Resources && data.Resources.DiskMB;
+        const memoryTotal = data.Resources && data.Resources.MemoryMB;
         const CPUResult = this.dataWrapper(CPUData, CPUConfig);
-        const diskResult = this.dataWrapper(diskData, diskConfig);
-        const memoryResult = this.dataWrapper(memoryData, memoryConfig);
+        const diskResult = this.dataWrapper(diskData, diskConfig, diskTotal);
+        const memoryResult = this.dataWrapper(memoryData, memoryConfig, memoryTotal);
 
 
         let classNameWrap = classes.root;
@@ -162,8 +168,8 @@ class MetricInfo extends Component {
         return (
             <div className={classNameWrap}>
                 <WrappedGraph className={classes.graph} config={CPUConfig} results={CPUResult} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
-                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
-                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
+                <WrappedGraph className={classes.graph} config={diskConfig} results={diskResult} total={diskTotal} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
+                <WrappedGraph className={classes.graph} config={memoryConfig} results={memoryResult} total={memoryTotal} dataSource={data.ID} extendedCSS={{ current: classes.graphTitle, title: classes.graphTitle }} />
             </div>
         );
     }

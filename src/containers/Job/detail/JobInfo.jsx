@@ -226,8 +226,8 @@ class JobInfo extends Component {
                     <div className={classes.kvContent}>
                         <KvItemFilter classes={classes} keyName="运行时类型" value={taskInfo.Driver} />
                         <KvItemFilter classes={classes} keyName="容器镜像" value={taskInfo.Config.image} />
-                        <KvItemFilter classes={classes} keyName="CPU" value={taskInfo.CPU} />
-                        <KvItemFilter classes={classes} keyName="内存" value={taskInfo.MemoryMB} />
+                        <KvItemFilter classes={classes} keyName="CPU" value={taskInfo.CPU + 'MHz'} />
+                        <KvItemFilter classes={classes} keyName="内存" value={taskInfo.MemoryMB + 'MB'} />
                         <KvItemFilter classes={classes} keyName="实例数" value={detail.TaskGroups ? detail.TaskGroups[0].Count : ''} />
                         <KvItemFilter classes={classes} keyName="启动命令" value={taskInfo.Config.command} />
                         <KvItemFilter classes={classes} keyName="启动参数" value={taskInfo.Config.args ? taskInfo.Config.args.join('\n') : ''} />

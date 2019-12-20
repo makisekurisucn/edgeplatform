@@ -9,6 +9,7 @@ import { deleteToken } from '../../actions/Token';
 import TopButton from '../NavButton';
 import Select from '../Select';
 import { setRegion } from '../../utils/handleRequest';
+import { _X_Nomad_Token } from '../../utils/static';
 
 const styles = theme => ({
     root: {
@@ -143,7 +144,10 @@ class TopBar extends Component {
                         // displayKey="regionName" 
                         value={this.state.currentRegion}
                         onSelected={this.selectRegion} ></Select>
-                    <div className={classes.logout} onClick={this.logout}>登出</div>
+                    {
+                        localStorage.getItem(_X_Nomad_Token) ? <div className={classes.logout} onClick={this.logout}>登出</div> : null
+                    }
+                    {/* <div className={classes.logout} onClick={this.logout}>登出</div> */}
                     <Notification />
                 </div>
             </div>

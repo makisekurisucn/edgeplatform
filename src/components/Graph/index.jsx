@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/line';
+import 'echarts/lib/component/tooltip';
 
 
 

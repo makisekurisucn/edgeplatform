@@ -79,7 +79,7 @@ class WrappedGraph extends Component {
 
     render() {
         // const { classes, className, results, values, config } = this.props;
-        const { classes, className, results, config, extendedCSS = {} } = this.props;
+        const { classes, className, results, config, extendedCSS = {}, total } = this.props;
         let values = {
             data: [],
             date: []
@@ -88,7 +88,21 @@ class WrappedGraph extends Component {
             values = results[this.state.selectedIndex].values;
         }
         const data = values.data;
-        const current = (data.length > 0) ? (data[data.length - 1]) + ' ' + config.unit : 'no data';
+        let current;
+        console.log('---')
+        console.log(total)
+        if (total) {
+            console.log('if total')
+            if (data.length > 0){
+                const now = parseInt(data[data.length - 1] * total / 100) + ' ' + config.unit;
+                current = now + ' / ' + total + ' ' + config.unit;
+            } else {
+                current = 'no data';
+            }
+            // current = (data.length > 0) ? (data[data.length - 1])  + ' ' + config.unit : 'no data';
+        } else {
+            current = (data.length > 0) ? (data[data.length - 1]) + ' ' + config.unit : 'no data';
+        }
         // const { isHidden, stage} = this.state;
         let classNameWrap = classes.root, titleStyleWrap = classes.title, currentStytleWrap = classes.current;
         titleStyleWrap += ' ' + (extendedCSS.title || '');
